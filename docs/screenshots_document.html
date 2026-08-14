@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VMRF(DU) Activity Portal – Screenshots Document</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1e293b; font-size: 14px; }
+
+  /* COVER */
+  .cover {
+    background: linear-gradient(145deg, #0f2744 0%, #1a4a7a 50%, #0f2744 100%);
+    color: #fff; padding: 72px 60px; text-align: center;
+    page-break-after: always; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .cover-seal { width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.12);border:3px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 24px; }
+  .cover h1 { font-size:30px;font-weight:800;margin-bottom:8px; }
+  .cover h2 { font-size:16px;font-weight:400;opacity:.8;margin-bottom:28px; }
+  .cover-divider { width:80px;height:4px;background:#fbbf24;border-radius:2px;margin:0 auto 24px; }
+  .cover-badge { display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);border-radius:4px;padding:4px 14px;font-size:11px;margin:4px; }
+  .credit-box { margin-top:36px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:20px 32px;display:inline-block;text-align:left; }
+  .credit-box .cr { font-size:13px;line-height:2.4; }
+  .credit-box .cr strong { color:#fbbf24; }
+  .credit-box .cr span { color:#86efac; }
+
+  /* LAYOUT */
+  .doc-body { max-width:1100px;margin:0 auto;padding:40px 24px; }
+
+  /* CHAPTER */
+  .chapter-header { color:#fff;border-radius:12px;padding:22px 28px;margin:40px 0 24px;display:flex;align-items:center;gap:16px;page-break-before:always; }
+  .chapter-header:first-of-type { page-break-before:avoid; }
+  .chapter-num { width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0; }
+  .chapter-header h2 { font-size:20px;font-weight:700; }
+  .chapter-header p { font-size:12px;opacity:.8;margin-top:3px; }
+
+  /* SCREENSHOT CARD */
+  .ss-card { background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.10);margin-bottom:32px;page-break-inside:avoid;border:1px solid #e2e8f0; }
+  .ss-header { padding:14px 20px 12px;border-bottom:1px solid #f1f5f9;display:flex;align-items:flex-start;gap:12px;background:linear-gradient(90deg,#f8fafc 0%,#fff 100%); }
+  .ss-badge { flex-shrink:0;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.3px; }
+  .ss-info h3 { font-size:15px;font-weight:700;color:#1e293b;margin-bottom:4px; }
+  .ss-info p { font-size:12px;color:#64748b;line-height:1.5; }
+  .ss-num { margin-left:auto;font-size:11px;color:#94a3b8;font-weight:600;flex-shrink:0; }
+  .ss-image-wrap { background:#e2e8f0; }
+  .ss-image-wrap img { width:100%;display:block;max-height:720px;object-fit:cover;object-position:top; }
+  .ss-footer { padding:12px 20px;background:#f8fafc;display:flex;flex-wrap:wrap;gap:8px;align-items:center; }
+  .ann { display:inline-flex;align-items:center;gap:5px;border-radius:12px;padding:3px 10px;font-size:11px; }
+  .ann       { background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af; }
+  .ann.green  { background:#f0fdf4;border:1px solid #bbf7d0;color:#166534; }
+  .ann.orange { background:#fff7ed;border:1px solid #fed7aa;color:#9a3412; }
+  .ann.purple { background:#faf5ff;border:1px solid #e9d5ff;color:#6b21a8; }
+  .ann.red    { background:#fef2f2;border:1px solid #fecaca;color:#991b1b; }
+  .ann.yellow { background:#fefce8;border:1px solid #fde68a;color:#92400e; }
+
+  /* SUMMARY TABLE */
+  .sum-table { width:100%;border-collapse:collapse;font-size:13px; }
+  .sum-table th { background:#1e3a8a;color:#fff;padding:10px 12px;text-align:left; }
+  .sum-table td { padding:8px 12px;border-bottom:1px solid #f1f5f9;vertical-align:top; }
+  .role-chip { display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700; }
+
+  /* FOOTER */
+  .doc-footer { background:#0f2744;color:#94a3b8;text-align:center;padding:28px;font-size:12px;line-height:2.2;margin-top:48px; }
+
+  @media print {
+    body { background:#fff; }
+    .cover { min-height:auto;padding:50px 40px; }
+    .chapter-header { page-break-before:always;box-shadow:none; }
+    .ss-card { box-shadow:none;margin-bottom:20px; }
+    .doc-body { padding:20px; }
+    .ss-image-wrap img { max-height:560px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ COVER ══ -->
+<div class="cover">
+  <div class="cover-seal">🎓</div>
+  <h1>VMRF(DU) Institutional Activity Portal</h1>
+  <h2>Complete Screenshots Documentation — All Modules, Pages &amp; User Interfaces</h2>
+  <div class="cover-divider"></div>
+  <div>
+    <span class="cover-badge">50 Screenshots</span>
+    <span class="cover-badge">7 User Accounts</span>
+    <span class="cover-badge">9 Modules</span>
+    <span class="cover-badge">Laravel 12 · PHP 8.2</span>
+  </div>
+  <div style="margin-top:18px;opacity:.75;font-size:13px;">
+    Vinayaka Mission's Research Foundation (Deemed to be University)
+  </div>
+  <div class="credit-box">
+    <div class="cr"><strong>Under the Guidance of:</strong> &nbsp;Dr. A. Murugan</div>
+    <div class="cr"><span>Designed &amp; Developed by:</span> &nbsp;VMRFDU IT Team — Dhinakaran &amp; Sanjai</div>
+    <div class="cr"><strong>Document Type:</strong> &nbsp;Screenshots &amp; UI Visual Reference</div>
+    <div class="cr"><strong>Version:</strong> &nbsp;1.0 &nbsp;|&nbsp; <strong>Date:</strong> &nbsp;July 2026</div>
+  </div>
+</div>
+
+<div class="doc-body">
+
+<!-- ══════════════════════════════════════════════════════════
+     CHAPTER 1 — PUBLIC ACCESS
+══════════════════════════════════════════════════════════ -->
+<div class="chapter-header" style="background:linear-gradient(135deg,#0f172a,#334155);">
+  <div class="chapter-num">1</div>
+  <div><h2>Public Access &amp; Authentication</h2><p>Pages accessible without login — Login, Public Gallery</p></div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#f1f5f9;color:#475569;">PUBLIC</span>
+    <div class="ss-info"><h3>Login Page</h3><p>Secure email + password authentication gateway. On success the system validates role, account status, and lock state — then redirects each user to their role-specific dashboard. Login IP address and timestamp are tracked on every session.</p></div>
+    <span class="ss-num">01 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/01_login_page.png" alt="Login Page"></div>
+  <div class="ss-footer">
+    <span class="ann">🔐 Email + Password Auth</span>
+    <span class="ann">🛡️ CSRF Protected</span>
+    <span class="ann red">🚫 Locked/Suspended Detection</span>
+    <span class="ann green">✅ Force-Reset Enforcement</span>
+    <span class="ann purple">📍 IP &amp; Timestamp Tracking</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#f0fdf4;color:#166534;">PUBLIC</span>
+    <div class="ss-info"><h3>Public Gallery</h3><p>Publicly accessible showcase of all published institutional activities. Browse with full-text search, category filter, college filter, and date-range filter. Responsive image grid links to individual activity detail pages.</p></div>
+    <span class="ss-num">02 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/02_public_gallery.png" alt="Public Gallery"></div>
+  <div class="ss-footer">
+    <span class="ann">🔍 Full-Text Search</span>
+    <span class="ann green">🏷️ Category Filter</span>
+    <span class="ann">📅 Date Range Filter</span>
+    <span class="ann purple">🏫 College Filter</span>
+    <span class="ann">🖼️ Responsive Grid</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     CHAPTER 2 — SUPER ADMIN
+══════════════════════════════════════════════════════════ -->
+<div class="chapter-header" style="background:linear-gradient(135deg,#451a03,#b45309);">
+  <div class="chapter-num">2</div>
+  <div><h2>👑 Super Admin — Enterprise Control Panel</h2><p>superadmin@vmrfdu.edu.in · Role: super_admin · Unrestricted access to all system functions</p></div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>Super Admin Dashboard</h3><p>System-wide enterprise overview: total activities, users, colleges, workflow status, pending actions across all roles, recent activity feed, and quick-access navigation to every admin module.</p></div>
+    <span class="ss-num">04 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/04_super_admin_dashboard.png" alt="Super Admin Dashboard"></div>
+  <div class="ss-footer">
+    <span class="ann">📊 System-Wide KPIs</span><span class="ann green">👥 Users &amp; Colleges</span><span class="ann purple">🔄 Workflow Status</span><span class="ann orange">⚡ Quick Actions</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>College Management</h3><p>Full CRUD for all constituent colleges. Create with unique codes (e.g., VMKVEC), set location, dean name, contact email, website. Toggle active/inactive status. All college assignments across users link back to these records.</p></div>
+    <span class="ss-num">05 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/05_super_admin_colleges.png" alt="College Management"></div>
+  <div class="ss-footer">
+    <span class="ann green">➕ Create College</span><span class="ann">✏️ Edit</span><span class="ann orange">🔘 Active Toggle</span><span class="ann purple">🏫 College Code</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>User Management</h3><p>Create and manage all portal user accounts. Assign roles (super_admin, registrar, vc, office_registrar, media_editor, college_admin, department_user), link to colleges, set designation, force password reset, lock/unlock, transfer between colleges.</p></div>
+    <span class="ss-num">06 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/06_super_admin_users.png" alt="User Management"></div>
+  <div class="ss-footer">
+    <span class="ann green">➕ Create User</span><span class="ann">🎭 Role Assign</span><span class="ann red">🔒 Lock/Unlock</span><span class="ann orange">🔑 Force Reset</span><span class="ann purple">🏫 College Transfer</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>Role &amp; Permission Builder</h3><p>Create dynamic roles with JSON permission matrices. Assign data scopes (global or college-scoped). Configure permissions for each module: colleges, users, activities, approvals, media, analytics, settings, roles, audits.</p></div>
+    <span class="ss-num">07 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/07_super_admin_roles.png" alt="Role Builder"></div>
+  <div class="ss-footer">
+    <span class="ann">🎭 Role Definitions</span><span class="ann purple">🔑 JSON Permissions</span><span class="ann green">🌐 Data Scope</span><span class="ann orange">⚙️ Overrides</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>Workflow Engine Configuration</h3><p>Create, edit, and duplicate approval workflow templates. Configure each stage: name, order, required role, allowed actions (approve/discuss/reject), status transitions on each action. Set routing rules by category, college, or activity type.</p></div>
+    <span class="ss-num">08 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/08_super_admin_workflows.png" alt="Workflow Engine"></div>
+  <div class="ss-footer">
+    <span class="ann">🔄 Multi-Stage Workflow</span><span class="ann purple">⚙️ Stage Config</span><span class="ann green">📋 Action Mapping</span><span class="ann orange">🌿 Templates</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>Enterprise Access Control Suite</h3><p>Per-user permission overrides beyond role defaults. Copy a role's full permission set to multiple users simultaneously. View and manage the complete cross-role permission matrix.</p></div>
+    <span class="ss-num">09 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/09_super_admin_access_control.png" alt="Access Control"></div>
+  <div class="ss-footer">
+    <span class="ann red">🔑 Per-User Override</span><span class="ann">📋 Copy Role</span><span class="ann purple">🎭 Full Matrix</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>Unrestricted Activity Management</h3><p>Override view of all activities across all colleges and all stages. Force status changes, reassign ownership, restore soft-deleted records, and perform hard deletes. Full administrative control without workflow restrictions.</p></div>
+    <span class="ss-num">10 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/10_super_admin_activities.png" alt="Activity Override"></div>
+  <div class="ss-footer">
+    <span class="ann red">⚡ Force Status</span><span class="ann green">♻️ Restore</span><span class="ann">👤 Reassign</span><span class="ann orange">🗑️ Hard Delete</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>System Audit Logs</h3><p>Immutable system-wide audit trail. Every critical action logged with: acting user, action type, affected record ID, before/after values, IP address, and precise timestamp. Cannot be edited or deleted.</p></div>
+    <span class="ss-num">11 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/11_super_admin_audit_logs.png" alt="Audit Logs"></div>
+  <div class="ss-footer">
+    <span class="ann purple">📜 Immutable Records</span><span class="ann">👤 User + IP</span><span class="ann green">🔍 Before/After</span><span class="ann orange">📅 Timestamp</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>Master Settings &amp; Branding</h3><p>Portal-wide configuration: upload university logo and favicon, set default user avatar, configure NTP time synchronization, manage session lifetime. Controls the visual identity and core behaviour of the entire portal.</p></div>
+    <span class="ss-num">12 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/12_super_admin_settings.png" alt="Master Settings"></div>
+  <div class="ss-footer">
+    <span class="ann">🖼️ Logo &amp; Favicon</span><span class="ann purple">🕐 NTP Sync</span><span class="ann green">⏱️ Session Config</span><span class="ann orange">🎨 Branding</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>Analytics Dashboard (Super Admin)</h3><p>University-wide KPI dashboard with cross-college data visibility. Charts: activities by category, by college, by approval stage, by month. Export options: CSV download and printable executive report with branding.</p></div>
+    <span class="ss-num">13 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/13_super_admin_analytics.png" alt="Analytics"></div>
+  <div class="ss-footer">
+    <span class="ann">📊 University-Wide KPIs</span><span class="ann green">📈 Trend Charts</span><span class="ann purple">📥 CSV Export</span><span class="ann orange">🖨️ Print Report</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>In-App Notification Center</h3><p>Notification inbox with read/unread status tracking. Mark individual or all-as-read. Each notification links to the relevant activity, approval, or system event.</p></div>
+    <span class="ss-num">14 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/14_super_admin_notifications.png" alt="Notifications"></div>
+  <div class="ss-footer">
+    <span class="ann">🔔 In-App Alerts</span><span class="ann green">✅ Mark All Read</span><span class="ann purple">🔗 Action Links</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>Email Transmission Audit Log</h3><p>Complete record of every email generated by the portal at each workflow stage. Displays recipient, subject, stage trigger, delivery status (sent/queued/failed), and full HTML body preview for troubleshooting.</p></div>
+    <span class="ss-num">15 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/15_super_admin_email_logs.png" alt="Email Logs"></div>
+  <div class="ss-footer">
+    <span class="ann">📧 Email Audit</span><span class="ann green">✅ Delivery Status</span><span class="ann purple">👁️ HTML Preview</span><span class="ann orange">🔍 Search History</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef9c3;color:#854d0e;">SUPER ADMIN</span>
+    <div class="ss-info"><h3>User Profile — Super Admin</h3><p>Personal profile management: update name, email, phone, designation, upload avatar, change password with current-password verification.</p></div>
+    <span class="ss-num">16 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/16_super_admin_profile.png" alt="Super Admin Profile"></div>
+  <div class="ss-footer">
+    <span class="ann">✏️ Edit Info</span><span class="ann green">🖼️ Avatar Upload</span><span class="ann purple">🔑 Change Password</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     CHAPTER 3 — VC / VICE CHANCELLOR
+══════════════════════════════════════════════════════════ -->
+<div class="chapter-header" style="background:linear-gradient(135deg,#1e3a8a,#2563eb);">
+  <div class="chapter-num">3</div>
+  <div><h2>🏛️ Vice Chancellor (VC) — Verification &amp; Oversight</h2><p>vc@vmrfdu.edu.in · Role: vc · Stage 1 Verification Authority — Global data access, approval queue</p></div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dbeafe;color:#1e40af;">VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>VC Dashboard</h3><p>Vice Chancellor's role-specific homepage: pending verification count, university-wide activity statistics, recent submission feed, approval rate indicators, and quick navigation to the verification queue and analytics.</p></div>
+    <span class="ss-num">17 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/17_vc_dashboard.png" alt="VC Dashboard"></div>
+  <div class="ss-footer">
+    <span class="ann">📋 Pending Queue</span><span class="ann green">📊 Global Stats</span><span class="ann purple">📈 Approval Rate</span><span class="ann orange">⚡ Quick Actions</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dbeafe;color:#1e40af;">VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Verification Queue — Pending Submissions</h3><p>Stage 1 verification dashboard listing all activities submitted by College Admins awaiting institutional review. Each card shows title, college, event category, date, faculty coordinator, and uploaded photos. Three actions available: Approve / Discuss / Reject.</p></div>
+    <span class="ss-num">18 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/18_vc_verification_queue.png" alt="Verification Queue"></div>
+  <div class="ss-footer">
+    <span class="ann green">✅ Approve → media_review</span>
+    <span class="ann orange">💬 Discuss → Return to College</span>
+    <span class="ann red">❌ Reject → Terminated</span>
+    <span class="ann">📝 Mandatory Remarks on Discuss/Reject</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dbeafe;color:#1e40af;">VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Approved Submissions List</h3><p>Historical view of all activities approved by the VC and forwarded to the Media Editor Studio. Shows approval timestamp, current downstream status, and remarks provided at approval.</p></div>
+    <span class="ss-num">19 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/19_vc_approved_list.png" alt="Approved List"></div>
+  <div class="ss-footer">
+    <span class="ann green">✅ Approved Records</span><span class="ann">📅 Timestamps</span><span class="ann purple">🔄 Downstream Status</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dbeafe;color:#1e40af;">VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Rejected Submissions Archive</h3><p>Record of all activities rejected at Stage 1, with the mandatory rejection reason captured at the time of rejection and timestamp. Full traceability for governance and college feedback.</p></div>
+    <span class="ss-num">20 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/20_vc_rejected_list.png" alt="Rejected List"></div>
+  <div class="ss-footer">
+    <span class="ann red">❌ Rejected Records</span><span class="ann orange">📝 Rejection Reasons</span><span class="ann">📅 Timestamps</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dbeafe;color:#1e40af;">VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Analytics Dashboard (VC View)</h3><p>University-wide analytics with full cross-college visibility — approval rates, submission volumes by category and college, stage-wise distribution, monthly trends. CSV and printable report export.</p></div>
+    <span class="ss-num">21 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/21_vc_analytics.png" alt="VC Analytics"></div>
+  <div class="ss-footer">
+    <span class="ann">📊 University-Wide</span><span class="ann green">📈 Trends</span><span class="ann purple">📥 CSV/Print</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dbeafe;color:#1e40af;">VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>All Submissions View (VC)</h3><p>Global read-only view of all activity submissions across all colleges in every status — for monitoring and oversight without triggering workflow transitions.</p></div>
+    <span class="ss-num">22 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/22_vc_submissions_view.png" alt="VC Submissions View"></div>
+  <div class="ss-footer">
+    <span class="ann">📋 All Colleges</span><span class="ann green">🌐 All Statuses</span><span class="ann purple">👁️ Read-Only Oversight</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dbeafe;color:#1e40af;">VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Notifications (VC)</h3><p>In-app notifications for the VC: new submissions awaiting verification, resubmissions after discussion feedback, and system-level alerts.</p></div>
+    <span class="ss-num">23 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/23_vc_notifications.png" alt="VC Notifications"></div>
+  <div class="ss-footer">
+    <span class="ann">🔔 New Submission Alerts</span><span class="ann orange">🔄 Resubmission Alerts</span><span class="ann green">✅ Mark Read</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dbeafe;color:#1e40af;">VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>User Profile (VC)</h3><p>Personal profile management for the Vice Chancellor: update information, upload avatar, change password.</p></div>
+    <span class="ss-num">24 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/24_vc_profile.png" alt="VC Profile"></div>
+  <div class="ss-footer">
+    <span class="ann">✏️ Edit Info</span><span class="ann green">🖼️ Avatar</span><span class="ann purple">🔑 Password</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     CHAPTER 3B — PRO VICE CHANCELLOR
+══════════════════════════════════════════════════════════ -->
+<div class="chapter-header" style="background:linear-gradient(135deg,#312e81,#4338ca);">
+  <div class="chapter-num">3B</div>
+  <div><h2>🏛️ Pro Vice Chancellor (Pro VC) — Verification &amp; Oversight</h2><p>provc@vmrfdu.edu.in · Role: pro_vc · Stage 1 Verification Authority — Global data access, approval queue</p></div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#e0e7ff;color:#3730a3;">PRO VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Pro VC Dashboard</h3><p>Pro Vice Chancellor's role-specific homepage: pending verification count, university-wide activity statistics, recent submission feed, approval rate indicators, and quick navigation to the verification queue and analytics.</p></div>
+    <span class="ss-num">43 / 50</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/43_provc_dashboard.png" alt="Pro VC Dashboard"></div>
+  <div class="ss-footer">
+    <span class="ann">📋 Pending Queue</span><span class="ann green">📊 Global Stats</span><span class="ann purple">📈 Approval Rate</span><span class="ann orange">⚡ Quick Actions</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#e0e7ff;color:#3730a3;">PRO VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Verification Queue — Pending Submissions</h3><p>Stage 1 verification dashboard listing all activities submitted by College Admins awaiting institutional review. Each card shows title, college, event category, date, faculty coordinator, and uploaded photos. Three actions available: Approve / Discuss / Reject.</p></div>
+    <span class="ss-num">43 / 50</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/43_provc_verification_queue.png" alt="Pro VC Verification Queue"></div>
+  <div class="ss-footer">
+    <span class="ann green">✅ Approve → media_review</span>
+    <span class="ann orange">💬 Discuss → Return to College</span>
+    <span class="ann red">❌ Reject → Terminated</span>
+    <span class="ann">📝 Mandatory Remarks on Discuss/Reject</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#e0e7ff;color:#3730a3;">PRO VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Approved Submissions List</h3><p>Historical view of all activities approved by the Pro VC and forwarded to the Media Editor Studio. Shows approval timestamp, current downstream status, and remarks provided at approval.</p></div>
+    <span class="ss-num">44 / 50</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/44_provc_approved_list.png" alt="Pro VC Approved List"></div>
+  <div class="ss-footer">
+    <span class="ann green">✅ Approved Records</span><span class="ann">📅 Timestamps</span><span class="ann purple">🔄 Downstream Status</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#e0e7ff;color:#3730a3;">PRO VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Rejected Submissions Archive</h3><p>Record of all activities rejected at Stage 1, with the mandatory rejection reason captured at the time of rejection and timestamp. Full traceability for governance and college feedback.</p></div>
+    <span class="ss-num">44 / 50</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/44_provc_rejected_list.png" alt="Pro VC Rejected List"></div>
+  <div class="ss-footer">
+    <span class="ann red">❌ Rejected Records</span><span class="ann orange">📝 Rejection Reasons</span><span class="ann">📅 Timestamps</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#e0e7ff;color:#3730a3;">PRO VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Analytics Dashboard (Pro VC View)</h3><p>University-wide analytics with full cross-college visibility — approval rates, submission volumes by category and college, stage-wise distribution, monthly trends. CSV and printable report export.</p></div>
+    <span class="ss-num">45 / 50</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/45_provc_analytics.png" alt="Pro VC Analytics"></div>
+  <div class="ss-footer">
+    <span class="ann">📊 University-Wide</span><span class="ann green">📈 Trends</span><span class="ann purple">📥 CSV/Print</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#e0e7ff;color:#3730a3;">PRO VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>All Submissions View (Pro VC)</h3><p>Global read-only view of all activity submissions across all colleges in every status — for monitoring and oversight without triggering workflow transitions.</p></div>
+    <span class="ss-num">45 / 50</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/45_provc_submissions_view.png" alt="Pro VC Submissions View"></div>
+  <div class="ss-footer">
+    <span class="ann">📋 All Colleges</span><span class="ann green">🌐 All Statuses</span><span class="ann purple">👁️ Read-Only Oversight</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#e0e7ff;color:#3730a3;">PRO VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>Notifications (Pro VC)</h3><p>In-app notifications for the Pro VC: new submissions awaiting verification, resubmissions after discussion feedback, and system-level alerts.</p></div>
+    <span class="ss-num">46 / 50</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/46_provc_notifications.png" alt="Pro VC Notifications"></div>
+  <div class="ss-footer">
+    <span class="ann">🔔 New Submission Alerts</span><span class="ann orange">🔄 Resubmission Alerts</span><span class="ann green">✅ Mark Read</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#e0e7ff;color:#3730a3;">PRO VICE CHANCELLOR</span>
+    <div class="ss-info"><h3>User Profile (Pro VC)</h3><p>Personal profile management for the Pro Vice Chancellor: update information, upload avatar, change password.</p></div>
+    <span class="ss-num">46 / 50</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/46_provc_profile.png" alt="Pro VC Profile"></div>
+  <div class="ss-footer">
+    <span class="ann">✏️ Edit Info</span><span class="ann green">🖼️ Avatar</span><span class="ann purple">🔑 Password</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     CHAPTER 4 — OFFICE REGISTRAR
+══════════════════════════════════════════════════════════ -->
+<div class="chapter-header" style="background:linear-gradient(135deg,#4c1d95,#7c3aed);">
+  <div class="chapter-num">4</div>
+  <div><h2>📋 Office of Registrar — Stage 2 Final Authorization</h2><p>officeregistrar@vmrfdu.edu.in · Role: office_registrar · Executive review of media packages before broadcast</p></div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#f3e8ff;color:#6b21a8;">OFFICE REGISTRAR</span>
+    <div class="ss-info"><h3>Office of Registrar Dashboard</h3><p>Role-specific homepage: locked submissions pending Stage 2 executive review, approval queue, and status of previously reviewed media packages.</p></div>
+    <span class="ss-num">25 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/25_office_registrar_dashboard.png" alt="Office Registrar Dashboard"></div>
+  <div class="ss-footer">
+    <span class="ann red">🔒 Locked Pending Review</span><span class="ann green">✅ Executive Queue</span><span class="ann">📊 Review Stats</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#f3e8ff;color:#6b21a8;">OFFICE REGISTRAR</span>
+    <div class="ss-info"><h3>Stage 2 Media Review Queue (🔒 Locked Packages)</h3><p>Executive review interface for locked media packages submitted by the Media Editor. Displays optimized photos, AI-generated captions, and complete activity details. Approve → ready_to_publish; Discuss → 🔓 unlocks and returns to Media Editor with feedback.</p></div>
+    <span class="ss-num">26 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/26_office_registrar_review_queue.png" alt="Stage 2 Review Queue"></div>
+  <div class="ss-footer">
+    <span class="ann red">🔒 Locked Records</span>
+    <span class="ann green">✅ Approve → ready_to_publish</span>
+    <span class="ann orange">💬 Discuss → 🔓 Unlocks to Editor</span>
+    <span class="ann purple">📸 Media Package Preview</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#f3e8ff;color:#6b21a8;">OFFICE REGISTRAR</span>
+    <div class="ss-info"><h3>Approvals View (Office Registrar)</h3><p>Full view of all activities that the Office of Registrar has approved or sent for discussion, with audit trail of decisions and timestamps.</p></div>
+    <span class="ss-num">27 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/27_office_registrar_approvals.png" alt="Office Registrar Approvals"></div>
+  <div class="ss-footer">
+    <span class="ann green">✅ Approved Archive</span><span class="ann orange">💬 Discuss History</span><span class="ann">📅 Decision Timeline</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#f3e8ff;color:#6b21a8;">OFFICE REGISTRAR</span>
+    <div class="ss-info"><h3>Analytics Dashboard (Office Registrar)</h3><p>KPI analytics from the Office of Registrar's perspective: media review throughput, approval rates, turnaround times for Stage 2 reviews.</p></div>
+    <span class="ss-num">28 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/28_office_registrar_analytics.png" alt="Office Registrar Analytics"></div>
+  <div class="ss-footer">
+    <span class="ann">📊 Review KPIs</span><span class="ann green">📈 Throughput</span><span class="ann purple">⏱️ Turnaround</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#f3e8ff;color:#6b21a8;">OFFICE REGISTRAR</span>
+    <div class="ss-info"><h3>Notifications (Office of Registrar)</h3><p>Alerts when the Media Editor submits a new package for Stage 2 review, and confirmations when actions are completed.</p></div>
+    <span class="ss-num">29 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/29_office_registrar_notifications.png" alt="Office Registrar Notifications"></div>
+  <div class="ss-footer">
+    <span class="ann purple">🔒 New Package Alert</span><span class="ann green">✅ Approval Confirm</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#f3e8ff;color:#6b21a8;">OFFICE REGISTRAR</span>
+    <div class="ss-info"><h3>User Profile (Office of Registrar)</h3><p>Profile management: update personal information, upload avatar, change password.</p></div>
+    <span class="ss-num">30 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/30_office_registrar_profile.png" alt="Office Registrar Profile"></div>
+  <div class="ss-footer">
+    <span class="ann">✏️ Edit Info</span><span class="ann green">🖼️ Avatar</span><span class="ann purple">🔑 Password</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     CHAPTER 5 — MEDIA EDITOR
+══════════════════════════════════════════════════════════ -->
+<div class="chapter-header" style="background:linear-gradient(135deg,#78350f,#d97706);">
+  <div class="chapter-num">5</div>
+  <div><h2>🎨 Media Editor Desk — Studio &amp; Broadcast</h2><p>editor@vmrfdu.edu.in · Role: media_editor (Karthik N., Lead Media Editor) · Photo, caption, ZIP, publishing</p></div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef3c7;color:#92400e;">MEDIA EDITOR</span>
+    <div class="ss-info"><h3>Media Editor Dashboard</h3><p>The Media Editor's command centre — lands directly on the Media Studio. Displays queue counts: editing queue (media_review), locked submissions pending Stage 2 (registrar_approval 🔒), revision queue (editor_discuss 🔓), and ready-to-publish.</p></div>
+    <span class="ss-num">31 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/31_media_editor_dashboard.png" alt="Media Editor Dashboard"></div>
+  <div class="ss-footer">
+    <span class="ann orange">📸 Editing Queue</span><span class="ann red">🔒 Locked Count</span><span class="ann green">✅ Ready Count</span><span class="ann purple">🔓 Discuss Queue</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef3c7;color:#92400e;">MEDIA EDITOR</span>
+    <div class="ss-info"><h3>Media Studio — Editing Queue &amp; Locked Submissions</h3><p>All activities in media_review status appear in the editing queue for photo optimization and caption refinement. After submitting to the Office of Registrar, records move to the Locked section (🔒 read-only padlock) until Stage 2 is resolved. Activities in editor_discuss are returned for revision.</p></div>
+    <span class="ss-num">32 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/32_media_editor_studio_queue.png" alt="Media Studio Queue"></div>
+  <div class="ss-footer">
+    <span class="ann orange">📸 Photo Optimization</span>
+    <span class="ann">✏️ Caption Refinement</span>
+    <span class="ann red">🔒 Locked Records</span>
+    <span class="ann green">📤 Submit to Registrar</span>
+    <span class="ann purple">📦 ZIP Pack Export</span>
+    <span class="ann yellow">🔓 editor_discuss Queue</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef3c7;color:#92400e;">MEDIA EDITOR</span>
+    <div class="ss-info"><h3>Submission History (Media Editor)</h3><p>Media Editor's view of all submissions processed, including their current downstream status after Stage 2 review and publication.</p></div>
+    <span class="ss-num">33 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/33_media_editor_submissions.png" alt="Media Editor Submissions"></div>
+  <div class="ss-footer">
+    <span class="ann">📋 Processed History</span><span class="ann green">🎉 Published</span><span class="ann purple">🔄 Status Tracking</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef3c7;color:#92400e;">MEDIA EDITOR</span>
+    <div class="ss-info"><h3>Analytics Dashboard (Media Editor)</h3><p>Media processing KPIs: editing throughput, average processing time, publishing rates, and platform distribution across Instagram, LinkedIn, Twitter/X, and Portal Archive.</p></div>
+    <span class="ss-num">34 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/34_media_editor_analytics.png" alt="Media Editor Analytics"></div>
+  <div class="ss-footer">
+    <span class="ann">📊 Processing KPIs</span><span class="ann green">📈 Throughput</span><span class="ann orange">📡 Platform Distribution</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef3c7;color:#92400e;">MEDIA EDITOR</span>
+    <div class="ss-info"><h3>Notifications (Media Editor)</h3><p>Alert inbox for new activities entering media_review, notifications when Office of Registrar sends packages back for discussion (editor_discuss), and confirmations when ready-to-publish status is granted.</p></div>
+    <span class="ss-num">35 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/35_media_editor_notifications.png" alt="Media Editor Notifications"></div>
+  <div class="ss-footer">
+    <span class="ann orange">📸 New Media Review</span><span class="ann red">🔓 Discuss Return</span><span class="ann green">✅ Ready to Publish</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#fef3c7;color:#92400e;">MEDIA EDITOR</span>
+    <div class="ss-info"><h3>User Profile (Media Editor)</h3><p>Personal profile for Karthik N. (Lead Media Editor). Update name, phone, designation, avatar, and change password.</p></div>
+    <span class="ss-num">36 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/36_media_editor_profile.png" alt="Media Editor Profile"></div>
+  <div class="ss-footer">
+    <span class="ann">✏️ Edit Info</span><span class="ann green">🖼️ Avatar</span><span class="ann purple">🔑 Password</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     CHAPTER 6 — COLLEGE ADMIN / DEO
+══════════════════════════════════════════════════════════ -->
+<div class="chapter-header" style="background:linear-gradient(135deg,#14532d,#16a34a);">
+  <div class="chapter-num">6</div>
+  <div><h2>🏫 College Admin / DEO — Activity Submission &amp; Tracking</h2><p>deo.sahs-pdy@vmrfdu.edu.in · Role: college_admin · DEO, School of Allied Health Sciences (SAHS-PDY) · College-scoped</p></div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dcfce7;color:#166534;">COLLEGE ADMIN</span>
+    <div class="ss-info"><h3>College Admin Dashboard</h3><p>Role-specific homepage for the DEO (SAHS-PDY). Shows this college's submissions by status (draft / pending / approved / rejected / published), recent activity feed scoped to SAHS-PDY, and quick-submit action.</p></div>
+    <span class="ss-num">37 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/37_college_admin_dashboard.png" alt="College Admin Dashboard"></div>
+  <div class="ss-footer">
+    <span class="ann green">📊 College-Scoped Stats</span><span class="ann">🏫 SAHS-PDY Data Only</span><span class="ann orange">⚡ Quick Submit</span><span class="ann purple">🔄 Status Summary</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dcfce7;color:#166534;">COLLEGE ADMIN</span>
+    <div class="ss-info"><h3>Submissions List (College Admin)</h3><p>All activities submitted by SAHS-PDY, filterable by status. Each row shows Reference ID (VMRF-2026-XXXX), title, event date, current status badge, and actions. Edit is enabled only when status is 'discuss' (returned for correction).</p></div>
+    <span class="ss-num">38 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/38_college_admin_submissions.png" alt="Submissions List"></div>
+  <div class="ss-footer">
+    <span class="ann">📋 Status Filtered List</span><span class="ann green">🔑 VMRF-2026-XXXX IDs</span><span class="ann orange">💬 View Feedback</span><span class="ann purple">✏️ Edit (Discuss Only)</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dcfce7;color:#166534;">COLLEGE ADMIN</span>
+    <div class="ss-info"><h3>Create New Activity Form</h3><p>The primary submission form. Fields: title, description, event date, category (Symposium / Workshop / Health Camp / Guest Lecture / Cultural / MoU / NSS / etc.), location, target audience, faculty coordinator details, social media caption. Mandatory photo upload (JPG/PNG/WEBP, max 10 MB), optional PDF upload (max 15 MB). Integrated AI Caption Generator modal with 12+ professional templates. Save as Draft or Submit directly.</p></div>
+    <span class="ss-num">39 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/39_college_admin_create_activity.png" alt="Create Activity"></div>
+  <div class="ss-footer">
+    <span class="ann green">📝 Structured Form</span>
+    <span class="ann">📸 Mandatory Photos</span>
+    <span class="ann orange">🤖 AI Caption Generator</span>
+    <span class="ann purple">💾 Save Draft</span>
+    <span class="ann">📄 PDF Attachment</span>
+    <span class="ann yellow">🏷️ Event Category</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dcfce7;color:#166534;">COLLEGE ADMIN</span>
+    <div class="ss-info"><h3>Analytics Dashboard (College Admin)</h3><p>College-scoped analytics for SAHS-PDY — submission trends, category breakdown, approval statistics, and status distribution. Helps college management track their institutional activity output.</p></div>
+    <span class="ss-num">40 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/40_college_admin_analytics.png" alt="College Analytics"></div>
+  <div class="ss-footer">
+    <span class="ann green">🏫 SAHS-PDY Data Only</span><span class="ann">📊 Category Charts</span><span class="ann purple">📈 Trends</span><span class="ann orange">📥 Export</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dcfce7;color:#166534;">COLLEGE ADMIN</span>
+    <div class="ss-info"><h3>Notifications (College Admin)</h3><p>In-app notification inbox for the DEO: alerts when submissions move through stages, Registrar sends discuss feedback, activities are approved for media, or published/rejected.</p></div>
+    <span class="ss-num">41 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/41_college_admin_notifications.png" alt="College Notifications"></div>
+  <div class="ss-footer">
+    <span class="ann green">✅ Approval Alerts</span><span class="ann orange">💬 Discuss/Feedback</span><span class="ann red">❌ Rejection Alerts</span><span class="ann purple">🎉 Published</span>
+  </div>
+</div>
+
+<div class="ss-card">
+  <div class="ss-header">
+    <span class="ss-badge" style="background:#dcfce7;color:#166534;">COLLEGE ADMIN</span>
+    <div class="ss-info"><h3>User Profile (College Admin — DEO)</h3><p>Personal profile for the DEO (SAHS-PDY). Update name, phone, designation, upload avatar, and change password.</p></div>
+    <span class="ss-num">42 / 42</span>
+  </div>
+  <div class="ss-image-wrap"><img src="screenshots/42_college_admin_profile.png" alt="College Admin Profile"></div>
+  <div class="ss-footer">
+    <span class="ann">✏️ Edit Info</span><span class="ann green">🖼️ Avatar</span><span class="ann purple">🔑 Password</span><span class="ann orange">📞 Phone &amp; Designation</span>
+  </div>
+</div>
+
+<!-- SUMMARY TABLE -->
+<div class="chapter-header" style="background:linear-gradient(135deg,#0f2744,#1e3a8a);page-break-before:always;">
+  <div class="chapter-num">∑</div>
+  <div><h2>Complete Screenshots Index — 50 Pages, 7 Accounts, 7 Roles</h2><p>Visual reference covering every module and interface in the portal</p></div>
+</div>
+<div style="background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.07);overflow-x:auto;">
+<table class="sum-table">
+  <thead><tr><th>#</th><th>Account / Role</th><th>Page</th><th>Key Features</th></tr></thead>
+  <tbody>
+    <tr><td>01</td><td><span class="role-chip" style="background:#f1f5f9;color:#475569;">Public</span></td><td>Login Page</td><td>Email/password auth, CSRF, IP tracking, force-reset</td></tr>
+    <tr style="background:#f8fafc"><td>02</td><td><span class="role-chip" style="background:#f1f5f9;color:#475569;">Public</span></td><td>Public Gallery</td><td>Search, category, college, date filters, image grid</td></tr>
+    <tr style="background:#fffbeb"><td>04</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>Dashboard</td><td>System-wide KPIs, all users, workflow status</td></tr>
+    <tr style="background:#fffbeb"><td>05</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>College Management</td><td>CRUD colleges, codes, toggle active</td></tr>
+    <tr style="background:#fffbeb"><td>06</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>User Management</td><td>Create/edit, role assign, lock, transfer</td></tr>
+    <tr style="background:#fffbeb"><td>07</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>Role &amp; Permission Builder</td><td>JSON permissions, data scope, role hierarchy</td></tr>
+    <tr style="background:#fffbeb"><td>08</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>Workflow Engine</td><td>Stage config, action mapping, routing rules</td></tr>
+    <tr style="background:#fffbeb"><td>09</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>Access Control Suite</td><td>Per-user overrides, copy role permissions</td></tr>
+    <tr style="background:#fffbeb"><td>10</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>Activity Override</td><td>Force status, restore, reassign, hard delete</td></tr>
+    <tr style="background:#fffbeb"><td>11</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>System Audit Logs</td><td>Immutable trail, user/IP/before-after</td></tr>
+    <tr style="background:#fffbeb"><td>12</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>Master Settings</td><td>Logo, favicon, NTP, session, branding</td></tr>
+    <tr style="background:#fffbeb"><td>13</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>Analytics Dashboard</td><td>University-wide KPIs, CSV/print export</td></tr>
+    <tr style="background:#fffbeb"><td>14</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>Notification Center</td><td>In-app alerts, read tracking, action links</td></tr>
+    <tr style="background:#fffbeb"><td>15</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>Email Audit Log</td><td>Email trail, delivery status, HTML preview</td></tr>
+    <tr style="background:#fffbeb"><td>16</td><td><span class="role-chip" style="background:#fef9c3;color:#854d0e;">Super Admin</span></td><td>User Profile</td><td>Edit info, avatar upload, password change</td></tr>
+    <tr style="background:#eff6ff"><td>17</td><td><span class="role-chip" style="background:#dbeafe;color:#1e40af;">Vice Chancellor</span></td><td>Dashboard</td><td>Pending queue, global stats, approval rate</td></tr>
+    <tr style="background:#eff6ff"><td>18</td><td><span class="role-chip" style="background:#dbeafe;color:#1e40af;">Vice Chancellor</span></td><td>Verification Queue</td><td>Approve/Discuss/Reject, mandatory remarks</td></tr>
+    <tr style="background:#eff6ff"><td>19</td><td><span class="role-chip" style="background:#dbeafe;color:#1e40af;">Vice Chancellor</span></td><td>Approved List</td><td>Historical approvals, downstream status</td></tr>
+    <tr style="background:#eff6ff"><td>20</td><td><span class="role-chip" style="background:#dbeafe;color:#1e40af;">Vice Chancellor</span></td><td>Rejected Archive</td><td>Rejection records, mandatory reasons</td></tr>
+    <tr style="background:#eff6ff"><td>21</td><td><span class="role-chip" style="background:#dbeafe;color:#1e40af;">Vice Chancellor</span></td><td>Analytics</td><td>University-wide data, trends, export</td></tr>
+    <tr style="background:#eff6ff"><td>22</td><td><span class="role-chip" style="background:#dbeafe;color:#1e40af;">Vice Chancellor</span></td><td>All Submissions View</td><td>Global read-only oversight of all activities</td></tr>
+    <tr style="background:#eff6ff"><td>23</td><td><span class="role-chip" style="background:#dbeafe;color:#1e40af;">Vice Chancellor</span></td><td>Notifications</td><td>New submission + resubmission alerts</td></tr>
+    <tr style="background:#eff6ff"><td>24</td><td><span class="role-chip" style="background:#dbeafe;color:#1e40af;">Vice Chancellor</span></td><td>User Profile</td><td>Edit info, avatar, password</td></tr>
+    <tr style="background:#faf5ff"><td>25</td><td><span class="role-chip" style="background:#f3e8ff;color:#6b21a8;">Office Registrar</span></td><td>Dashboard</td><td>Locked submissions, Stage 2 queue</td></tr>
+    <tr style="background:#faf5ff"><td>26</td><td><span class="role-chip" style="background:#f3e8ff;color:#6b21a8;">Office Registrar</span></td><td>Stage 2 Review Queue 🔒</td><td>Locked packages, approve/discuss actions</td></tr>
+    <tr style="background:#faf5ff"><td>27</td><td><span class="role-chip" style="background:#f3e8ff;color:#6b21a8;">Office Registrar</span></td><td>Approvals View</td><td>Approved/discuss history, decision trail</td></tr>
+    <tr style="background:#faf5ff"><td>28</td><td><span class="role-chip" style="background:#f3e8ff;color:#6b21a8;">Office Registrar</span></td><td>Analytics</td><td>Review KPIs, throughput, turnaround</td></tr>
+    <tr style="background:#faf5ff"><td>29</td><td><span class="role-chip" style="background:#f3e8ff;color:#6b21a8;">Office Registrar</span></td><td>Notifications</td><td>New package alerts, approval confirms</td></tr>
+    <tr style="background:#faf5ff"><td>30</td><td><span class="role-chip" style="background:#f3e8ff;color:#6b21a8;">Office Registrar</span></td><td>User Profile</td><td>Edit info, avatar, password</td></tr>
+    <tr style="background:#fff7ed"><td>31</td><td><span class="role-chip" style="background:#fef3c7;color:#92400e;">Media Editor</span></td><td>Dashboard</td><td>Queue counts: editing/locked/ready/discuss</td></tr>
+    <tr style="background:#fff7ed"><td>32</td><td><span class="role-chip" style="background:#fef3c7;color:#92400e;">Media Editor</span></td><td>Media Studio + Locked Queue</td><td>Photo edit, captions, 🔒 locked records, ZIP</td></tr>
+    <tr style="background:#fff7ed"><td>33</td><td><span class="role-chip" style="background:#fef3c7;color:#92400e;">Media Editor</span></td><td>Submission History</td><td>Processed activities, downstream tracking</td></tr>
+    <tr style="background:#fff7ed"><td>34</td><td><span class="role-chip" style="background:#fef3c7;color:#92400e;">Media Editor</span></td><td>Analytics</td><td>Processing KPIs, platform distribution</td></tr>
+    <tr style="background:#fff7ed"><td>35</td><td><span class="role-chip" style="background:#fef3c7;color:#92400e;">Media Editor</span></td><td>Notifications</td><td>New media review, discuss return alerts</td></tr>
+    <tr style="background:#fff7ed"><td>36</td><td><span class="role-chip" style="background:#fef3c7;color:#92400e;">Media Editor</span></td><td>User Profile</td><td>Karthik N. — edit info, avatar, password</td></tr>
+    <tr style="background:#f0fdf4"><td>37</td><td><span class="role-chip" style="background:#dcfce7;color:#166534;">College Admin</span></td><td>Dashboard</td><td>SAHS-PDY-scoped stats, status summary</td></tr>
+    <tr style="background:#f0fdf4"><td>38</td><td><span class="role-chip" style="background:#dcfce7;color:#166534;">College Admin</span></td><td>Submissions List</td><td>Status filters, VMRF-IDs, edit on discuss</td></tr>
+    <tr style="background:#f0fdf4"><td>39</td><td><span class="role-chip" style="background:#dcfce7;color:#166534;">College Admin</span></td><td>Create Activity Form</td><td>Full form, photo upload, AI captions, draft/submit</td></tr>
+    <tr style="background:#f0fdf4"><td>40</td><td><span class="role-chip" style="background:#dcfce7;color:#166534;">College Admin</span></td><td>Analytics</td><td>College-scoped KPIs, trends, CSV export</td></tr>
+    <tr style="background:#f0fdf4"><td>41</td><td><span class="role-chip" style="background:#dcfce7;color:#166534;">College Admin</span></td><td>Notifications</td><td>Approval/discuss/reject/published alerts</td></tr>
+    <tr style="background:#f0fdf4"><td>42</td><td><span class="role-chip" style="background:#dcfce7;color:#166534;">College Admin</span></td><td>User Profile</td><td>SAHS-PDY DEO — edit info, avatar, password</td></tr>
+    <tr style="background:#eef2ff"><td>43</td><td><span class="role-chip" style="background:#e0e7ff;color:#3730a3;">Pro Vice Chancellor</span></td><td>Dashboard</td><td>Pending queue, global stats, approval rate</td></tr>
+    <tr style="background:#eef2ff"><td>43</td><td><span class="role-chip" style="background:#e0e7ff;color:#3730a3;">Pro Vice Chancellor</span></td><td>Verification Queue</td><td>Approve/Discuss/Reject, mandatory remarks</td></tr>
+    <tr style="background:#eef2ff"><td>44</td><td><span class="role-chip" style="background:#e0e7ff;color:#3730a3;">Pro Vice Chancellor</span></td><td>Approved List</td><td>Historical approvals, downstream status</td></tr>
+    <tr style="background:#eef2ff"><td>44</td><td><span class="role-chip" style="background:#e0e7ff;color:#3730a3;">Pro Vice Chancellor</span></td><td>Rejected Archive</td><td>Rejection records, mandatory reasons</td></tr>
+    <tr style="background:#eef2ff"><td>45</td><td><span class="role-chip" style="background:#e0e7ff;color:#3730a3;">Pro Vice Chancellor</span></td><td>Analytics</td><td>University-wide data, trends, export</td></tr>
+    <tr style="background:#eef2ff"><td>45</td><td><span class="role-chip" style="background:#e0e7ff;color:#3730a3;">Pro Vice Chancellor</span></td><td>All Submissions View</td><td>Global read-only oversight of all activities</td></tr>
+    <tr style="background:#eef2ff"><td>46</td><td><span class="role-chip" style="background:#e0e7ff;color:#3730a3;">Pro Vice Chancellor</span></td><td>Notifications</td><td>New submission + resubmission alerts</td></tr>
+    <tr style="background:#eef2ff"><td>46</td><td><span class="role-chip" style="background:#e0e7ff;color:#3730a3;">Pro Vice Chancellor</span></td><td>User Profile</td><td>Edit info, avatar, password</td></tr>
+  </tbody>
+</table>
+</div>
+
+</div><!-- /doc-body -->
+
+<div class="doc-footer">
+  <strong>VMRF(DU) Institutional Activity Management Portal</strong><br>
+  Vinayaka Mission's Research Foundation (Deemed to be University) &copy; 2026. All Rights Reserved.<br>
+  <strong style="color:#60a5fa;">Under the Guidance of:</strong> Dr. A. Murugan &nbsp;|&nbsp;
+  <strong style="color:#86efac;">Designed &amp; Developed by:</strong> VMRFDU IT Team (Dhinakaran &amp; Sanjai)<br>
+  Screenshots Document v1.1 · August 2026 · 50 Pages · 7 Accounts · 7 User Roles
+</div>
+
+</body>
+</html>

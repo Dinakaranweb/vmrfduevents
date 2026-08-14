@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VMRF(DU) Activity Portal – Presentation</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #fff; }
+
+  /* NAV */
+  .nav-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 48px;
+    background: rgba(15,15,30,0.95); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .nav-bar .logo { font-size: 13px; font-weight: 700; color: #60a5fa; }
+  .nav-controls { display: flex; gap: 8px; align-items: center; }
+  .nav-btn {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; padding: 5px 14px; border-radius: 4px; cursor: pointer;
+    font-size: 13px; transition: 0.2s;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.2); }
+  .slide-counter { font-size: 12px; color: rgba(255,255,255,0.6); padding: 0 10px; }
+
+  /* SLIDE WRAPPER */
+  .slides-wrapper { padding-top: 48px; }
+
+  /* INDIVIDUAL SLIDE */
+  .slide {
+    min-height: 100vh; display: none; padding: 60px 80px;
+    flex-direction: column; position: relative;
+    overflow: hidden;
+  }
+  .slide.active { display: flex; }
+  .slide.active { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SLIDE BACKGROUNDS */
+  .bg-dark { background: linear-gradient(145deg, #0d1b2a 0%, #1a3a5c 100%); }
+  .bg-blue { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); }
+  .bg-purple { background: linear-gradient(135deg, #2d1b69 0%, #7c3aed 100%); }
+  .bg-green { background: linear-gradient(135deg, #14532d 0%, #16a34a 100%); }
+  .bg-orange { background: linear-gradient(135deg, #7c2d12 0%, #ea580c 100%); }
+  .bg-teal { background: linear-gradient(135deg, #164e63 0%, #0891b2 100%); }
+  .bg-slate { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+  .bg-rose { background: linear-gradient(135deg, #4c0519 0%, #be123c 100%); }
+  .bg-indigo { background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 100%); }
+  .bg-light { background: #f8fafc; color: #1e293b; }
+
+  /* DECORATIVE ELEMENTS */
+  .slide::before {
+    content: ''; position: absolute; top: -100px; right: -100px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: rgba(255,255,255,0.03); pointer-events: none;
+  }
+  .slide::after {
+    content: ''; position: absolute; bottom: -150px; left: -150px;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: rgba(255,255,255,0.02); pointer-events: none;
+  }
+
+  /* SLIDE NUMBER */
+  .slide-num {
+    position: absolute; bottom: 24px; right: 32px;
+    font-size: 11px; opacity: 0.4; font-weight: 600; letter-spacing: 1px;
+  }
+
+  /* TYPOGRAPHY */
+  .slide-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    opacity: 0.6; margin-bottom: 12px;
+  }
+  .slide-title {
+    font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 10px;
+  }
+  .slide-subtitle { font-size: 18px; opacity: 0.75; margin-bottom: 30px; font-weight: 400; }
+  .slide-h2 { font-size: 30px; font-weight: 700; margin-bottom: 6px; }
+  .slide-h3 { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+  .slide-body { font-size: 15px; line-height: 1.7; opacity: 0.85; }
+
+  /* DIVIDER */
+  .divider { width: 60px; height: 4px; border-radius: 2px; margin: 12px 0 20px; }
+  .div-gold { background: #fbbf24; }
+  .div-blue { background: #60a5fa; }
+  .div-green { background: #4ade80; }
+  .div-purple { background: #c4b5fd; }
+  .div-orange { background: #fb923c; }
+  .div-teal { background: #22d3ee; }
+  .div-white { background: rgba(255,255,255,0.6); }
+
+  /* CARDS */
+  .card-grid { display: grid; gap: 14px; margin-top: 10px; }
+  .card-grid-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card-grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .ppt-card {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px; padding: 18px; backdrop-filter: blur(4px);
+  }
+  .ppt-card.light { background: #fff; border-color: #e2e8f0; color: #1e293b; }
+  .ppt-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .ppt-card p { font-size: 12px; opacity: 0.8; line-height: 1.5; }
+  .ppt-card .card-icon { font-size: 28px; margin-bottom: 10px; }
+  .ppt-card ul { padding-left: 16px; }
+  .ppt-card ul li { font-size: 12px; padding: 2px 0; opacity: 0.85; }
+
+  /* STAT BOXES */
+  .stat-row { display: flex; gap: 14px; margin: 14px 0; flex-wrap: wrap; }
+  .stat-box {
+    flex: 1; min-width: 120px; background: rgba(255,255,255,0.1);
+    border-radius: 10px; padding: 18px 14px; text-align: center;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .stat-box .stat-num { font-size: 36px; font-weight: 800; }
+  .stat-box .stat-label { font-size: 11px; opacity: 0.7; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* WORKFLOW VISUAL */
+  .workflow-steps { display: flex; align-items: center; gap: 0; margin: 20px 0; flex-wrap: wrap; }
+  .wf-step {
+    background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 16px;
+    text-align: center; min-width: 100px; border: 1px solid rgba(255,255,255,0.2);
+  }
+  .wf-step .wf-icon { font-size: 20px; }
+  .wf-step .wf-label { font-size: 10px; font-weight: 600; margin-top: 4px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .wf-step .wf-status { font-size: 9px; opacity: 0.6; margin-top: 2px; }
+  .wf-arrow { font-size: 18px; padding: 0 6px; opacity: 0.5; }
+
+  /* ROLE PILLS */
+  .role-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px; padding: 6px 14px; font-size: 13px; margin: 4px;
+  }
+
+  /* TECH BADGE */
+  .tech-badge {
+    display: inline-block; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 6px;
+    padding: 5px 12px; font-size: 12px; font-weight: 600; margin: 4px;
+  }
+
+  /* BULLET LIST */
+  .styled-list { list-style: none; padding: 0; }
+  .styled-list li {
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 14px; display: flex; align-items: flex-start; gap: 10px;
+  }
+  .styled-list li::before { content: '▸'; color: #60a5fa; flex-shrink: 0; margin-top: 2px; }
+  .styled-list.dark-bullets li { border-color: rgba(0,0,0,0.08); }
+  .styled-list.dark-bullets li::before { color: #2563eb; }
+
+  /* TWO COLUMN */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    background: rgba(255,255,255,0.1); border-left: 4px solid;
+    border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 10px 0;
+  }
+  .highlight-box p { font-size: 13px; opacity: 0.9; }
+
+  /* MODULE TABLE */
+  .module-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+  .module-table th { background: rgba(255,255,255,0.15); padding: 10px 12px; text-align: left; font-weight: 600; }
+  .module-table td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .module-table tr:hover td { background: rgba(255,255,255,0.05); }
+  .module-table.light-table th { background: #1e3a8a; color: #fff; }
+  .module-table.light-table td { border-color: #e2e8f0; color: #374151; }
+  .module-table.light-table tr:hover td { background: #eff6ff; }
+
+  /* STATUS BADGE */
+  .s-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 600;
+  }
+
+  /* PRINT */
+  @media print {
+    body { background: #fff; }
+    .nav-bar { display: none; }
+    .slide { display: flex !important; min-height: auto; padding: 40px; page-break-after: always; }
+    .slides-wrapper { padding-top: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="nav-bar">
+  <div class="logo">🎓 VMRF(DU) Activity Portal – Presentation</div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="prevSlide()">◀ Prev</button>
+    <span class="slide-counter" id="counter">1 / 17</span>
+    <button class="nav-btn" onclick="nextSlide()">Next ▶</button>
+    <button class="nav-btn" onclick="window.print()" style="background:rgba(99,102,241,0.3);border-color:#818cf8;">🖨️ Print PDF</button>
+  </div>
+</div>
+
+<div class="slides-wrapper">
+
+  <!-- ===== SLIDE 1: TITLE SLIDE ===== -->
+  <div class="slide bg-dark active">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1;">
+      <div style="font-size:60px;margin-bottom:20px;">🎓</div>
+      <div class="slide-tag" style="color:#60a5fa;">Vinayaka Mission's Research Foundation (Deemed to be University)</div>
+      <div class="slide-title" style="font-size:48px;">VMRF(DU) Institutional<br>Activity Portal</div>
+      <div class="divider div-gold"></div>
+      <div class="slide-subtitle" style="font-size:20px;">Activity Management · Verification · Media Studio · Public Broadcast</div>
+      <div style="margin-top:30px;display:flex;gap:10px;flex-wrap:wrap;">
+        <span class="tech-badge">Laravel 12</span>
+        <span class="tech-badge">PHP 8.2+</span>
+        <span class="tech-badge">MySQL 8.0</span>
+        <span class="tech-badge">Bootstrap 5.3</span>
+        <span class="tech-badge">Multi-Stage Workflow</span>
+        <span class="tech-badge">AI Caption Engine</span>
+      </div>
+      <div style="margin-top:40px;opacity:0.7;font-size:12px;letter-spacing:0.5px;line-height:2;">
+        July 2026 · Project Presentation v1.0<br>
+        <span style="color:#fbbf24;">Under the Guidance of: Dr. A. Murugan</span> &nbsp;|&nbsp;
+        <span style="color:#86efac;">Designed &amp; Developed by: VMRFDU IT Team (Dhinakaran &amp; Sanjai)</span>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 01 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 2: AGENDA ===== -->
+  <div class="slide bg-slate">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#94a3b8;">Overview</div>
+      <div class="slide-h2">Presentation Agenda</div>
+      <div class="divider div-blue"></div>
+      <div class="three-col" style="margin-top:20px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Problem &amp; Solution</div>
+          <ul class="styled-list">
+            <li>Problem Statement</li>
+            <li>Proposed Solution</li>
+            <li>Key Benefits</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">System Design</div>
+          <ul class="styled-list">
+            <li>System Architecture</li>
+            <li>User Roles</li>
+            <li>Workflow Design</li>
+            <li>Database Overview</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Features &amp; Future</div>
+          <ul class="styled-list">
+            <li>Key Modules</li>
+            <li>Technology Stack</li>
+            <li>Security</li>
+            <li>Future Enhancements</li>
+            <li>Conclusion</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 02 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 3: PROBLEM STATEMENT ===== -->
+  <div class="slide bg-rose">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#fda4af;">The Challenge</div>
+      <div class="slide-h2">Problem Statement</div>
+      <div class="divider div-white"></div>
+      <p style="font-size:16px;opacity:0.85;margin-bottom:24px;">VMRF(DU) conducts hundreds of institutional activities across its constituent colleges every year. Managing this at scale was fragmented and error-prone.</p>
+      <div class="card-grid card-grid-2">
+        <div class="ppt-card">
+          <div class="card-icon">📧</div>
+          <h4>Fragmented Communication</h4>
+          <p>Activity records scattered across emails, WhatsApp groups, and shared drives. No single source of truth.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">❌</div>
+          <h4>No Approval Structure</h4>
+          <p>No standardized multi-stage approval workflow. Approvals happened informally without audit trails.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🖼️</div>
+          <h4>Inconsistent Media Quality</h4>
+          <p>Photos published without optimization. Social media captions were inconsistent and unprofessional.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">📉</div>
+          <h4>No Analytics or Visibility</h4>
+          <p>Management had no visibility into activity volumes, approval rates, or publication status.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 03 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 4: SOLUTION ===== -->
+  <div class="slide bg-blue">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#bfdbfe;">Our Answer</div>
+      <div class="slide-h2">The Solution</div>
+      <div class="divider div-gold"></div>
+      <p style="font-size:16px;opacity:0.85;margin-bottom:24px;">A unified, enterprise-grade web portal that centralizes every step — from activity submission to social media broadcast — with full audit, approval, and quality control.</p>
+      <div class="card-grid card-grid-3">
+        <div class="ppt-card">
+          <div class="card-icon">📋</div>
+          <h4>Centralized Submission</h4>
+          <p>College admins submit activities with structured data and mandatory media. Unique reference IDs auto-generated.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">✅</div>
+          <h4>Multi-Stage Approval</h4>
+          <p>Structured workflow: College Admin → Registrar → Media Editor → Office of Registrar → Publish.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🎨</div>
+          <h4>AI Media Studio</h4>
+          <p>AI caption generation with 12+ templates. Professional media packs ready for multi-platform publishing.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">📡</div>
+          <h4>Multi-Platform Broadcast</h4>
+          <p>One-click publishing to Instagram, LinkedIn, Twitter/X and the public institutional gallery.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">📊</div>
+          <h4>Analytics &amp; Reports</h4>
+          <p>Real-time KPI dashboards, role-scoped data views, and CSV/print export for management reporting.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🔒</div>
+          <h4>Complete Audit Trail</h4>
+          <p>Immutable approval logs, email audit trail, and system audit for full governance and compliance.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 04 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 5: KEY STATS ===== -->
+  <div class="slide bg-indigo">
+    <div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;justify-content:center;min-height:80vh;">
+      <div class="slide-tag" style="color:#c7d2fe;">By the Numbers</div>
+      <div class="slide-h2">Portal at a Glance</div>
+      <div class="divider div-purple"></div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" style="color:#a5b4fc;">14</div><div class="stat-label">Controllers</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#a5b4fc;">17</div><div class="stat-label">Eloquent Models</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#a5b4fc;">33</div><div class="stat-label">Blade Views</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#a5b4fc;">16+</div><div class="stat-label">DB Tables</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#a5b4fc;">5</div><div class="stat-label">User Roles</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#a5b4fc;">9</div><div class="stat-label">DB Migrations</div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" style="color:#86efac;">8</div><div class="stat-label">Status States</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#86efac;">12+</div><div class="stat-label">AI Templates</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#86efac;">4</div><div class="stat-label">Broadcast Platforms</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#86efac;">4</div><div class="stat-label">Workflow Stages</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#86efac;">100%</div><div class="stat-label">Audit Coverage</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#86efac;">∞</div><div class="stat-label">Scalable</div></div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 05 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 6: USER ROLES ===== -->
+  <div class="slide bg-teal">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#a5f3fc;">Access Control</div>
+      <div class="slide-h2">User Roles &amp; Responsibilities</div>
+      <div class="divider div-teal"></div>
+      <div class="card-grid card-grid-3" style="margin-top:16px;">
+        <div class="ppt-card">
+          <div class="card-icon">🏛️</div>
+          <h4 style="color:#67e8f9;">Registrar Authority</h4>
+          <ul>
+            <li>Create colleges &amp; users</li>
+            <li>Stage 1 verification</li>
+            <li>Approve / Discuss / Reject</li>
+            <li>Global analytics access</li>
+          </ul>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">📋</div>
+          <h4 style="color:#c4b5fd;">Office of Registrar</h4>
+          <ul>
+            <li>Stage 2 executive review</li>
+            <li>Final media authorization</li>
+            <li>Approve or send for revision</li>
+            <li>Broadcast sign-off</li>
+          </ul>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🎨</div>
+          <h4 style="color:#fb923c;">Media Editor</h4>
+          <ul>
+            <li>Photo optimization</li>
+            <li>AI caption generation</li>
+            <li>ZIP media pack export</li>
+            <li>Multi-platform publishing</li>
+          </ul>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🏫</div>
+          <h4 style="color:#4ade80;">College Admin</h4>
+          <ul>
+            <li>Submit college activities</li>
+            <li>Track submission status</li>
+            <li>Respond to feedback</li>
+            <li>College-scoped data view</li>
+          </ul>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">👤</div>
+          <h4 style="color:#f9a8d4;">Department User</h4>
+          <ul>
+            <li>Submit dept. activities</li>
+            <li>Department-scoped view</li>
+            <li>Track submission status</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 06 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 7: WORKFLOW ===== -->
+  <div class="slide bg-dark">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#94a3b8;">End-to-End Process</div>
+      <div class="slide-h2">Activity Approval Workflow</div>
+      <div class="divider div-blue"></div>
+      <p style="opacity:0.7;margin-bottom:24px;font-size:14px;">A structured 4-stage pipeline ensures quality, authenticity, and professional presentation before any activity is publicly broadcast.</p>
+      <div class="workflow-steps" style="justify-content:center;">
+        <div class="wf-step" style="border-color:#4ade80;">
+          <div class="wf-icon">🏫</div>
+          <div class="wf-label">Stage 1</div>
+          <div class="wf-status" style="color:#4ade80;">College Admin</div>
+          <div class="wf-status">Submit Activity</div>
+        </div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-step" style="border-color:#60a5fa;">
+          <div class="wf-icon">🏛️</div>
+          <div class="wf-label">Stage 2</div>
+          <div class="wf-status" style="color:#60a5fa;">Registrar</div>
+          <div class="wf-status">Verify &amp; Approve</div>
+        </div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-step" style="border-color:#c4b5fd;">
+          <div class="wf-icon">🎨</div>
+          <div class="wf-label">Stage 3</div>
+          <div class="wf-status" style="color:#c4b5fd;">Media Editor</div>
+          <div class="wf-status">Optimize + Pack</div>
+        </div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-step" style="border-color:#fb923c;">
+          <div class="wf-icon">📋</div>
+          <div class="wf-label">Stage 4</div>
+          <div class="wf-status" style="color:#fb923c;">Office of Registrar</div>
+          <div class="wf-status">Final Approval</div>
+        </div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-step" style="border-color:#fbbf24;background:rgba(251,191,36,0.1);">
+          <div class="wf-icon">🎉</div>
+          <div class="wf-label">Published</div>
+          <div class="wf-status" style="color:#fbbf24;">Multi-Platform</div>
+          <div class="wf-status">Public + Social</div>
+        </div>
+      </div>
+
+      <div style="margin-top:28px;">
+        <div class="highlight-box" style="border-color:#f59e0b;">
+          <p><strong>🔒 Status Locking:</strong> When the Media Editor submits for Stage 4 review, the record is automatically <em>locked</em> (read-only). This prevents concurrent modifications during the Office of Registrar's executive review. Only the Office of Registrar can unlock it by sending for discussion.</p>
+        </div>
+      </div>
+
+      <div class="card-grid card-grid-3" style="margin-top:18px;">
+        <div class="ppt-card" style="border-left:3px solid #f87171;">
+          <h4>↩ Discuss (Stage 1)</h4>
+          <p style="font-size:11px;">Returned to College Admin for corrections. Activity unlocked for editing.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #f87171;">
+          <h4>↩ Discuss (Stage 2)</h4>
+          <p style="font-size:11px;">Record unlocked and returned to Media Editor queue for revision.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #dc2626;">
+          <h4>❌ Reject (Stage 1)</h4>
+          <p style="font-size:11px;">Terminal state. Activity closed with mandatory remarks.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 07 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 8: KEY FEATURES ===== -->
+  <div class="slide bg-green">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#bbf7d0;">Core Capabilities</div>
+      <div class="slide-h2">Key Features</div>
+      <div class="divider div-gold"></div>
+      <div class="two-col" style="gap:24px;margin-top:14px;">
+        <div>
+          <ul class="styled-list">
+            <li>Auto-generated Reference IDs (VMRF-2026-XXXX format)</li>
+            <li>AI Caption Generator with 12+ institutional templates</li>
+            <li>Photo upload (JPG/PNG/WEBP, max 10MB) with preview</li>
+            <li>PDF document upload (max 15MB)</li>
+            <li>Status Locking during executive review (🔒 padlock UI)</li>
+            <li>One-click ZIP media pack export</li>
+            <li>Multi-platform publishing (Instagram, LinkedIn, Twitter/X, Portal)</li>
+          </ul>
+        </div>
+        <div>
+          <ul class="styled-list">
+            <li>Role-Based Access Control with 6 defined roles</li>
+            <li>User-level permission overrides via JSON matrix</li>
+            <li>Soft deletes for activity records (restorable)</li>
+            <li>In-app notification center + email audit log</li>
+            <li>Analytics KPI dashboards with CSV &amp; print export</li>
+            <li>Dynamic, configurable workflow engine</li>
+            <li>Immutable approval audit trail</li>
+            <li>Public gallery with search, category &amp; date filters</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 08 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 9: MODULES ===== -->
+  <div class="slide bg-light">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#64748b;">System Breakdown</div>
+      <div class="slide-h2" style="color:#1e3a8a;">8 Functional Modules</div>
+      <div class="divider" style="background:#2563eb;"></div>
+      <table class="module-table light-table" style="font-size:13px;">
+        <tr><th>#</th><th>Module</th><th>Access Role</th><th>Core Purpose</th></tr>
+        <tr>
+          <td>1</td><td><strong>📝 Activity Submission</strong></td>
+          <td><span class="s-badge" style="background:#dcfce7;color:#166534;">College Admin</span></td>
+          <td>Create, upload, draft, submit activities with AI captions</td>
+        </tr>
+        <tr>
+          <td>2</td><td><strong>✅ Verification (Stage 1)</strong></td>
+          <td><span class="s-badge" style="background:#dbeafe;color:#1e40af;">Registrar</span></td>
+          <td>Review and approve/discuss/reject submitted activities</td>
+        </tr>
+        <tr>
+          <td>3</td><td><strong>🎨 Media Editor Studio</strong></td>
+          <td><span class="s-badge" style="background:#f3e8ff;color:#6b21a8;">Media Editor</span></td>
+          <td>Optimize photos, refine captions, export ZIP media packs</td>
+        </tr>
+        <tr>
+          <td>4</td><td><strong>📋 Office of Registrar (Stage 2)</strong></td>
+          <td><span class="s-badge" style="background:#fed7aa;color:#9a3412;">Office Registrar</span></td>
+          <td>Final executive review and authorization before publishing</td>
+        </tr>
+        <tr>
+          <td>5</td><td><strong>📡 Publishing &amp; Broadcast</strong></td>
+          <td><span class="s-badge" style="background:#f3e8ff;color:#6b21a8;">Media Editor</span></td>
+          <td>Select platforms and publish approved activities</td>
+        </tr>
+        <tr>
+          <td>6</td><td><strong>🌐 Public Gallery</strong></td>
+          <td><span class="s-badge" style="background:#f1f5f9;color:#475569;">Public</span></td>
+          <td>Public gallery of published activities</td>
+        </tr>
+        <tr>
+          <td>7</td><td><strong>📊 Analytics &amp; Reporting</strong></td>
+          <td><span class="s-badge" style="background:#dbeafe;color:#1e40af;">All (scoped)</span></td>
+          <td>KPI dashboards, charts, CSV and print export</td>
+        </tr>
+        <tr>
+          <td>8</td><td><strong>🔔 Notifications + Email Audit</strong></td>
+          <td><span class="s-badge" style="background:#dbeafe;color:#1e40af;">All Roles</span></td>
+          <td>In-app notifications and email transmission audit trail</td>
+        </tr>
+      </table>
+    </div>
+    <div class="slide-num">SLIDE 09 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 10: SYSTEM ARCHITECTURE ===== -->
+  <div class="slide bg-slate">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#94a3b8;">Technical Design</div>
+      <div class="slide-h2">System Architecture</div>
+      <div class="divider div-blue"></div>
+      <div class="card-grid card-grid-2" style="margin-top:14px;">
+        <div>
+          <div class="ppt-card" style="margin-bottom:12px;">
+            <h4 style="color:#60a5fa;">⚙️ MVC Architecture (Laravel 12)</h4>
+            <p>14 Controllers · 17 Eloquent Models · 33 Blade Views · Route-level RBAC middleware · Service layer for AI phrasing</p>
+          </div>
+          <div class="ppt-card" style="margin-bottom:12px;">
+            <h4 style="color:#4ade80;">🗄️ Database Layer (MySQL 8.0)</h4>
+            <p>16+ tables with strict FK constraints · Soft deletes on critical tables · JSON columns for permissions &amp; tags · Database-backed sessions, cache, &amp; queue</p>
+          </div>
+          <div class="ppt-card">
+            <h4 style="color:#c4b5fd;">🔄 Workflow Engine</h4>
+            <p>Configurable stage-based state machine · Dynamic routing by category/college · Status transition validation · User or role-based stage assignment</p>
+          </div>
+        </div>
+        <div>
+          <div class="ppt-card" style="margin-bottom:12px;">
+            <h4 style="color:#fb923c;">🎨 Frontend (Bootstrap 5.3)</h4>
+            <p>Responsive layout · Blade component system · AI modal with template library · Dynamic status badge renderer · Chart.js KPI dashboards · Role-scoped navigation</p>
+          </div>
+          <div class="ppt-card" style="margin-bottom:12px;">
+            <h4 style="color:#f87171;">🔒 Status Locking Engine</h4>
+            <p>Automated record locking on Stage 2 submission · Visual padlock indicator 🔒 · Atomic unlock on discussion action · Concurrent edit prevention</p>
+          </div>
+          <div class="ppt-card">
+            <h4 style="color:#22d3ee;">📡 Output &amp; Integration</h4>
+            <p>ZIP media pack streaming · Multi-platform publishing record · CSV &amp; print report export · SMTP email with queue driver</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 10 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 11: DATABASE OVERVIEW ===== -->
+  <div class="slide bg-purple">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#ddd6fe;">Data Layer</div>
+      <div class="slide-h2">Database Overview</div>
+      <div class="divider div-purple"></div>
+      <div class="two-col" style="margin-top:14px;gap:28px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Core Activity Tables</div>
+          <ul class="styled-list" style="font-size:13px;">
+            <li><strong>activity_submissions</strong> — Core records with 25+ columns</li>
+            <li><strong>activity_media</strong> — Photos, videos, PDFs per activity</li>
+            <li><strong>activity_discussions</strong> — Feedback threads &amp; comments</li>
+            <li><strong>approval_logs</strong> — Immutable audit trail</li>
+            <li><strong>published_posts</strong> — Platform publish records &amp; URLs</li>
+          </ul>
+
+          <div style="font-size:12px;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:1px;margin:16px 0 12px;">User &amp; Auth Tables</div>
+          <ul class="styled-list" style="font-size:13px;">
+            <li><strong>users</strong> — Enhanced with role, college, permissions JSON</li>
+            <li><strong>colleges</strong> — Constituent college directory</li>
+            <li><strong>roles</strong> — Dynamic role definitions with JSON permissions</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Workflow Engine Tables</div>
+          <ul class="styled-list" style="font-size:13px;">
+            <li><strong>workflows</strong> — Master workflow templates</li>
+            <li><strong>workflow_stages</strong> — Configurable approval stages</li>
+            <li><strong>workflow_rules</strong> — Conditional routing rules</li>
+          </ul>
+
+          <div style="font-size:12px;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:1px;margin:16px 0 12px;">System &amp; Notification Tables</div>
+          <ul class="styled-list" style="font-size:13px;">
+            <li><strong>portal_notifications</strong> — In-app notification records</li>
+            <li><strong>email_logs</strong> — Full email transmission audit</li>
+            <li><strong>system_audit_logs</strong> — System-wide action logs</li>
+            <li><strong>system_settings</strong> — Key-value config store</li>
+            <li><strong>notification_templates</strong> — Email template library</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 11 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 12: AI CAPTION ENGINE ===== -->
+  <div class="slide bg-indigo">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#c7d2fe;">Unique Capability</div>
+      <div class="slide-h2">AI Caption Generation Engine</div>
+      <div class="divider div-purple"></div>
+      <p style="opacity:0.8;margin-bottom:20px;">Every activity submission and media editing session includes an integrated AI-powered caption generator that produces professional, on-brand social media content instantly.</p>
+      <div class="card-grid card-grid-3">
+        <div class="ppt-card">
+          <div class="card-icon">📝</div>
+          <h4>12+ Professional Templates</h4>
+          <p>Templates covering Symposiums, Workshops, Health Camps, Guest Lectures, Sports Events, Cultural Events, Faculty Development, and more.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">⚡</div>
+          <h4>Dynamic Context Injection</h4>
+          <p>Auto-fills event title, college name, event date, and category into the template. Zero manual editing required for the basic caption.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">#️⃣</div>
+          <h4>Hashtag Generation</h4>
+          <p>Automatically appends relevant institutional hashtags (#VMRFDU, category tags) to every generated caption for maximum social reach.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🎯</div>
+          <h4>Multiple Tone Options</h4>
+          <p>Templates range from formal institutional to celebratory, community-focused, and informative — covering all communication styles.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">✏️</div>
+          <h4>Editable Output</h4>
+          <p>Generated captions are fully editable. Users can refine the AI output before saving to the submission record.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🔄</div>
+          <h4>Reusable at Every Stage</h4>
+          <p>Caption modal available during initial submission AND during media editing stage for further refinement.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 12 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 13: TECHNOLOGY STACK ===== -->
+  <div class="slide bg-slate">
+    <div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;justify-content:center;min-height:80vh;">
+      <div class="slide-tag" style="color:#94a3b8;">Engineering</div>
+      <div class="slide-h2">Technology Stack</div>
+      <div class="divider div-blue"></div>
+      <div class="two-col" style="margin-top:20px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#60a5fa;letter-spacing:1px;margin-bottom:12px;">BACKEND</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+            <span class="tech-badge">Laravel 12</span>
+            <span class="tech-badge">PHP 8.2+</span>
+            <span class="tech-badge">Eloquent ORM</span>
+            <span class="tech-badge">Blade Templates</span>
+            <span class="tech-badge">Queue Driver</span>
+            <span class="tech-badge">Session: DB</span>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#4ade80;letter-spacing:1px;margin-bottom:12px;">DATABASE</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+            <span class="tech-badge">MySQL 8.0</span>
+            <span class="tech-badge">FK Constraints</span>
+            <span class="tech-badge">Soft Deletes</span>
+            <span class="tech-badge">JSON Columns</span>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#fb923c;letter-spacing:1px;margin-bottom:12px;">INFRASTRUCTURE</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="tech-badge">Apache 2.4</span>
+            <span class="tech-badge">XAMPP</span>
+            <span class="tech-badge">Composer 2.x</span>
+            <span class="tech-badge">npm / Vite</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#c4b5fd;letter-spacing:1px;margin-bottom:12px;">FRONTEND</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+            <span class="tech-badge">Bootstrap 5.3</span>
+            <span class="tech-badge">Vanilla CSS</span>
+            <span class="tech-badge">Chart.js</span>
+            <span class="tech-badge">File Upload API</span>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#22d3ee;letter-spacing:1px;margin-bottom:12px;">INTEGRATIONS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+            <span class="tech-badge">SMTP Email</span>
+            <span class="tech-badge">ZIP Export</span>
+            <span class="tech-badge">CSV Export</span>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#f9a8d4;letter-spacing:1px;margin-bottom:12px;">TIMEZONE &amp; LOCALE</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="tech-badge">Asia/Kolkata (IST)</span>
+            <span class="tech-badge">UTF-8</span>
+            <span class="tech-badge">PHP Intl</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 13 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 14: SECURITY ===== -->
+  <div class="slide bg-rose">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#fda4af;">Protection &amp; Governance</div>
+      <div class="slide-h2">Security Architecture</div>
+      <div class="divider div-white"></div>
+      <div class="card-grid card-grid-3" style="margin-top:14px;">
+        <div class="ppt-card">
+          <div class="card-icon">🛡️</div>
+          <h4>CSRF Protection</h4>
+          <p>Laravel's built-in CSRF middleware with @csrf tokens on every form.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🔐</div>
+          <h4>Password Security</h4>
+          <p>Bcrypt hashing. Force-reset on first login. Password strength enforcement.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🚫</div>
+          <h4>Authorization Checks</h4>
+          <p>abort_if() on every controller method. 403 pages for unauthorized access.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🗂️</div>
+          <h4>Data Isolation</h4>
+          <p>College-scoped and department-scoped database queries. Cross-college data leakage prevented.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">📁</div>
+          <h4>File Validation</h4>
+          <p>MIME type whitelist + size limits on all uploads. Only approved file formats accepted.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🔒</div>
+          <h4>Status Locking</h4>
+          <p>Records locked during executive review to prevent concurrent modification conflicts.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">📜</div>
+          <h4>Immutable Audit Trail</h4>
+          <p>Every approval action logged with user, IP, timestamp, before/after values.</p>
+        </div>
+        <div class="ppt-card">
+          <div class="card-icon">🌐</div>
+          <h4>Session Security</h4>
+          <p>Database sessions. 120-min inactivity timeout. Encrypted session cookies.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 14 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 15: BENEFITS ===== -->
+  <div class="slide bg-green">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#bbf7d0;">Impact</div>
+      <div class="slide-h2">Key Benefits</div>
+      <div class="divider div-gold"></div>
+      <div class="two-col" style="gap:30px;margin-top:18px;">
+        <div>
+          <h3 style="font-size:16px;color:#bbf7d0;margin-bottom:14px;">🏛️ For the Institution</h3>
+          <ul class="styled-list">
+            <li>Complete visibility into all institutional activities across colleges</li>
+            <li>Standardized documentation quality university-wide</li>
+            <li>Governance-ready audit trail for compliance</li>
+            <li>Analytics-driven insights for management decision-making</li>
+            <li>Brand-consistent social media presence across platforms</li>
+          </ul>
+
+          <h3 style="font-size:16px;color:#bbf7d0;margin-bottom:14px;margin-top:22px;">🎨 For the Media Team</h3>
+          <ul class="styled-list">
+            <li>Dedicated queue-based workflow, no chasing emails</li>
+            <li>AI captions reduce manual writing time by 80%</li>
+            <li>One-click ZIP export replaces manual file organization</li>
+            <li>Status locking prevents accidental overwrite during review</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="font-size:16px;color:#bbf7d0;margin-bottom:14px;">🏫 For College Admins</h3>
+          <ul class="styled-list">
+            <li>Simple, guided submission form — no technical expertise needed</li>
+            <li>Real-time status tracking with email notifications</li>
+            <li>Structured feedback via discussion threads</li>
+            <li>Draft saving prevents data loss during submission</li>
+            <li>Reference ID for every approved activity</li>
+          </ul>
+
+          <h3 style="font-size:16px;color:#bbf7d0;margin-bottom:14px;margin-top:22px;">🌐 For the Public</h3>
+          <ul class="styled-list">
+            <li>Searchable public gallery of institutional achievements</li>
+            <li>Category and date-based filtering for easy discovery</li>
+            <li>Consistent, professional presentation of university activities</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 15 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 16: FUTURE ENHANCEMENTS ===== -->
+  <div class="slide bg-teal">
+    <div style="position:relative;z-index:1;width:100%;">
+      <div class="slide-tag" style="color:#a5f3fc;">Roadmap</div>
+      <div class="slide-h2">Future Enhancements</div>
+      <div class="divider div-teal"></div>
+      <div class="card-grid card-grid-3" style="margin-top:14px;">
+        <div class="ppt-card" style="border-left:3px solid #f87171;">
+          <div class="card-icon">📱</div>
+          <h4>Mobile App (High Priority)</h4>
+          <p>Native iOS &amp; Android apps for field submissions with camera integration for College Admins.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #f87171;">
+          <div class="card-icon">📡</div>
+          <h4>Direct Social API (High)</h4>
+          <p>Auto-post to Instagram Business API, LinkedIn API, and Twitter API instead of manual URL tracking.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #fb923c;">
+          <div class="card-icon">🤖</div>
+          <h4>Advanced AI (Medium)</h4>
+          <p>GPT/Claude API integration for sophisticated caption generation and description enhancement.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #fb923c;">
+          <div class="card-icon">🖼️</div>
+          <h4>Auto Image Enhancement (Med.)</h4>
+          <p>Automatic brightness, contrast, and color correction on uploaded photos via image libraries.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #fb923c;">
+          <div class="card-icon">🎥</div>
+          <h4>Video Support (Medium)</h4>
+          <p>Upload, transcode, and embed event highlight videos within activity submissions.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #94a3b8;">
+          <div class="card-icon">🏢</div>
+          <h4>ERP Integration (Low)</h4>
+          <p>API integration with university ERP for automatic faculty data and student participation records.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #94a3b8;">
+          <div class="card-icon">📊</div>
+          <h4>BI Dashboard (Low)</h4>
+          <p>Power BI / Tableau integration for advanced institutional performance analytics.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #94a3b8;">
+          <div class="card-icon">🔑</div>
+          <h4>SSO / LDAP (Low)</h4>
+          <p>Single Sign-On with university credentials via LDAP or OAuth2 provider.</p>
+        </div>
+        <div class="ppt-card" style="border-left:3px solid #94a3b8;">
+          <div class="card-icon">💬</div>
+          <h4>WhatsApp Notifications (Low)</h4>
+          <p>WhatsApp Business API for stage-based notifications as alternative to email.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 16 / 17</div>
+  </div>
+
+  <!-- ===== SLIDE 17: CONCLUSION ===== -->
+  <div class="slide bg-dark">
+    <div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:80vh;">
+      <div style="font-size:56px;margin-bottom:20px;">🎓</div>
+      <div class="slide-tag" style="color:#94a3b8;font-size:12px;">Summary</div>
+      <div class="slide-title" style="font-size:40px;">A Complete Institutional<br>Activity Ecosystem</div>
+      <div class="divider div-gold" style="margin:18px auto;"></div>
+      <p style="max-width:700px;opacity:0.8;font-size:16px;line-height:1.8;margin-bottom:30px;">
+        The VMRF(DU) Activity Portal transforms how a multi-college deemed university manages, verifies, enriches, and broadcasts its institutional achievements — bringing order, quality, and scale to a previously fragmented process.
+      </p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:30px;">
+        <span class="tech-badge" style="font-size:13px;">✅ Multi-Stage Workflow</span>
+        <span class="tech-badge" style="font-size:13px;">🔒 Status Locking</span>
+        <span class="tech-badge" style="font-size:13px;">🎨 AI Media Studio</span>
+        <span class="tech-badge" style="font-size:13px;">📡 Multi-Platform Broadcast</span>
+        <span class="tech-badge" style="font-size:13px;">📊 Real-Time Analytics</span>
+        <span class="tech-badge" style="font-size:13px;">👑 Enterprise Admin</span>
+        <span class="tech-badge" style="font-size:13px;">🛡️ Full Audit Trail</span>
+      </div>
+      <div style="opacity:0.6;font-size:12px;letter-spacing:0.5px;line-height:2;">
+        &copy; 2026 VMRF(DU) · All Rights Reserved<br>
+        <span style="color:#93c5fd;">Under the Guidance of: Dr. A. Murugan</span><br>
+        <span style="color:#86efac;">Designed &amp; Developed by: VMRFDU IT Team (Dhinakaran &amp; Sanjai)</span>
+      </div>
+    </div>
+    <div class="slide-num">SLIDE 17 / 17</div>
+  </div>
+
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+
+  function showSlide(n) {
+    slides[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  function nextSlide() { showSlide(current + 1); }
+  function prevSlide() { showSlide(current - 1); }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevSlide(); }
+  });
+
+  // Touch swipe support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+  });
+</script>
+</body>
+</html>

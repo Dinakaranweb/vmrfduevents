@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VMRF(DU) Activity Portal – System Flowchart</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a202c; }
+
+  .page-header {
+    background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 50%, #1a3a5c 100%);
+    color: #fff; padding: 32px 40px; text-align: center;
+  }
+  .page-header h1 { font-size: 26px; font-weight: 700; letter-spacing: 1px; }
+  .page-header p { font-size: 13px; opacity: 0.8; margin-top: 6px; }
+  .page-header .badge {
+    display: inline-block; background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4); border-radius: 20px;
+    padding: 4px 14px; font-size: 11px; margin-top: 10px;
+  }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+
+  /* LEGEND */
+  .legend {
+    background: #fff; border-radius: 10px; padding: 18px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 30px;
+    display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+  }
+  .legend-title { font-weight: 700; font-size: 13px; color: #1a3a5c; margin-right: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .legend-box {
+    width: 28px; height: 18px; border-radius: 4px; border: 2px solid;
+    flex-shrink: 0;
+  }
+
+  /* SECTION HEADINGS */
+  .section-title {
+    font-size: 15px; font-weight: 700; color: #1a3a5c;
+    border-left: 4px solid #2d6a9f; padding-left: 12px;
+    margin: 30px 0 16px;
+  }
+
+  /* ROLE CARDS */
+  .roles-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px; margin-bottom: 30px;
+  }
+  .role-card {
+    background: #fff; border-radius: 10px; padding: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07); text-align: center;
+    border-top: 4px solid;
+  }
+  .role-card .role-icon { font-size: 28px; margin-bottom: 8px; }
+  .role-card .role-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .role-card .role-desc { font-size: 11px; color: #666; line-height: 1.4; }
+
+  /* MAIN WORKFLOW */
+  .workflow-canvas {
+    background: #fff; border-radius: 12px; padding: 30px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.09); overflow-x: auto;
+  }
+
+  svg.flowchart { width: 100%; min-width: 900px; }
+
+  /* STATUS BADGES */
+  .status-grid {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px;
+  }
+  .status-badge {
+    padding: 6px 14px; border-radius: 20px; font-size: 12px;
+    font-weight: 600; border: 2px solid;
+  }
+
+  /* ARCHITECTURE */
+  .arch-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .arch-card {
+    background: #fff; border-radius: 10px; padding: 18px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    border-left: 4px solid;
+  }
+  .arch-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+  .arch-card ul { list-style: none; padding: 0; }
+  .arch-card ul li { font-size: 12px; color: #555; padding: 3px 0; border-bottom: 1px solid #f0f0f0; }
+  .arch-card ul li:before { content: "▸ "; color: #2d6a9f; font-size: 10px; }
+
+  /* DATA FLOW */
+  .dataflow {
+    background: #fff; border-radius: 12px; padding: 24px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.09);
+  }
+
+  .footer-bar {
+    background: #1a3a5c; color: #aaa; text-align: center;
+    padding: 14px; font-size: 11px; margin-top: 40px;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .container { padding: 10px; }
+    .workflow-canvas { box-shadow: none; border: 1px solid #ddd; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>VMRF(DU) Institutional Activity Portal</h1>
+  <p>Comprehensive System Flowchart & Architecture Diagram</p>
+  <span class="badge">Vinayaka Mission's Research Foundation (Deemed to be University)</span>
+</div>
+
+<div class="container">
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <span class="legend-title">LEGEND</span>
+    <div class="legend-item"><div class="legend-box" style="background:#dbeafe;border-color:#2563eb;"></div> Process / Action</div>
+    <div class="legend-item"><div class="legend-box" style="background:#fef9c3;border-color:#ca8a04;"></div> Decision Point</div>
+    <div class="legend-item"><div class="legend-box" style="background:#dcfce7;border-color:#16a34a;"></div> Approved / Success</div>
+    <div class="legend-item"><div class="legend-box" style="background:#fee2e2;border-color:#dc2626;"></div> Rejected / Error</div>
+    <div class="legend-item"><div class="legend-box" style="background:#f3e8ff;border-color:#7c3aed;"></div> System / Database</div>
+    <div class="legend-item"><div class="legend-box" style="background:#fff7ed;border-color:#ea580c;"></div> External / Broadcast</div>
+    <div class="legend-item"><div class="legend-box" style="background:#e0f2fe;border-color:#0284c7;"></div> Notification / Email</div>
+  </div>
+
+  <!-- USER ROLES -->
+  <div class="section-title">USER ROLES & RESPONSIBILITIES</div>
+  <div class="roles-grid">
+    <div class="role-card" style="border-color:#0891b2;">
+      <div class="role-icon">🏛️</div>
+      <div class="role-name" style="color:#0891b2;">Registrar Authority</div>
+      <div class="role-desc">Creates colleges & users, Stage 1 institutional verification & approval</div>
+    </div>
+    <div class="role-card" style="border-color:#7c3aed;">
+      <div class="role-icon">📋</div>
+      <div class="role-name" style="color:#7c3aed;">Office of Registrar</div>
+      <div class="role-desc">Final executive evaluation, Stage 2 media package authorization</div>
+    </div>
+    <div class="role-card" style="border-color:#d97706;">
+      <div class="role-icon">🎨</div>
+      <div class="role-name" style="color:#d97706;">Media Editor</div>
+      <div class="role-desc">Photo optimization, AI captions, media pack export, multi-platform publishing</div>
+    </div>
+    <div class="role-card" style="border-color:#16a34a;">
+      <div class="role-icon">🏫</div>
+      <div class="role-name" style="color:#16a34a;">College Admin</div>
+      <div class="role-desc">Submits institutional activities, tracks status, responds to feedback</div>
+    </div>
+    <div class="role-card" style="border-color:#dc2626;">
+      <div class="role-icon">👤</div>
+      <div class="role-name" style="color:#dc2626;">Department User</div>
+      <div class="role-desc">Submits department-level activities within assigned college</div>
+    </div>
+  </div>
+
+  <!-- MAIN ACTIVITY WORKFLOW FLOWCHART -->
+  <div class="section-title">COMPLETE ACTIVITY SUBMISSION & APPROVAL WORKFLOW</div>
+  <div class="workflow-canvas">
+    <svg class="flowchart" viewBox="0 0 1200 1450" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+        </marker>
+        <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+        </marker>
+        <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#dc2626"/>
+        </marker>
+        <marker id="arrow-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#d97706"/>
+        </marker>
+        <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+        </filter>
+      </defs>
+
+      <!-- ============ COLUMN HEADERS ============ -->
+      <!-- Left swimlane: College Admin -->
+      <rect x="10" y="10" width="270" height="1420" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+      <rect x="10" y="10" width="270" height="36" rx="8" fill="#16a34a"/>
+      <text x="145" y="33" text-anchor="middle" fill="white" font-size="13" font-weight="700">🏫 College Admin</text>
+
+      <!-- Middle swimlane: System + Registrar -->
+      <rect x="295" y="10" width="310" height="1420" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+      <rect x="295" y="10" width="310" height="36" rx="8" fill="#1d4ed8"/>
+      <text x="450" y="33" text-anchor="middle" fill="white" font-size="13" font-weight="700">⚙️ System &amp; Registrar Verification</text>
+
+      <!-- Right swimlane: Media + Office of Registrar -->
+      <rect x="620" y="10" width="310" height="1420" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <rect x="620" y="10" width="310" height="36" rx="8" fill="#7c3aed"/>
+      <text x="775" y="33" text-anchor="middle" fill="white" font-size="13" font-weight="700">🎨 Media Studio &amp; Office of Registrar</text>
+
+      <!-- Far right: Publication -->
+      <rect x="945" y="10" width="245" height="1420" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+      <rect x="945" y="10" width="245" height="36" rx="8" fill="#ea580c"/>
+      <text x="1067" y="33" text-anchor="middle" fill="white" font-size="13" font-weight="700">📡 Publication &amp; Broadcast</text>
+
+      <!-- ============ STEP 1: START ============ -->
+      <ellipse cx="145" cy="80" rx="80" ry="22" fill="#1a3a5c" filter="url(#shadow)"/>
+      <text x="145" y="85" text-anchor="middle" fill="white" font-size="12" font-weight="700">START</text>
+
+      <!-- Arrow down -->
+      <line x1="145" y1="102" x2="145" y2="128" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- ============ STEP 2: Login ============ -->
+      <rect x="60" y="128" width="170" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <text x="145" y="147" text-anchor="middle" fill="#1e3a8a" font-size="12" font-weight="600">User Login</text>
+      <text x="145" y="162" text-anchor="middle" fill="#3b82f6" font-size="10">Email + Password</text>
+
+      <!-- Arrow -->
+      <line x1="145" y1="172" x2="145" y2="198" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- ============ STEP 3: Auth Decision ============ -->
+      <polygon points="145,198 230,228 145,258 60,228" fill="#fef9c3" stroke="#ca8a04" stroke-width="2" filter="url(#shadow)"/>
+      <text x="145" y="224" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Credentials</text>
+      <text x="145" y="240" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Valid?</text>
+
+      <!-- No → back to login -->
+      <line x1="60" y1="228" x2="20" y2="228" stroke="#dc2626" stroke-width="1.5"/>
+      <line x1="20" y1="228" x2="20" y2="140" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+      <text x="5" y="186" text-anchor="middle" fill="#dc2626" font-size="10" font-weight="600" transform="rotate(-90,5,186)">Invalid</text>
+
+      <!-- Yes arrow down -->
+      <line x1="145" y1="258" x2="145" y2="284" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="157" y="272" fill="#16a34a" font-size="10" font-weight="600">Valid ✓</text>
+
+      <!-- ============ STEP 4: Role Dashboard ============ -->
+      <rect x="60" y="284" width="170" height="44" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" filter="url(#shadow)"/>
+      <text x="145" y="303" text-anchor="middle" fill="#14532d" font-size="12" font-weight="600">Role-Based</text>
+      <text x="145" y="318" text-anchor="middle" fill="#16a34a" font-size="10">Dashboard Loaded</text>
+
+      <!-- ============ STEP 5: Create Activity ============ -->
+      <line x1="145" y1="328" x2="145" y2="354" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <rect x="55" y="354" width="180" height="54" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <text x="145" y="373" text-anchor="middle" fill="#1e3a8a" font-size="12" font-weight="600">Create Activity</text>
+      <text x="145" y="387" text-anchor="middle" fill="#3b82f6" font-size="10">Fill form, upload photos,</text>
+      <text x="145" y="399" text-anchor="middle" fill="#3b82f6" font-size="10">AI caption generation</text>
+
+      <!-- ============ STEP 6: Save as Draft ============ -->
+      <line x1="145" y1="408" x2="145" y2="432" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <polygon points="145,432 220,456 145,480 70,456" fill="#fef9c3" stroke="#ca8a04" stroke-width="2" filter="url(#shadow)"/>
+      <text x="145" y="452" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Submit or</text>
+      <text x="145" y="468" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Save Draft?</text>
+
+      <!-- Save draft arrow right then down -->
+      <line x1="70" y1="456" x2="30" y2="456" stroke="#475569" stroke-width="1.5"/>
+      <line x1="30" y1="456" x2="30" y2="530" stroke="#475569" stroke-width="1.5"/>
+      <line x1="30" y1="530" x2="55" y2="530" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="15" y="490" text-anchor="middle" fill="#475569" font-size="10" font-weight="600" transform="rotate(-90,15,490)">Save Draft</text>
+
+      <!-- Draft state box -->
+      <rect x="55" y="510" width="180" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+      <text x="145" y="528" text-anchor="middle" fill="#475569" font-size="12" font-weight="600">💾 Status: DRAFT</text>
+      <text x="145" y="543" text-anchor="middle" fill="#64748b" font-size="10">Editable anytime</text>
+
+      <!-- Draft loops back up -->
+      <line x1="145" y1="550" x2="145" y2="570" stroke="#475569" stroke-width="1.5"/>
+      <line x1="145" y1="570" x2="55" y2="570" stroke="#475569" stroke-width="1.5"/>
+      <line x1="55" y1="570" x2="55" y2="381" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <!-- Submit arrow down -->
+      <line x1="145" y1="480" x2="145" y2="506" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+      <text x="157" y="494" fill="#16a34a" font-size="10" font-weight="600">Submit</text>
+
+      <!-- ============ STEP 7: Auto Reference ID ============ -->
+      <rect x="55" y="506" width="180" height="44" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+      <text x="145" y="524" text-anchor="middle" fill="#4c1d95" font-size="12" font-weight="600">Auto: Generate</text>
+      <text x="145" y="538" text-anchor="middle" fill="#7c3aed" font-size="10">VMRF-2026-XXXX</text>
+
+      <!-- ============ HAND OFF TO SYSTEM ============ -->
+      <!-- Arrow going right into system swimlane -->
+      <line x1="235" y1="528" x2="294" y2="528" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+      <!-- ============ STEP 8: Status pending verification ============ -->
+      <rect x="310" y="506" width="270" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <text x="445" y="524" text-anchor="middle" fill="#1e3a8a" font-size="12" font-weight="600">📩 Status: VERIFICATION PENDING</text>
+      <text x="445" y="540" text-anchor="middle" fill="#3b82f6" font-size="10">Email notification sent to Registrar</text>
+
+      <!-- Arrow down to Registrar -->
+      <line x1="445" y1="550" x2="445" y2="576" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- ============ STEP 9: Registrar Reviews ============ -->
+      <rect x="310" y="576" width="270" height="54" rx="8" fill="#dbeafe" stroke="#0891b2" stroke-width="2" filter="url(#shadow)"/>
+      <text x="445" y="596" text-anchor="middle" fill="#164e63" font-size="12" font-weight="600">🏛️ Registrar Reviews Activity</text>
+      <text x="445" y="610" text-anchor="middle" fill="#0891b2" font-size="10">Verification Queue Dashboard</text>
+      <text x="445" y="623" text-anchor="middle" fill="#0891b2" font-size="10">Checks details, photos, metadata</text>
+
+      <!-- Decision diamond -->
+      <line x1="445" y1="630" x2="445" y2="656" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <polygon points="445,656 545,690 445,724 345,690" fill="#fef9c3" stroke="#ca8a04" stroke-width="2" filter="url(#shadow)"/>
+      <text x="445" y="686" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Registrar</text>
+      <text x="445" y="702" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Decision?</text>
+
+      <!-- Approve arrow right -->
+      <line x1="545" y1="690" x2="619" y2="690" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+      <text x="580" y="682" text-anchor="middle" fill="#16a34a" font-size="10" font-weight="600">Approve</text>
+
+      <!-- Discuss arrow down -->
+      <line x1="445" y1="724" x2="445" y2="750" stroke="#d97706" stroke-width="2" marker-end="url(#arrow-orange)"/>
+      <text x="460" y="739" fill="#d97706" font-size="10" font-weight="600">Discuss</text>
+
+      <!-- Reject arrow left -->
+      <line x1="345" y1="690" x2="295" y2="690" stroke="#dc2626" stroke-width="2"/>
+      <line x1="295" y1="690" x2="145" y2="690" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-red)"/>
+      <text x="210" y="682" text-anchor="middle" fill="#dc2626" font-size="10" font-weight="600">Reject</text>
+
+      <!-- Rejected box in college admin lane -->
+      <rect x="60" y="668" width="170" height="44" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+      <text x="145" y="687" text-anchor="middle" fill="#991b1b" font-size="12" font-weight="600">❌ Status: REJECTED</text>
+      <text x="145" y="702" text-anchor="middle" fill="#dc2626" font-size="10">Email notification sent</text>
+
+      <!-- Discuss box -->
+      <rect x="310" y="750" width="270" height="54" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <text x="445" y="770" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="600">💬 Status: DISCUSS</text>
+      <text x="445" y="784" text-anchor="middle" fill="#ea580c" font-size="10">Feedback returned to College Admin</text>
+      <text x="445" y="798" text-anchor="middle" fill="#ea580c" font-size="10">Remarks + email notification sent</text>
+
+      <!-- Discuss arrow back to college admin -->
+      <line x1="310" y1="777" x2="240" y2="777" stroke="#d97706" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+      <rect x="60" y="756" width="170" height="44" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="2"/>
+      <text x="145" y="775" text-anchor="middle" fill="#92400e" font-size="12" font-weight="600">✏️ Resubmit Activity</text>
+      <text x="145" y="790" text-anchor="middle" fill="#d97706" font-size="10">Edit + address feedback</text>
+
+      <!-- Arrow from resubmit back up to verification pending -->
+      <line x1="145" y1="800" x2="145" y2="820" stroke="#475569" stroke-width="1.5"/>
+      <line x1="145" y1="820" x2="280" y2="820" stroke="#475569" stroke-width="1.5"/>
+      <line x1="280" y1="820" x2="280" y2="519" stroke="#475569" stroke-width="1.5"/>
+      <line x1="280" y1="519" x2="310" y2="519" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="265" y="672" text-anchor="middle" fill="#475569" font-size="10" font-weight="600" transform="rotate(-90,265,672)">Re-submit</text>
+
+      <!-- ============ MEDIA EDITOR LANE ============ -->
+      <!-- Status: Media Review -->
+      <rect x="635" y="668" width="270" height="44" rx="8" fill="#dbeafe" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+      <text x="770" y="687" text-anchor="middle" fill="#4c1d95" font-size="12" font-weight="600">📸 Status: MEDIA REVIEW</text>
+      <text x="770" y="702" text-anchor="middle" fill="#7c3aed" font-size="10">Assigned to Media Editor Queue</text>
+
+      <line x1="770" y1="712" x2="770" y2="738" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Media Editor Work -->
+      <rect x="635" y="738" width="270" height="64" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+      <text x="770" y="758" text-anchor="middle" fill="#4c1d95" font-size="12" font-weight="600">🎨 Media Editor Works</text>
+      <text x="770" y="773" text-anchor="middle" fill="#7c3aed" font-size="10">• Photo optimization &amp; cropping</text>
+      <text x="770" y="787" text-anchor="middle" fill="#7c3aed" font-size="10">• AI caption refinement</text>
+      <text x="770" y="801" text-anchor="middle" fill="#7c3aed" font-size="10">• Media pack preparation</text>
+
+      <line x1="770" y1="802" x2="770" y2="828" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Media submits to Registrar -->
+      <rect x="635" y="828" width="270" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <text x="770" y="847" text-anchor="middle" fill="#1e3a8a" font-size="12" font-weight="600">📤 Submit to Office of Registrar</text>
+      <text x="770" y="862" text-anchor="middle" fill="#3b82f6" font-size="10">Status: REGISTRAR_APPROVAL 🔒</text>
+
+      <line x1="770" y1="872" x2="770" y2="898" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Lock indicator -->
+      <rect x="635" y="898" width="270" height="44" rx="8" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+      <text x="770" y="917" text-anchor="middle" fill="#7f1d1d" font-size="12" font-weight="700">🔒 RECORD LOCKED</text>
+      <text x="770" y="932" text-anchor="middle" fill="#b91c1c" font-size="10">Read-only – No modifications allowed</text>
+
+      <line x1="770" y1="942" x2="770" y2="968" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Office of Registrar decision -->
+      <polygon points="770,968 880,1006 770,1044 660,1006" fill="#fef9c3" stroke="#ca8a04" stroke-width="2" filter="url(#shadow)"/>
+      <text x="770" y="1002" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Office of</text>
+      <text x="770" y="1018" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Registrar Decision?</text>
+
+      <!-- Approve right to publication -->
+      <line x1="880" y1="1006" x2="944" y2="1006" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+      <text x="910" y="998" text-anchor="middle" fill="#16a34a" font-size="10" font-weight="600">Approve</text>
+
+      <!-- Discuss arrow down in media lane -->
+      <line x1="770" y1="1044" x2="770" y2="1070" stroke="#d97706" stroke-width="2" marker-end="url(#arrow-orange)"/>
+      <text x="783" y="1058" fill="#d97706" font-size="10" font-weight="600">Discuss</text>
+
+      <!-- Editor Discuss box -->
+      <rect x="635" y="1070" width="270" height="44" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <text x="770" y="1089" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="600">🔓 Status: EDITOR_DISCUSS</text>
+      <text x="770" y="1104" text-anchor="middle" fill="#ea580c" font-size="10">Record UNLOCKED – Returned to editor</text>
+
+      <!-- Arrow back up to media editor work -->
+      <line x1="635" y1="1092" x2="615" y2="1092" stroke="#d97706" stroke-width="1.5"/>
+      <line x1="615" y1="1092" x2="615" y2="770" stroke="#d97706" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+      <line x1="615" y1="770" x2="635" y2="770" stroke="#d97706" stroke-width="1.5"/>
+
+      <!-- ============ PUBLICATION LANE ============ -->
+      <!-- Ready to Publish -->
+      <rect x="960" y="984" width="215" height="44" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" filter="url(#shadow)"/>
+      <text x="1067" y="1003" text-anchor="middle" fill="#14532d" font-size="12" font-weight="600">✅ READY TO PUBLISH</text>
+      <text x="1067" y="1018" text-anchor="middle" fill="#16a34a" font-size="10">Media pack finalized</text>
+
+      <line x1="1067" y1="1028" x2="1067" y2="1054" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Select platforms -->
+      <rect x="960" y="1054" width="215" height="54" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2" filter="url(#shadow)"/>
+      <text x="1067" y="1074" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="600">📡 Select Platforms</text>
+      <text x="1067" y="1089" text-anchor="middle" fill="#ea580c" font-size="10">📱 Instagram  💼 LinkedIn</text>
+      <text x="1067" y="1103" text-anchor="middle" fill="#ea580c" font-size="10">🐦 Twitter/X  🌐 Portal</text>
+
+      <line x1="1067" y1="1108" x2="1067" y2="1134" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Published -->
+      <rect x="960" y="1134" width="215" height="54" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="3" filter="url(#shadow)"/>
+      <text x="1067" y="1154" text-anchor="middle" fill="#14532d" font-size="13" font-weight="700">🎉 PUBLISHED</text>
+      <text x="1067" y="1170" text-anchor="middle" fill="#16a34a" font-size="10">Gallery + Social Platforms</text>
+
+      <line x1="1067" y1="1188" x2="1067" y2="1214" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Public Gallery -->
+      <rect x="960" y="1214" width="215" height="44" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+      <text x="1067" y="1233" text-anchor="middle" fill="#4c1d95" font-size="12" font-weight="600">🔗 Public Gallery</text>
+      <text x="1067" y="1248" text-anchor="middle" fill="#7c3aed" font-size="10">Open to all visitors</text>
+
+      <!-- END -->
+      <line x1="1067" y1="1258" x2="1067" y2="1284" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <ellipse cx="1067" cy="1305" rx="80" ry="22" fill="#1a3a5c" filter="url(#shadow)"/>
+      <text x="1067" y="1310" text-anchor="middle" fill="white" font-size="12" font-weight="700">END</text>
+
+      <!-- ============ NOTIFICATION SIDE FLOWS ============ -->
+      <!-- Email notification callouts -->
+      <rect x="310" y="850" width="270" height="44" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="445" y="868" text-anchor="middle" fill="#075985" font-size="11" font-weight="600">📧 Email Notifications at Each Stage</text>
+      <text x="445" y="882" text-anchor="middle" fill="#0284c7" font-size="10">College Admin ↔ Registrar ↔ Media Editor</text>
+
+      <!-- DB reference -->
+      <rect x="310" y="910" width="270" height="44" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="445" y="928" text-anchor="middle" fill="#4c1d95" font-size="11" font-weight="600">🗄️ Database: approval_logs</text>
+      <text x="445" y="943" text-anchor="middle" fill="#7c3aed" font-size="10">Immutable audit trail at every step</text>
+
+      <!-- Notification DB -->
+      <rect x="310" y="970" width="270" height="44" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="445" y="988" text-anchor="middle" fill="#075985" font-size="11" font-weight="600">🔔 In-App Notifications</text>
+      <text x="445" y="1003" text-anchor="middle" fill="#0284c7" font-size="10">portal_notifications table</text>
+
+      <!-- Analytics reference -->
+      <rect x="310" y="1030" width="270" height="44" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="445" y="1048" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">📊 Analytics &amp; Reporting</text>
+      <text x="445" y="1063" text-anchor="middle" fill="#16a34a" font-size="10">KPI dashboards, CSV export, print reports</text>
+
+      <!-- Admin audit reference -->
+      <rect x="310" y="1090" width="270" height="44" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="445" y="1108" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">🛠️ Administration</text>
+      <text x="445" y="1123" text-anchor="middle" fill="#ca8a04" font-size="10">Colleges, users, categories, workflow settings</text>
+
+      <!-- Status Labels Legend inline -->
+      <text x="445" y="1175" text-anchor="middle" fill="#475569" font-size="11" font-weight="700">STATUS TRANSITION SUMMARY</text>
+      <line x1="310" y1="1182" x2="580" y2="1182" stroke="#cbd5e1" stroke-width="1"/>
+
+      <rect x="315" y="1190" width="130" height="24" rx="4" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
+      <text x="380" y="1206" text-anchor="middle" fill="#475569" font-size="10">draft</text>
+
+      <rect x="453" y="1190" width="130" height="24" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+      <text x="518" y="1206" text-anchor="middle" fill="#1d4ed8" font-size="10">verification_pending</text>
+
+      <rect x="315" y="1222" width="130" height="24" rx="4" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1"/>
+      <text x="380" y="1238" text-anchor="middle" fill="#7c3aed" font-size="10">media_review</text>
+
+      <rect x="453" y="1222" width="130" height="24" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+      <text x="518" y="1238" text-anchor="middle" fill="#92400e" font-size="10">registrar_approval 🔒</text>
+
+      <rect x="315" y="1254" width="130" height="24" rx="4" fill="#fff7ed" stroke="#ea580c" stroke-width="1"/>
+      <text x="380" y="1270" text-anchor="middle" fill="#7c2d12" font-size="10">editor_discuss 🔓</text>
+
+      <rect x="453" y="1254" width="130" height="24" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+      <text x="518" y="1270" text-anchor="middle" fill="#14532d" font-size="10">ready_to_publish</text>
+
+      <rect x="315" y="1286" width="130" height="24" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+      <text x="380" y="1302" text-anchor="middle" fill="#14532d" font-size="10" font-weight="700">published ✓</text>
+
+      <rect x="453" y="1286" width="130" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1"/>
+      <text x="518" y="1302" text-anchor="middle" fill="#991b1b" font-size="10">rejected ✗</text>
+
+    </svg>
+  </div>
+
+  <!-- SYSTEM ARCHITECTURE -->
+  <div class="section-title">SYSTEM ARCHITECTURE</div>
+  <div class="arch-grid">
+    <div class="arch-card" style="border-color:#2563eb;">
+      <h4 style="color:#1e3a8a;">⚙️ Backend (Laravel 12 / PHP 8.2+)</h4>
+      <ul>
+        <li>MVC Architecture with Eloquent ORM</li>
+        <li>14 Controllers | 17 Models</li>
+        <li>Blade Templating Engine (33 Views)</li>
+        <li>RBAC Middleware Stack</li>
+        <li>Multi-stage Workflow Engine</li>
+        <li>Status Locking Mechanism</li>
+        <li>AI Phrasing Service (12+ templates)</li>
+        <li>Queue Driver (Database)</li>
+      </ul>
+    </div>
+    <div class="arch-card" style="border-color:#16a34a;">
+      <h4 style="color:#14532d;">🗄️ Database (MySQL 8.0)</h4>
+      <ul>
+        <li>activity_submissions (core records)</li>
+        <li>activity_media (photos, docs, videos)</li>
+        <li>activity_discussions (feedback threads)</li>
+        <li>approval_logs (immutable audit trail)</li>
+        <li>users + colleges + roles</li>
+        <li>workflows + workflow_stages + rules</li>
+        <li>portal_notifications + email_logs</li>
+        <li>published_posts + system_audit_logs</li>
+      </ul>
+    </div>
+    <div class="arch-card" style="border-color:#7c3aed;">
+      <h4 style="color:#4c1d95;">🎨 Frontend (Bootstrap 5.3)</h4>
+      <ul>
+        <li>Bootstrap 5.3 Responsive Grid</li>
+        <li>Blade Component System</li>
+        <li>AI Modal with Template Library</li>
+        <li>Dynamic Status Badge Renderer</li>
+        <li>Role-scoped Navigation</li>
+        <li>Chart.js Analytics Dashboards</li>
+        <li>File Upload with Preview</li>
+        <li>Printable Report Views</li>
+      </ul>
+    </div>
+    <div class="arch-card" style="border-color:#ea580c;">
+      <h4 style="color:#7c2d12;">📡 Integration & Output</h4>
+      <ul>
+        <li>ZIP Media Pack Export</li>
+        <li>Multi-platform Broadcast (Instagram/LinkedIn/Twitter)</li>
+        <li>CSV/Print Report Export</li>
+        <li>SMTP Email Notifications</li>
+        <li>Session: Database Driver</li>
+        <li>Cache: Database Driver</li>
+        <li>File Storage: Local (public/uploads)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DATA FLOW DIAGRAM -->
+  <div class="section-title">DATA FLOW OVERVIEW</div>
+  <div class="dataflow">
+    <svg viewBox="0 0 1100 320" style="width:100%;min-width:700px;">
+      <defs>
+        <marker id="df-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#475569"/>
+        </marker>
+      </defs>
+
+      <!-- Boxes -->
+      <rect x="20" y="80" width="150" height="60" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+      <text x="95" y="106" text-anchor="middle" fill="#14532d" font-size="12" font-weight="700">College Admin</text>
+      <text x="95" y="122" text-anchor="middle" fill="#16a34a" font-size="10">Creates activity</text>
+      <text x="95" y="136" text-anchor="middle" fill="#16a34a" font-size="10">+ media upload</text>
+
+      <line x1="170" y1="110" x2="215" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#df-arrow)"/>
+
+      <rect x="215" y="80" width="160" height="60" rx="10" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+      <text x="295" y="106" text-anchor="middle" fill="#4c1d95" font-size="12" font-weight="700">Database</text>
+      <text x="295" y="122" text-anchor="middle" fill="#7c3aed" font-size="10">activity_submissions</text>
+      <text x="295" y="136" text-anchor="middle" fill="#7c3aed" font-size="10">activity_media</text>
+
+      <line x1="375" y1="110" x2="420" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#df-arrow)"/>
+
+      <rect x="420" y="80" width="160" height="60" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+      <text x="500" y="106" text-anchor="middle" fill="#1e3a8a" font-size="12" font-weight="700">Registrar</text>
+      <text x="500" y="122" text-anchor="middle" fill="#3b82f6" font-size="10">Verification Queue</text>
+      <text x="500" y="136" text-anchor="middle" fill="#3b82f6" font-size="10">Approve / Discuss / Reject</text>
+
+      <line x1="580" y1="110" x2="625" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#df-arrow)"/>
+
+      <rect x="625" y="80" width="160" height="60" rx="10" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+      <text x="705" y="106" text-anchor="middle" fill="#78350f" font-size="12" font-weight="700">Media Editor</text>
+      <text x="705" y="122" text-anchor="middle" fill="#ca8a04" font-size="10">Optimize + Caption</text>
+      <text x="705" y="136" text-anchor="middle" fill="#ca8a04" font-size="10">Pack + Submit</text>
+
+      <line x1="785" y1="110" x2="830" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#df-arrow)"/>
+
+      <rect x="830" y="80" width="160" height="60" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+      <text x="910" y="99" text-anchor="middle" fill="#7f1d1d" font-size="11" font-weight="700">Office of Registrar</text>
+      <text x="910" y="115" text-anchor="middle" fill="#dc2626" font-size="10">Final Approval</text>
+      <text x="910" y="131" text-anchor="middle" fill="#dc2626" font-size="10">→ ready_to_publish</text>
+
+      <line x1="990" y1="110" x2="1035" y2="110" stroke="#16a34a" stroke-width="2" marker-end="url(#df-arrow)"/>
+
+      <rect x="1035" y="80" width="55" height="60" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+      <text x="1062" y="104" text-anchor="middle" fill="#14532d" font-size="10" font-weight="700">Pub-</text>
+      <text x="1062" y="118" text-anchor="middle" fill="#14532d" font-size="10" font-weight="700">lish</text>
+      <text x="1062" y="132" text-anchor="middle" fill="#16a34a" font-size="9">📡</text>
+
+      <!-- Bottom row: supporting systems -->
+      <rect x="20" y="220" width="150" height="50" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="95" y="241" text-anchor="middle" fill="#075985" font-size="11" font-weight="600">Email Notifications</text>
+      <text x="95" y="257" text-anchor="middle" fill="#0284c7" font-size="10">At every status change</text>
+
+      <rect x="215" y="220" width="160" height="50" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="295" y="241" text-anchor="middle" fill="#075985" font-size="11" font-weight="600">Approval Audit Log</text>
+      <text x="295" y="257" text-anchor="middle" fill="#0284c7" font-size="10">approval_logs table</text>
+
+      <rect x="420" y="220" width="160" height="50" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="500" y="241" text-anchor="middle" fill="#075985" font-size="11" font-weight="600">In-App Notifications</text>
+      <text x="500" y="257" text-anchor="middle" fill="#0284c7" font-size="10">portal_notifications</text>
+
+      <rect x="625" y="220" width="160" height="50" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="705" y="241" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">Analytics Dashboard</text>
+      <text x="705" y="257" text-anchor="middle" fill="#16a34a" font-size="10">KPIs + Charts + Export</text>
+
+      <rect x="830" y="220" width="260" height="50" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="960" y="241" text-anchor="middle" fill="#4c1d95" font-size="11" font-weight="600">Public Gallery</text>
+      <text x="960" y="257" text-anchor="middle" fill="#7c3aed" font-size="10">Community Access</text>
+
+      <!-- vertical connectors to bottom row -->
+      <line x1="95" y1="140" x2="95" y2="220" stroke="#0284c7" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="295" y1="140" x2="295" y2="220" stroke="#0284c7" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="500" y1="140" x2="500" y2="220" stroke="#0284c7" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="705" y1="140" x2="705" y2="220" stroke="#16a34a" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="960" y1="140" x2="960" y2="220" stroke="#7c3aed" stroke-width="1" stroke-dasharray="4,2"/>
+    </svg>
+  </div>
+
+  <!-- STATUS FLOW -->
+  <div class="section-title">STATUS TRANSITION MAP</div>
+  <div style="background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 16px rgba(0,0,0,0.09);overflow-x:auto;">
+    <div class="status-grid">
+      <span class="status-badge" style="background:#f1f5f9;border-color:#94a3b8;color:#475569;">💾 draft</span>
+      <span style="font-size:20px;color:#475569;">→</span>
+      <span class="status-badge" style="background:#dbeafe;border-color:#3b82f6;color:#1e3a8a;">📩 verification_pending</span>
+      <span style="font-size:20px;color:#475569;">→</span>
+      <span class="status-badge" style="background:#f3e8ff;border-color:#7c3aed;color:#4c1d95;">📸 media_review</span>
+      <span style="font-size:20px;color:#475569;">→</span>
+      <span class="status-badge" style="background:#fee2e2;border-color:#94a3b8;color:#7f1d1d;">🔒 registrar_approval</span>
+      <span style="font-size:20px;color:#475569;">→</span>
+      <span class="status-badge" style="background:#dcfce7;border-color:#16a34a;color:#14532d;">✅ ready_to_publish</span>
+      <span style="font-size:20px;color:#16a34a;">→</span>
+      <span class="status-badge" style="background:#dcfce7;border-color:#16a34a;color:#14532d;font-size:14px;">🎉 published</span>
+    </div>
+    <div class="status-grid" style="margin-top:12px;">
+      <span class="status-badge" style="background:#fff7ed;border-color:#ea580c;color:#7c2d12;">💬 discuss (Stage 1)</span>
+      <span style="font-size:13px;color:#d97706;">← Returned to College Admin for correction</span>
+    </div>
+    <div class="status-grid" style="margin-top:8px;">
+      <span class="status-badge" style="background:#fff7ed;border-color:#ea580c;color:#7c2d12;">🔓 editor_discuss (Stage 2)</span>
+      <span style="font-size:13px;color:#d97706;">← Returned to Media Editor for correction</span>
+    </div>
+    <div class="status-grid" style="margin-top:8px;">
+      <span class="status-badge" style="background:#fee2e2;border-color:#dc2626;color:#991b1b;">❌ rejected</span>
+      <span style="font-size:13px;color:#dc2626;">← Terminal state – Activity closed by Registrar</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-bar">
+  &copy; 2026 VMRF(DU) – Vinayaka Mission's Research Foundation (Deemed to be University). All Rights Reserved.<br>
+  <strong style="color:#93c5fd;">Under the Guidance of:</strong> Dr. A. Murugan &nbsp;|&nbsp;
+  <strong style="color:#93c5fd;">Designed &amp; Developed by:</strong> VMRFDU IT Team (Dhinakaran &amp; Sanjai)
+</div>
+
+</body>
+</html>

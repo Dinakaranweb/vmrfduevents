@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VMRF(DU) Activity Portal – Project Documentation</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8fafc; color: #1e293b; font-size: 14px; line-height: 1.6; }
+
+  /* COVER PAGE */
+  .cover {
+    background: linear-gradient(145deg, #0f2744 0%, #1a4a7a 40%, #0f2744 100%);
+    color: white; padding: 80px 60px; text-align: center; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .cover::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(59,130,246,0.15) 0%, transparent 60%),
+                radial-gradient(circle at 70% 50%, rgba(139,92,246,0.1) 0%, transparent 60%);
+  }
+  .cover-logo {
+    width: 90px; height: 90px; background: rgba(255,255,255,0.15);
+    border: 3px solid rgba(255,255,255,0.4); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; margin: 0 auto 24px; position: relative; z-index: 1;
+  }
+  .cover h1 { font-size: 32px; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; position: relative; z-index: 1; }
+  .cover h2 { font-size: 18px; font-weight: 400; opacity: 0.85; margin-bottom: 32px; position: relative; z-index: 1; }
+  .cover-divider { width: 80px; height: 4px; background: #60a5fa; border-radius: 2px; margin: 20px auto; position: relative; z-index: 1; }
+  .cover-meta { font-size: 13px; opacity: 0.7; position: relative; z-index: 1; line-height: 2; }
+  .cover-badge {
+    display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px; padding: 4px 14px; font-size: 12px; margin: 4px;
+    position: relative; z-index: 1;
+  }
+
+  /* LAYOUT */
+  .doc-body { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+  /* TOC */
+  .toc {
+    background: #fff; border-radius: 12px; padding: 28px 32px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08); margin-bottom: 40px;
+    border-left: 5px solid #2563eb;
+  }
+  .toc h2 { font-size: 18px; color: #1e3a8a; margin-bottom: 16px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { padding: 3px 0; font-size: 13px; color: #3b82f6; }
+  .toc li a { color: #2563eb; text-decoration: none; }
+  .toc li a:hover { text-decoration: underline; }
+
+  /* SECTION */
+  .doc-section {
+    background: #fff; border-radius: 12px; padding: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 32px;
+    page-break-inside: avoid;
+  }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 20px;
+  }
+  .section-num {
+    width: 36px; height: 36px; background: #1e3a8a; color: white;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 18px; color: #1e3a8a; font-weight: 700; }
+  .section-header .icon { font-size: 22px; }
+
+  h3 { font-size: 15px; color: #1e3a8a; margin: 20px 0 10px; border-left: 3px solid #60a5fa; padding-left: 10px; }
+  h4 { font-size: 14px; color: #374151; margin: 14px 0 8px; font-weight: 600; }
+  p { margin-bottom: 12px; color: #374151; }
+  ul, ol { padding-left: 22px; margin-bottom: 12px; }
+  li { padding: 2px 0; color: #374151; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+  th { background: #1e3a8a; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr:hover td { background: #eff6ff; }
+
+  /* INFO BOXES */
+  .info-box {
+    border-radius: 8px; padding: 14px 18px; margin: 14px 0;
+    border-left: 4px solid;
+  }
+  .info-box.blue { background: #eff6ff; border-color: #3b82f6; }
+  .info-box.green { background: #f0fdf4; border-color: #16a34a; }
+  .info-box.yellow { background: #fffbeb; border-color: #f59e0b; }
+  .info-box.red { background: #fef2f2; border-color: #ef4444; }
+  .info-box.purple { background: #faf5ff; border-color: #7c3aed; }
+  .info-box p { margin: 0; font-size: 13px; }
+  .info-box strong { display: block; font-size: 12px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* BADGE */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 600; margin: 2px;
+  }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .badge-purple { background: #f3e8ff; color: #6b21a8; }
+  .badge-orange { background: #fed7aa; color: #9a3412; }
+  .badge-gray { background: #f1f5f9; color: #475569; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #1e293b; color: #e2e8f0; border-radius: 8px;
+    padding: 16px; font-family: 'Courier New', monospace; font-size: 12px;
+    line-height: 1.8; overflow-x: auto; margin: 12px 0;
+  }
+  .code-block .comment { color: #64748b; }
+  .code-block .key { color: #93c5fd; }
+  .code-block .val { color: #86efac; }
+
+  /* FEATURE GRID */
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 14px 0; }
+  .feature-card {
+    background: #f8fafc; border-radius: 8px; padding: 16px;
+    border: 1px solid #e2e8f0; border-top: 3px solid;
+  }
+  .feature-card h4 { font-size: 13px; margin: 0 0 8px; }
+  .feature-card p { font-size: 12px; color: #64748b; margin: 0; }
+
+  /* MODULE CARD */
+  .module-card {
+    border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 18px;
+    margin-bottom: 14px; border-left: 4px solid;
+  }
+  .module-card .module-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+  .module-card .module-meta { font-size: 11px; color: #64748b; margin-bottom: 8px; }
+  .module-card ul { margin: 0; padding-left: 18px; }
+  .module-card ul li { font-size: 12px; padding: 2px 0; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:#e2e8f0; }
+  .timeline-item { position:relative; margin-bottom:16px; }
+  .timeline-item::before {
+    content:''; position:absolute; left:-24px; top:4px;
+    width:12px; height:12px; border-radius:50%; background:#2563eb; border:2px solid #fff;
+    box-shadow: 0 0 0 2px #2563eb;
+  }
+  .timeline-item .tl-title { font-weight:600; font-size:13px; color:#1e3a8a; }
+  .timeline-item .tl-desc { font-size:12px; color:#64748b; margin-top:2px; }
+
+  /* FOOTER */
+  .doc-footer {
+    background: #0f2744; color: #94a3b8; text-align: center;
+    padding: 24px; font-size: 12px; line-height: 2; margin-top: 40px;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .cover { min-height: auto; padding: 40px; page-break-after: always; }
+    .doc-section { box-shadow: none; border: 1px solid #e2e8f0; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="cover-logo">🎓</div>
+  <h1>VMRF(DU) Institutional Activity Portal</h1>
+  <h2>Activity Management, Verification, Media Studio &amp; Public Broadcast System</h2>
+  <div class="cover-divider"></div>
+  <p style="opacity:0.8;font-size:14px;margin-bottom:20px;position:relative;z-index:1;">
+    Vinayaka Mission's Research Foundation (Deemed to be University)
+  </p>
+  <div>
+    <span class="cover-badge">Laravel 12</span>
+    <span class="cover-badge">PHP 8.2+</span>
+    <span class="cover-badge">MySQL 8.0</span>
+    <span class="cover-badge">Bootstrap 5.3</span>
+    <span class="cover-badge">Multi-Stage Workflow</span>
+    <span class="cover-badge">RBAC</span>
+  </div>
+  <div class="cover-meta" style="margin-top:32px;">
+    <div><strong>Document Type:</strong> Comprehensive Project Documentation</div>
+    <div><strong>Version:</strong> 1.0 | <strong>Date:</strong> July 2026</div>
+    <div><strong>Prepared by:</strong> VMRF(DU) Web Team</div>
+    <div><strong>Confidential:</strong> Internal Use / Client Presentation</div>
+  </div>
+</div>
+
+<div class="doc-body">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h2>📋 Table of Contents</h2>
+    <ol>
+      <li><a href="#s1">Project Overview</a></li>
+      <li><a href="#s2">Objectives &amp; Goals</a></li>
+      <li><a href="#s3">Scope &amp; Boundaries</a></li>
+      <li><a href="#s4">Technology Stack</a></li>
+      <li><a href="#s5">System Architecture</a></li>
+      <li><a href="#s6">Database Design</a></li>
+      <li><a href="#s7">User Roles &amp; Permissions</a></li>
+      <li><a href="#s8">Modules &amp; Features</a></li>
+      <li><a href="#s9">Workflow &amp; Approval Process</a></li>
+      <li><a href="#s10">Functional Requirements</a></li>
+      <li><a href="#s11">Non-Functional Requirements</a></li>
+      <li><a href="#s12">Security Design</a></li>
+      <li><a href="#s13">Implementation Details</a></li>
+      <li><a href="#s14">Future Enhancements</a></li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1: PROJECT OVERVIEW -->
+  <div class="doc-section" id="s1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <span class="icon">🎓</span>
+      <h2>Project Overview</h2>
+    </div>
+
+    <p>The <strong>VMRF(DU) Institutional Activity Portal</strong> is an enterprise-grade web application developed for Vinayaka Mission's Research Foundation (Deemed to be University) to centralize, streamline, and professionalize the documentation, verification, media enhancement, and public broadcast of all institutional activities across its constituent colleges.</p>
+
+    <div class="info-box blue">
+      <strong>Project Name</strong>
+      <p>VMRF(DU) Institutional Activity Management, Verification, Media Studio &amp; Public Broadcast Portal</p>
+    </div>
+
+    <h3>Background &amp; Need</h3>
+    <p>VMRF(DU) comprises multiple constituent colleges spread across different locations. Each college conducts numerous institutional activities — symposiums, workshops, guest lectures, health camps, cultural events, faculty development programs, and more. Prior to this portal, activity documentation was fragmented across emails, shared drives, and informal WhatsApp communications, leading to:</p>
+    <ul>
+      <li>Loss of important activity records and supporting photos</li>
+      <li>Inconsistent documentation quality across colleges</li>
+      <li>No standardized approval and verification process</li>
+      <li>Delays in publishing activities to social media and the institutional portal</li>
+      <li>No audit trail for compliance and accountability</li>
+      <li>Manual, error-prone media preparation for social media captions</li>
+    </ul>
+
+    <h3>Solution</h3>
+    <p>This portal provides a unified platform where College Administrators submit activity details with supporting media, the Registrar Authority verifies and approves them, the Media Editor Studio optimizes photos and generates AI-enhanced captions, and the Office of Registrar provides final executive authorization before multi-platform publishing.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card" style="border-color:#2563eb;">
+        <h4 style="color:#1e3a8a;">📋 Centralized Documentation</h4>
+        <p>All institutional activities documented in one system with unique reference IDs and QR verification codes.</p>
+      </div>
+      <div class="feature-card" style="border-color:#16a34a;">
+        <h4 style="color:#166534;">✅ Multi-Stage Verification</h4>
+        <p>Structured approval workflow ensuring quality and compliance at every stage before publishing.</p>
+      </div>
+      <div class="feature-card" style="border-color:#7c3aed;">
+        <h4 style="color:#6b21a8;">🎨 AI Media Enhancement</h4>
+        <p>AI-powered caption generation with 12+ professional institutional templates for consistent branding.</p>
+      </div>
+      <div class="feature-card" style="border-color:#ea580c;">
+        <h4 style="color:#9a3412;">📡 Multi-Platform Broadcast</h4>
+        <p>One-click publishing to Instagram, LinkedIn, Twitter/X, and the institutional portal.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: OBJECTIVES -->
+  <div class="doc-section" id="s2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <span class="icon">🎯</span>
+      <h2>Objectives &amp; Goals</h2>
+    </div>
+
+    <h3>Primary Objectives</h3>
+    <ol>
+      <li><strong>Standardize Activity Documentation</strong> — Enforce consistent data entry with mandatory fields, standardized categories, and required photo documentation across all constituent colleges.</li>
+      <li><strong>Automate Approval Workflow</strong> — Replace email-based approvals with a structured, role-based multi-stage workflow engine with status tracking and audit trails.</li>
+      <li><strong>Enhance Media Quality</strong> — Provide a dedicated Media Editor Studio with AI caption generation and professional templates to ensure all published content meets university branding standards.</li>
+      <li><strong>Enable Multi-Platform Publishing</strong> — Allow one-click broadcast of approved activities to Instagram, LinkedIn, Twitter/X, and the public institutional portal.</li>
+      <li><strong>Ensure Authenticity</strong> — Generate unique reference IDs and QR verification codes for every activity to prevent tampering and enable public verification.</li>
+      <li><strong>Provide Analytics</strong> — Offer KPI dashboards and export reports for institutional performance tracking and management decision-making.</li>
+      <li><strong>Enforce Accountability</strong> — Maintain immutable audit logs for all actions taken in the system for compliance and governance.</li>
+    </ol>
+
+    <h3>Success Metrics</h3>
+    <table>
+      <tr><th>Metric</th><th>Target</th></tr>
+      <tr><td>Activity submission time</td><td>&lt; 10 minutes per activity</td></tr>
+      <tr><td>Approval cycle time</td><td>&lt; 48 hours end-to-end</td></tr>
+      <tr><td>Media publishing turnaround</td><td>&lt; 24 hours after final approval</td></tr>
+      <tr><td>System uptime</td><td>99.5% availability</td></tr>
+      <tr><td>Audit coverage</td><td>100% of all approval actions logged</td></tr>
+      <tr><td>Multi-college support</td><td>All constituent VMRF(DU) colleges</td></tr>
+    </table>
+  </div>
+
+  <!-- SECTION 3: SCOPE -->
+  <div class="doc-section" id="s3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <span class="icon">📐</span>
+      <h2>Scope &amp; Boundaries</h2>
+    </div>
+
+    <h3>In Scope</h3>
+    <ul>
+      <li>Activity submission with photo upload (up to 10MB/image, WEBP/JPG/PNG)</li>
+      <li>Supplementary PDF document upload (up to 15MB)</li>
+      <li>Multi-stage approval workflow (College Admin → Registrar → Media Editor → Office of Registrar)</li>
+      <li>AI-powered social media caption generation with institutional templates</li>
+      <li>Media pack ZIP export (photos + PDFs + metadata)</li>
+      <li>Multi-platform publishing record tracking (Instagram, LinkedIn, Twitter/X, Portal)</li>
+      <li>Public gallery with search and filter capabilities</li>
+      <li>Role-based access control with 6 defined roles</li>
+      <li>In-app notifications and email notifications</li>
+      <li>Analytics dashboard with KPI charts and CSV/print export</li>
+      <li>Super Admin enterprise control panel (colleges, users, roles, workflows, audit logs)</li>
+      <li>Dynamic workflow engine with configurable stages and rules</li>
+      <li>User profile management with avatar upload</li>
+
+    </ul>
+
+    <h3>Out of Scope (Current Version)</h3>
+    <ul>
+      <li>Direct API integration with Instagram, LinkedIn, or Twitter (post URLs tracked manually)</li>
+      <li>Mobile native applications (iOS/Android)</li>
+      <li>Video processing or transcoding within the portal</li>
+      <li>Integration with existing ERP or HRMS systems</li>
+      <li>Real-time collaborative document editing</li>
+    </ul>
+
+    <h3>Constituent Colleges Supported</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+      <span class="badge badge-blue">VMKVEC</span>
+      <span class="badge badge-blue">VMKV Medical College</span>
+      <span class="badge badge-blue">VMKV Dental College</span>
+      <span class="badge badge-blue">VMKV Nursing College</span>
+      <span class="badge badge-blue">VMKV Pharmacy College</span>
+      <span class="badge badge-blue">VMKV Engineering College</span>
+      <span class="badge badge-blue">VMKV Arts &amp; Science</span>
+      <span class="badge badge-purple">+ Additional Constituent Colleges</span>
+    </div>
+  </div>
+
+  <!-- SECTION 4: TECHNOLOGY STACK -->
+  <div class="doc-section" id="s4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <span class="icon">⚙️</span>
+      <h2>Technology Stack</h2>
+    </div>
+
+    <table>
+      <tr><th>Layer</th><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+      <tr><td><strong>Framework</strong></td><td>Laravel</td><td>12.0</td><td>Core MVC web framework, routing, ORM, middleware</td></tr>
+      <tr><td><strong>Language</strong></td><td>PHP</td><td>8.2+</td><td>Server-side scripting, business logic</td></tr>
+      <tr><td><strong>Database</strong></td><td>MySQL</td><td>8.0</td><td>Relational data storage with foreign key constraints</td></tr>
+      <tr><td><strong>ORM</strong></td><td>Eloquent ORM</td><td>Laravel 12</td><td>Database abstraction, model relationships, soft deletes</td></tr>
+      <tr><td><strong>Frontend CSS</strong></td><td>Bootstrap</td><td>5.3</td><td>Responsive layout, UI components</td></tr>
+      <tr><td><strong>Templating</strong></td><td>Blade</td><td>Laravel 12</td><td>Server-side HTML rendering, component system</td></tr>
+      <tr><td><strong>Build Tool</strong></td><td>Vite</td><td>Latest</td><td>Asset bundling and hot module replacement</td></tr>
+      <tr><td><strong>Session Store</strong></td><td>Database</td><td>MySQL</td><td>Persistent session management</td></tr>
+      <tr><td><strong>Cache</strong></td><td>Database</td><td>MySQL</td><td>Application caching layer</td></tr>
+      <tr><td><strong>Queue</strong></td><td>Database</td><td>MySQL</td><td>Background job processing (email queues)</td></tr>
+      <tr><td><strong>Mail</strong></td><td>Log / SMTP</td><td>—</td><td>Email notifications (SMTP in production)</td></tr>
+      <tr><td><strong>Web Server</strong></td><td>Apache (XAMPP)</td><td>2.4+</td><td>HTTP server, URL rewriting</td></tr>
+      <tr><td><strong>Package Manager</strong></td><td>Composer</td><td>2.x</td><td>PHP dependency management</td></tr>
+      <tr><td><strong>JS Packages</strong></td><td>npm</td><td>—</td><td>Node.js dependency management</td></tr>
+    </table>
+
+    <h3>Development Environment</h3>
+    <div class="code-block">
+<span class="comment"># Environment Configuration</span>
+<span class="key">APP_NAME</span>=<span class="val">"VMRFDU Portal"</span>
+<span class="key">APP_ENV</span>=<span class="val">local</span>
+<span class="key">APP_TIMEZONE</span>=<span class="val">Asia/Kolkata</span>
+<span class="key">DB_CONNECTION</span>=<span class="val">mysql</span>
+<span class="key">DB_DATABASE</span>=<span class="val">vmrfdu_portal</span>
+<span class="key">SESSION_DRIVER</span>=<span class="val">database</span>
+<span class="key">SESSION_LIFETIME</span>=<span class="val">120</span>
+<span class="key">QUEUE_CONNECTION</span>=<span class="val">database</span>
+<span class="key">CACHE_STORE</span>=<span class="val">database</span>
+<span class="key">MAIL_MAILER</span>=<span class="val">log</span> <span class="comment"># → smtp in production</span>
+    </div>
+  </div>
+
+  <!-- SECTION 5: SYSTEM ARCHITECTURE -->
+  <div class="doc-section" id="s5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <span class="icon">🏗️</span>
+      <h2>System Architecture</h2>
+    </div>
+
+    <h3>Architectural Pattern</h3>
+    <p>The application follows the <strong>Model-View-Controller (MVC)</strong> architectural pattern as implemented by Laravel, enriched with:</p>
+    <ul>
+      <li><strong>RBAC Middleware Layer</strong> — All routes protected by role-based authorization checks</li>
+      <li><strong>Data Scope Isolation</strong> — College-scoped and department-scoped queries enforced at the service layer</li>
+      <li><strong>Multi-Stage Workflow Engine</strong> — Configurable stage-based state machine for activity approval</li>
+      <li><strong>Status Locking Mechanism</strong> — Prevents concurrent edits during active review phases</li>
+      <li><strong>Service Layer</strong> — AI Phrasing Service abstracted for reuse across submission and media editing</li>
+    </ul>
+
+    <h3>Directory Structure</h3>
+    <div class="code-block">
+vmrfdu_activity_portal/
+├── <span class="key">app/</span>
+│   ├── Http/Controllers/          <span class="comment"># 14 controllers (~2,912 lines)</span>
+│   ├── Http/Middleware/           <span class="comment"># RBAC, auth middleware</span>
+│   ├── Models/                    <span class="comment"># 17 Eloquent models</span>
+│   └── Services/                  <span class="comment"># AI Phrasing Service</span>
+├── <span class="key">database/</span>
+│   ├── migrations/                <span class="comment"># 9 migration files</span>
+│   └── seeders/                   <span class="comment"># 3 seeder files</span>
+├── <span class="key">public/</span>
+│   ├── uploads/activities/        <span class="comment"># Event photos</span>
+│   ├── uploads/activity_media/    <span class="comment"># Additional media</span>
+│   └── uploads/avatars/           <span class="comment"># User avatars</span>
+├── <span class="key">resources/views/</span>             <span class="comment"># 33 Blade templates</span>
+│   ├── layouts/
+│   ├── submissions/
+│   ├── approvals/
+│   ├── media/
+│   ├── super_admin/               <span class="comment"># 9 admin views</span>
+│   ├── analytics/
+│   └── gallery/
+└── <span class="key">routes/web.php</span>               <span class="comment"># Complete route definitions</span>
+    </div>
+
+    <h3>Controllers (14 Total)</h3>
+    <table>
+      <tr><th>Controller</th><th>Approx. Lines</th><th>Responsibility</th></tr>
+      <tr><td>ActivitySubmissionController</td><td>400+</td><td>Activity CRUD, AI captioning, file upload, status transitions</td></tr>
+      <tr><td>ApprovalController</td><td>350+</td><td>Stage 1 verification pipeline, approve/discuss/reject</td></tr>
+      <tr><td>MediaEditorController</td><td>450+</td><td>Media processing, locking mechanism, ZIP export, publishing</td></tr>
+      <tr><td>SuperAdminController</td><td>900+</td><td>Enterprise control panel (colleges, users, roles, workflows, audit)</td></tr>
+      <tr><td>DashboardController</td><td>250+</td><td>Role-specific dashboard views and KPI summaries</td></tr>
+      <tr><td>AnalyticsController</td><td>300+</td><td>KPI dashboards, CSV export, printable reports</td></tr>
+      <tr><td>AuthController</td><td>200+</td><td>Login, logout, session management, login tracking</td></tr>
+      <tr><td>NotificationController</td><td>150+</td><td>In-app notifications, mark read, notification management</td></tr>
+      <tr><td>ProfileController</td><td>150+</td><td>User profile editing, avatar upload, password change</td></tr>
+      <tr><td>GalleryController</td><td>100+</td><td>Public gallery, category/date filtering, search</td></tr>
+      <tr><td>AdminController</td><td>200+</td><td>Admin-level college and user management functions</td></tr>
+      <tr><td>EmailLogController</td><td>100+</td><td>Email transmission audit log viewer</td></tr>
+    </table>
+  </div>
+
+  <!-- SECTION 6: DATABASE DESIGN -->
+  <div class="doc-section" id="s6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <span class="icon">🗄️</span>
+      <h2>Database Design</h2>
+    </div>
+
+    <div class="info-box blue">
+      <strong>Database</strong>
+      <p>MySQL 8.0 | Database name: <code>vmrfdu_portal</code> | 16+ tables | Strict foreign key constraints | Soft deletes on critical tables</p>
+    </div>
+
+    <h3>Core Tables</h3>
+
+    <h4>1. activity_submissions (Primary Table)</h4>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+      <tr><td>id</td><td>BIGINT (PK)</td><td>Auto-increment primary key</td></tr>
+      <tr><td>reference_id</td><td>VARCHAR (UNIQUE)</td><td>Auto-generated unique ID (format: VMRF-2026-XXXX)</td></tr>
+      <tr><td>user_id</td><td>BIGINT (FK)</td><td>Submitting college admin user</td></tr>
+      <tr><td>college_id</td><td>BIGINT (FK)</td><td>Submitting college</td></tr>
+      <tr><td>department_id</td><td>BIGINT (FK, nullable)</td><td>Submitting department</td></tr>
+      <tr><td>title</td><td>VARCHAR(500)</td><td>Activity title</td></tr>
+      <tr><td>description</td><td>TEXT</td><td>Detailed activity description</td></tr>
+      <tr><td>activity_date</td><td>DATE</td><td>Date of the activity</td></tr>
+      <tr><td>event_category</td><td>VARCHAR</td><td>Symposium / Workshop / Guest Lecture / Health Camp etc.</td></tr>
+      <tr><td>tags</td><td>JSON</td><td>Searchable activity tags</td></tr>
+      <tr><td>location</td><td>VARCHAR</td><td>Event venue/location</td></tr>
+      <tr><td>target_audience</td><td>VARCHAR</td><td>Intended audience for the event</td></tr>
+      <tr><td>social_media_caption</td><td>TEXT</td><td>AI-generated or manually written social media caption</td></tr>
+      <tr><td>status</td><td>ENUM</td><td>draft / verification_pending / media_review / registrar_approval / editor_discuss / ready_to_publish / published / rejected</td></tr>
+      <tr><td>current_stage</td><td>VARCHAR</td><td>Current workflow stage name</td></tr>
+      <tr><td>workflow_id</td><td>BIGINT (FK)</td><td>Assigned workflow template</td></tr>
+      <tr><td>current_stage_id</td><td>BIGINT (FK)</td><td>Current workflow stage</td></tr>
+      <tr><td>admin_remarks</td><td>TEXT</td><td>Registrar/Admin feedback remarks</td></tr>
+      <tr><td>faculty_coordinator_name</td><td>VARCHAR</td><td>Event faculty coordinator name</td></tr>
+      <tr><td>faculty_coordinator_email</td><td>VARCHAR</td><td>Event faculty coordinator email</td></tr>
+      <tr><td>faculty_coordinator_phone</td><td>VARCHAR</td><td>Event faculty coordinator phone</td></tr>
+      <tr><td>deleted_at</td><td>TIMESTAMP</td><td>Soft delete timestamp</td></tr>
+      <tr><td>created_at / updated_at</td><td>TIMESTAMP</td><td>Laravel auto-timestamps</td></tr>
+    </table>
+
+    <h4>2. activity_media</h4>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+      <tr><td>id</td><td>BIGINT (PK)</td><td>Auto-increment primary key</td></tr>
+      <tr><td>activity_submission_id</td><td>BIGINT (FK)</td><td>Parent activity</td></tr>
+      <tr><td>file_path</td><td>VARCHAR</td><td>Stored file path</td></tr>
+      <tr><td>file_name</td><td>VARCHAR</td><td>Original file name</td></tr>
+      <tr><td>file_type</td><td>VARCHAR</td><td>image / pdf / video</td></tr>
+      <tr><td>file_size</td><td>BIGINT</td><td>File size in bytes</td></tr>
+      <tr><td>mime_type</td><td>VARCHAR</td><td>MIME type of the file</td></tr>
+      <tr><td>is_primary</td><td>BOOLEAN</td><td>Primary/featured image flag</td></tr>
+      <tr><td>dimensions</td><td>VARCHAR</td><td>Image dimensions (width x height)</td></tr>
+    </table>
+
+    <h4>3. users (Enhanced)</h4>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+      <tr><td>id / name / email / password</td><td>Standard</td><td>Core authentication fields</td></tr>
+      <tr><td>role</td><td>VARCHAR</td><td>super_admin / registrar / office_registrar / media_editor / college_admin / department_user</td></tr>
+      <tr><td>college_id</td><td>BIGINT (FK)</td><td>Assigned college (NULL for global roles)</td></tr>
+      <tr><td>phone / designation / avatar</td><td>VARCHAR</td><td>Profile information</td></tr>
+      <tr><td>is_active / is_locked</td><td>BOOLEAN</td><td>Account status flags</td></tr>
+      <tr><td>account_status</td><td>ENUM</td><td>active / inactive / suspended</td></tr>
+      <tr><td>force_password_reset</td><td>BOOLEAN</td><td>Force password change on next login</td></tr>
+      <tr><td>last_login_at / last_login_ip</td><td>TIMESTAMP/VARCHAR</td><td>Login tracking for security</td></tr>
+      <tr><td>custom_permissions</td><td>JSON</td><td>User-level permission overrides</td></tr>
+    </table>
+
+    <h4>Other Key Tables</h4>
+    <table>
+      <tr><th>Table</th><th>Purpose</th></tr>
+      <tr><td>colleges</td><td>Constituent college directory with codes, location, dean info</td></tr>
+      <tr><td>approval_logs</td><td>Immutable audit trail of all approval actions with timestamps</td></tr>
+      <tr><td>workflows</td><td>Master workflow templates (configurable by Super Admin)</td></tr>
+      <tr><td>workflow_stages</td><td>Individual stages with role requirements and allowed actions</td></tr>
+      <tr><td>workflow_rules</td><td>Conditional routing rules by category/college/activity type</td></tr>
+      <tr><td>published_posts</td><td>Publication records with platform URLs and timestamps</td></tr>
+      <tr><td>portal_notifications</td><td>In-app notifications with read/unread status</td></tr>
+      <tr><td>email_logs</td><td>Email transmission audit trail with HTML preview</td></tr>
+      <tr><td>roles</td><td>Dynamic role definitions with JSON permissions matrix</td></tr>
+      <tr><td>system_audit_logs</td><td>Comprehensive system-wide audit trail</td></tr>
+      <tr><td>system_settings</td><td>Portal configuration key-value store</td></tr>
+      <tr><td>notification_templates</td><td>Configurable email templates per workflow stage</td></tr>
+      <tr><td>activity_discussions</td><td>Discussion threads and feedback comments on submissions</td></tr>
+    </table>
+  </div>
+
+  <!-- SECTION 7: USER ROLES -->
+  <div class="doc-section" id="s7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <span class="icon">👥</span>
+      <h2>User Roles &amp; Permissions</h2>
+    </div>
+
+    <h3>Role Overview</h3>
+    <table>
+      <tr><th>Role</th><th>Slug</th><th>Data Scope</th><th>Primary Responsibilities</th></tr>
+      <tr>
+        <td><strong>👑 Super Admin</strong></td>
+        <td>super_admin</td>
+        <td>Global (Unrestricted)</td>
+        <td>System configuration, enterprise management, workflow engine, all data access</td>
+      </tr>
+      <tr>
+        <td><strong>🏛️ Registrar Authority</strong></td>
+        <td>registrar</td>
+        <td>Global</td>
+        <td>Create colleges/users, Stage 1 institutional verification, global analytics</td>
+      </tr>
+      <tr>
+        <td><strong>📋 Office of Registrar</strong></td>
+        <td>office_registrar</td>
+        <td>Global (Stage 2/3 only)</td>
+        <td>Final executive evaluation of media packages, Stage 2 authorization, broadcast approval</td>
+      </tr>
+      <tr>
+        <td><strong>🎨 Media Editor</strong></td>
+        <td>media_editor</td>
+        <td>Global Media Queue</td>
+        <td>Photo optimization, AI caption generation, media pack export (ZIP), submit to Registrar</td>
+      </tr>
+      <tr>
+        <td><strong>🏫 College Admin</strong></td>
+        <td>college_admin</td>
+        <td>College-Scoped</td>
+        <td>Create activity submissions (locked to assigned college), track status, respond to feedback</td>
+      </tr>
+      <tr>
+        <td><strong>👤 Department User</strong></td>
+        <td>department_user</td>
+        <td>Department-Scoped</td>
+        <td>Submit activities within assigned department, view status tracking</td>
+      </tr>
+    </table>
+
+    <h3>Permission Matrix</h3>
+    <table>
+      <tr>
+        <th>Permission Area</th>
+        <th>Super Admin</th>
+        <th>Registrar</th>
+        <th>Office Registrar</th>
+        <th>Media Editor</th>
+        <th>College Admin</th>
+        <th>Dept. User</th>
+      </tr>
+      <tr><td>Manage Colleges</td><td>✅ Full</td><td>✅ Full</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Manage Users</td><td>✅ Full</td><td>✅ Full</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Submit Activities</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>✅ (own college)</td><td>✅ (own dept.)</td></tr>
+      <tr><td>View All Activities</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>❌ (own college)</td><td>❌ (own dept.)</td></tr>
+      <tr><td>Verification Approval</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Media Processing</td><td>✅</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Final Approval (Stage 2)</td><td>✅</td><td>❌</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Publishing</td><td>✅</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Analytics</td><td>✅ All</td><td>✅ All</td><td>✅ All</td><td>✅ Media</td><td>✅ College</td><td>✅ Dept.</td></tr>
+      <tr><td>System Settings</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Workflow Engine</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Audit Logs</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+    </table>
+
+    <div class="info-box green">
+      <strong>User-Level Permission Overrides</strong>
+      <p>Super Admin can set custom permission overrides per individual user using the <code>custom_permissions</code> JSON column on the users table, allowing fine-grained access beyond role defaults.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 8: MODULES & FEATURES -->
+  <div class="doc-section" id="s8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <span class="icon">🧩</span>
+      <h2>Modules &amp; Features</h2>
+    </div>
+
+    <div class="module-card" style="border-color:#16a34a;">
+      <div class="module-title" style="color:#166534;">📝 Module 1: Activity Submission</div>
+      <div class="module-meta">Controller: ActivitySubmissionController | Routes: /submissions | Access: College Admin, Dept. User</div>
+      <ul>
+        <li>Create new institutional activity with mandatory form fields</li>
+        <li>Upload event photos (JPG, PNG, WEBP; max 10MB each)</li>
+        <li>Upload supplementary PDFs (max 15MB)</li>
+        <li>Auto-generate unique reference ID (VMRF-2026-XXXX format)</li>
+        <li>Auto-generate QR verification hash (cryptographic)</li>
+        <li>Event categorization: Symposium, Workshop, Health Camp, Guest Lecture, MoU, Training, Sports, Cultural, Faculty Development, Alumni Meet, Hackathon, NSS/NCC</li>
+        <li>AI Caption Generator modal with 12+ professional institutional templates</li>
+        <li>Save as draft or submit directly to verification pipeline</li>
+        <li>Edit submissions only when status is 'discuss' (returned for correction)</li>
+        <li>Discussion thread for tracking feedback history</li>
+      </ul>
+    </div>
+
+    <div class="module-card" style="border-color:#0891b2;">
+      <div class="module-title" style="color:#155e75;">✅ Module 2: Approval &amp; Verification (Stage 1)</div>
+      <div class="module-meta">Controller: ApprovalController | Routes: /approvals | Access: Registrar Authority</div>
+      <ul>
+        <li>Verification queue dashboard with pending/approved/rejected tabs</li>
+        <li>Review activity details, photos, metadata, and faculty info</li>
+        <li>Three actions: <strong>Approve</strong> (→ media_review), <strong>Discuss</strong> (→ returned to college), <strong>Reject</strong> (→ rejected)</li>
+        <li>Mandatory remarks on Discuss or Reject actions</li>
+        <li>Email notification sent at each decision to relevant parties</li>
+        <li>Approval log entry created for every action (immutable)</li>
+      </ul>
+    </div>
+
+    <div class="module-card" style="border-color:#7c3aed;">
+      <div class="module-title" style="color:#5b21b6;">🎨 Module 3: Media Editor Studio</div>
+      <div class="module-meta">Controller: MediaEditorController | Routes: /media-editor | Access: Media Editor</div>
+      <ul>
+        <li>Media editing queue showing all media_review submissions</li>
+        <li>Photo optimization and cropping interface</li>
+        <li>AI-powered social media caption refinement</li>
+        <li>Media pack assembly (photos + PDFs + metadata)</li>
+        <li>One-click ZIP media pack download for offline use</li>
+        <li>Submit to Office of Registrar → Status: registrar_approval</li>
+        <li><strong>Status Locking:</strong> Record becomes read-only with visual 🔒 padlock indicator</li>
+        <li>Locked submissions section for tracking pending Stage 2 reviews</li>
+        <li>editor_discuss queue: records returned by Office of Registrar for revision</li>
+        <li>Queue CSV export for reporting</li>
+      </ul>
+    </div>
+
+    <div class="module-card" style="border-color:#dc2626;">
+      <div class="module-title" style="color:#991b1b;">📋 Module 4: Office of Registrar (Stage 2)</div>
+      <div class="module-meta">Controller: MediaEditorController (shared) | Access: Office of Registrar</div>
+      <ul>
+        <li>Review locked media packages submitted by Media Editor</li>
+        <li>Approve (→ ready_to_publish) or Discuss (→ editor_discuss, unlocks record)</li>
+        <li>Final executive sign-off before public broadcasting</li>
+        <li>Detailed view of all activity information and optimized media</li>
+      </ul>
+    </div>
+
+    <div class="module-card" style="border-color:#ea580c;">
+      <div class="module-title" style="color:#7c2d12;">📡 Module 5: Publishing &amp; Broadcast</div>
+      <div class="module-meta">Controller: MediaEditorController | Routes: /media-editor/publish | Access: Media Editor</div>
+      <ul>
+        <li>Select broadcast platforms: Portal Archive, Instagram Official, LinkedIn Official, Twitter/X</li>
+        <li>Publish activity with final caption and media</li>
+        <li>Track post URLs per platform</li>
+        <li>Scheduled posting support</li>
+        <li>Status updated to 'published' after broadcast</li>
+        <li>Activity appears in public gallery</li>
+      </ul>
+    </div>
+
+    <div class="module-card" style="border-color:#16a34a;">
+      <div class="module-title" style="color:#166534;">🌐 Module 6: Public Gallery</div>
+      <div class="module-meta">Controller: GalleryController | Routes: /gallery | Access: Public</div>
+      <ul>
+        <li>Public-facing gallery of all published activities</li>
+        <li>Browse by category, college, date range</li>
+        <li>Full-text search functionality</li>
+        <li>Responsive image grid layout</li>
+      </ul>
+    </div>
+
+    <div class="module-card" style="border-color:#2563eb;">
+      <div class="module-title" style="color:#1e40af;">📊 Module 7: Analytics &amp; Reporting</div>
+      <div class="module-meta">Controller: AnalyticsController | Routes: /analytics | Access: All roles (scoped)</div>
+      <ul>
+        <li>Dashboard KPIs: total submissions, approval rate, rejection rate, activity trends</li>
+        <li>Charts: activities by category, by college, by stage, by month</li>
+        <li>Role-scoped data (college admins see their college only, registrar sees university-wide)</li>
+        <li>Export to CSV with date range and category filters</li>
+        <li>Printable executive report with university branding</li>
+      </ul>
+    </div>
+
+    <div class="module-card" style="border-color:#6366f1;">
+      <div class="module-title" style="color:#4338ca;">👑 Module 8: Super Admin Enterprise Control Panel</div>
+      <div class="module-meta">Controller: SuperAdminController (~900+ lines) | Routes: /super-admin/* | Access: Super Admin only</div>
+      <ul>
+        <li><strong>College Management:</strong> CRUD for constituent colleges with codes, location, dean info</li>
+        <li><strong>User Management:</strong> Create/edit users, assign roles, force password reset, lock/unlock accounts, transfer between colleges</li>
+        <li><strong>Role &amp; Permission Builder:</strong> Create custom roles, define permission matrix, data scope assignment</li>
+        <li><strong>Access Control Suite:</strong> User-level permission overrides, copy role permissions to multiple users</li>
+        <li><strong>Workflow Engine:</strong> Create/edit/duplicate workflows, configure stages with role requirements and status transitions</li>
+        <li><strong>Activity Override:</strong> Force status change, reassign ownership, restore soft-deleted records, hard delete</li>
+        <li><strong>Notification Templates:</strong> Edit email templates per workflow stage with personalization variables</li>
+        <li><strong>Audit Trail:</strong> View immutable system audit logs with user, action, before/after values</li>
+        <li><strong>Master Settings:</strong> Portal logo, favicon, default avatar, NTP settings, session configuration</li>
+      </ul>
+    </div>
+
+    <div class="module-card" style="border-color:#0284c7;">
+      <div class="module-title" style="color:#0c4a6e;">🔔 Module 9: Notifications &amp; Email Audit</div>
+      <div class="module-meta">Controllers: NotificationController, EmailLogController | Routes: /notifications, /emails</div>
+      <ul>
+        <li>In-app notification center with read/unread status</li>
+        <li>Mark individual or all notifications as read</li>
+        <li>Email transmission audit log with recipient, subject, stage, and HTML body preview</li>
+        <li>Email status tracking: sent, queued, failed</li>
+        <li>Searchable email history for troubleshooting</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 9: WORKFLOW -->
+  <div class="doc-section" id="s9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <span class="icon">🔄</span>
+      <h2>Workflow &amp; Approval Process</h2>
+    </div>
+
+    <h3>Status State Machine</h3>
+    <table>
+      <tr><th>Status</th><th>Who Sets It</th><th>Editable?</th><th>Next Action</th></tr>
+      <tr><td><span class="badge badge-gray">draft</span></td><td>College Admin (save draft)</td><td>✅ Yes</td><td>Submit → verification_pending</td></tr>
+      <tr><td><span class="badge badge-blue">verification_pending</span></td><td>System (on submit)</td><td>❌ No</td><td>Registrar: Approve/Discuss/Reject</td></tr>
+      <tr><td><span class="badge badge-orange">discuss</span></td><td>Registrar (Stage 1)</td><td>✅ College Admin can edit</td><td>College Admin resubmits → verification_pending</td></tr>
+      <tr><td><span class="badge badge-red">rejected</span></td><td>Registrar (Stage 1)</td><td>❌ Terminal</td><td>Super Admin override only</td></tr>
+      <tr><td><span class="badge badge-purple">media_review</span></td><td>System (Registrar approves)</td><td>❌ No</td><td>Media Editor processes and submits</td></tr>
+      <tr><td><span class="badge badge-red" style="background:#fef2f2;color:#7f1d1d;">registrar_approval 🔒</span></td><td>System (Media Editor submits)</td><td>❌ LOCKED</td><td>Office of Registrar: Approve/Discuss</td></tr>
+      <tr><td><span class="badge badge-orange">editor_discuss 🔓</span></td><td>Office of Registrar</td><td>✅ Media Editor can edit</td><td>Media Editor revises and resubmits</td></tr>
+      <tr><td><span class="badge badge-green">ready_to_publish</span></td><td>System (Office of Registrar approves)</td><td>❌ No</td><td>Media Editor publishes to platforms</td></tr>
+      <tr><td><span class="badge badge-green" style="border:2px solid #16a34a;">published 🎉</span></td><td>Media Editor (publishes)</td><td>❌ Final</td><td>Public gallery, QR verification active</td></tr>
+    </table>
+
+    <h3>Status Locking Mechanism (Key Design Feature)</h3>
+    <div class="info-box purple">
+      <strong>Why Status Locking?</strong>
+      <p>When the Media Editor submits a media package to the Office of Registrar for Stage 2 review, the system transitions the activity to <code>registrar_approval</code> status and locks the record. This prevents any concurrent modifications during the executive review, ensuring the Office of Registrar reviews exactly what was submitted. A visual 🔒 padlock indicator appears in all views. When the Office of Registrar sends back for discussion (<code>editor_discuss</code>), the record is automatically unlocked and returned to the Media Editor's queue with the padlock removed (🔓).</p>
+    </div>
+
+    <h3>Dynamic Workflow Engine</h3>
+    <p>The workflow engine allows Super Admins to configure custom approval workflows with:</p>
+    <ul>
+      <li>Named stages with configurable order</li>
+      <li>Role requirements per stage (which role can take action)</li>
+      <li>Specific user assignments for stages (user_ids JSON array)</li>
+      <li>College-specific stage configurations</li>
+      <li>Allowed actions per stage (approve / discuss / reject)</li>
+      <li>Status transitions: what status to set on Approve, Reject, or Discuss</li>
+      <li>Approval conditions (any one approver / all required to approve)</li>
+      <li>Routing rules by category, activity type, or college</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 10: FUNCTIONAL REQUIREMENTS -->
+  <div class="doc-section" id="s10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <span class="icon">📋</span>
+      <h2>Functional Requirements</h2>
+    </div>
+
+    <h3>FR-1: Authentication &amp; Access Control</h3>
+    <ul>
+      <li>FR-1.1: The system shall authenticate users via email and password</li>
+      <li>FR-1.2: The system shall enforce role-based access to all pages and actions</li>
+      <li>FR-1.3: The system shall track login IP address and timestamp for each session</li>
+      <li>FR-1.4: The system shall enforce force-password-reset on first login when configured</li>
+      <li>FR-1.5: The system shall block login for locked or suspended accounts</li>
+    </ul>
+
+    <h3>FR-2: Activity Submission</h3>
+    <ul>
+      <li>FR-2.1: College Admins shall submit activities with at least one photo attached</li>
+      <li>FR-2.2: The system shall auto-generate a unique reference ID in VMRF-YYYY-XXXX format</li>
+      <li>FR-2.3: The system shall auto-generate a cryptographic QR verification hash</li>
+      <li>FR-2.4: The system shall support draft saving before submission</li>
+      <li>FR-2.5: The AI caption generator shall offer at least 12 professional templates</li>
+      <li>FR-2.6: Photo uploads shall be limited to JPG, PNG, WEBP with max size 10MB</li>
+      <li>FR-2.7: PDF uploads shall be limited to max 15MB</li>
+    </ul>
+
+    <h3>FR-3: Approval Workflow</h3>
+    <ul>
+      <li>FR-3.1: Registrar shall Approve, Discuss, or Reject each pending submission</li>
+      <li>FR-3.2: Discuss and Reject actions shall require mandatory remarks</li>
+      <li>FR-3.3: Every approval action shall create an immutable log entry</li>
+      <li>FR-3.4: Email notifications shall be sent to relevant users on each status transition</li>
+      <li>FR-3.5: In-app notifications shall be created for each workflow action</li>
+    </ul>
+
+    <h3>FR-4: Media Processing</h3>
+    <ul>
+      <li>FR-4.1: Media Editor shall access all submissions with media_review status</li>
+      <li>FR-4.2: Media Editor shall submit processed packages to Office of Registrar</li>
+      <li>FR-4.3: The system shall lock records on submission to Office of Registrar</li>
+      <li>FR-4.4: The system shall unlock records when Office of Registrar sends for discussion</li>
+      <li>FR-4.5: Media Editor shall be able to download a ZIP media pack</li>
+    </ul>
+
+    <h3>FR-5: Publishing</h3>
+    <ul>
+      <li>FR-5.1: Media Editor shall publish approved activities to selected platforms</li>
+      <li>FR-5.2: Post URLs shall be stored per platform for record-keeping</li>
+      <li>FR-5.3: Published activities shall appear in the public gallery</li>
+      <li>FR-5.4: QR verification shall be active for all published activities</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 11: NON-FUNCTIONAL REQUIREMENTS -->
+  <div class="doc-section" id="s11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <span class="icon">⚡</span>
+      <h2>Non-Functional Requirements</h2>
+    </div>
+
+    <table>
+      <tr><th>Category</th><th>Requirement</th><th>Target</th></tr>
+      <tr><td><strong>Performance</strong></td><td>Page load time (average)</td><td>&lt; 2 seconds</td></tr>
+      <tr><td><strong>Performance</strong></td><td>File upload throughput</td><td>10MB image processed in &lt; 5 seconds</td></tr>
+      <tr><td><strong>Availability</strong></td><td>System uptime</td><td>99.5% (excluding maintenance windows)</td></tr>
+      <tr><td><strong>Scalability</strong></td><td>Concurrent users</td><td>Support 100+ concurrent users</td></tr>
+      <tr><td><strong>Scalability</strong></td><td>Activity records</td><td>10,000+ activity submissions</td></tr>
+      <tr><td><strong>Usability</strong></td><td>Browser compatibility</td><td>Chrome, Firefox, Edge, Safari (latest)</td></tr>
+      <tr><td><strong>Usability</strong></td><td>Responsive design</td><td>Desktop, tablet, mobile support</td></tr>
+      <tr><td><strong>Maintainability</strong></td><td>Code structure</td><td>Laravel MVC, PSR-12 coding standards</td></tr>
+      <tr><td><strong>Localization</strong></td><td>Timezone</td><td>Asia/Kolkata (IST)</td></tr>
+      <tr><td><strong>Compliance</strong></td><td>Audit coverage</td><td>100% of all approval actions logged</td></tr>
+      <tr><td><strong>Data Integrity</strong></td><td>Soft deletes</td><td>Activities never permanently deleted by default</td></tr>
+      <tr><td><strong>Session</strong></td><td>Session timeout</td><td>120 minutes inactivity</td></tr>
+    </table>
+  </div>
+
+  <!-- SECTION 12: SECURITY -->
+  <div class="doc-section" id="s12">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <span class="icon">🔒</span>
+      <h2>Security Design</h2>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card" style="border-color:#dc2626;">
+        <h4 style="color:#991b1b;">🛡️ CSRF Protection</h4>
+        <p>Laravel's built-in CSRF middleware with <code>@csrf</code> tokens on every form prevents cross-site request forgery attacks.</p>
+      </div>
+      <div class="feature-card" style="border-color:#dc2626;">
+        <h4 style="color:#991b1b;">🔐 Password Security</h4>
+        <p>Bcrypt hashing with configurable rounds. Force password reset mechanism for new users and security events.</p>
+      </div>
+      <div class="feature-card" style="border-color:#dc2626;">
+        <h4 style="color:#991b1b;">🚫 Authorization Checks</h4>
+        <p><code>abort_if(!canAccess(), 403)</code> enforced in every controller method. 403 page rendered on unauthorized access.</p>
+      </div>
+      <div class="feature-card" style="border-color:#dc2626;">
+        <h4 style="color:#991b1b;">🗂️ Data Isolation</h4>
+        <p>College-scoped and department-scoped queries prevent cross-college data leakage at the database query level.</p>
+      </div>
+      <div class="feature-card" style="border-color:#dc2626;">
+        <h4 style="color:#991b1b;">📁 File Validation</h4>
+        <p>MIME type and file size validation on all uploads. Only whitelisted image and document formats accepted.</p>
+      </div>
+      <div class="feature-card" style="border-color:#dc2626;">
+        <h4 style="color:#991b1b;">🔒 Status Locking</h4>
+        <p>Records in <code>registrar_approval</code> status are locked from modification, preventing concurrent edit conflicts during executive review.</p>
+      </div>
+      <div class="feature-card" style="border-color:#dc2626;">
+        <h4 style="color:#991b1b;">📜 Audit Trail</h4>
+        <p>Immutable approval logs and system audit logs capture every critical action with user ID, IP, timestamp, and before/after values.</p>
+      </div>
+      <div class="feature-card" style="border-color:#dc2626;">
+        <h4 style="color:#991b1b;">🌐 Session Security</h4>
+        <p>Database session driver with encrypted cookies. 120-minute inactivity timeout with automatic logout.</p>
+      </div>
+      <div class="feature-card" style="border-color:#dc2626;">
+        <h4 style="color:#991b1b;">🚨 Account Lifecycle</h4>
+        <p>Account lock, suspend, and deactivate controls prevent unauthorized access. Login IP and timestamp tracked for security audits.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 13: IMPLEMENTATION DETAILS -->
+  <div class="doc-section" id="s13">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <span class="icon">⚙️</span>
+      <h2>Implementation Details</h2>
+    </div>
+
+    <h3>Deployment Prerequisites</h3>
+    <ul>
+      <li>PHP 8.2+ with extensions: pdo_mysql, mbstring, xml, curl, gd, zip, fileinfo</li>
+      <li>MySQL 8.0+</li>
+      <li>Composer 2.x</li>
+      <li>Node.js 18+ and npm (for asset compilation)</li>
+      <li>Apache 2.4+ with mod_rewrite enabled</li>
+      <li>XAMPP / WAMP / or production Linux server</li>
+    </ul>
+
+    <h3>Installation Steps</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="tl-title">1. Clone Repository &amp; Install Dependencies</div>
+        <div class="tl-desc">Run <code>composer install</code> and <code>npm install</code> to install PHP and Node.js dependencies.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-title">2. Configure Environment</div>
+        <div class="tl-desc">Copy <code>.env.example</code> to <code>.env</code>. Set DB credentials, app key, mail settings, and timezone.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-title">3. Generate Application Key</div>
+        <div class="tl-desc">Run <code>php artisan key:generate</code> to set the application encryption key.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-title">4. Run Migrations</div>
+        <div class="tl-desc">Run <code>php artisan migrate</code> to create all 16+ database tables with proper relationships.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-title">5. Seed Initial Data</div>
+        <div class="tl-desc">Run <code>php artisan db:seed</code> to populate constituent colleges, Super Admin account, and default workflows.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-title">6. Build Assets</div>
+        <div class="tl-desc">Run <code>npm run build</code> to compile Bootstrap, CSS, and JavaScript assets via Vite.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-title">7. Set File Permissions</div>
+        <div class="tl-desc">Ensure <code>storage/</code> and <code>public/uploads/</code> are writable by the web server process.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-title">8. Configure Web Server</div>
+        <div class="tl-desc">Point Apache DocumentRoot to the <code>public/</code> directory. Enable mod_rewrite for clean URLs.</div>
+      </div>
+    </div>
+
+    <h3>Key Business Logic</h3>
+    <h4>AI Caption Generation</h4>
+    <p>The AI Phrasing Service provides 12+ professional institutional templates with dynamic context injection. Templates include placeholders for <code>{{event_title}}</code>, <code>{{college_name}}</code>, <code>{{event_date}}</code>, and <code>{{hashtags}}</code> that are replaced at generation time. Templates cover different tones: formal institutional, celebratory, informative, and community-focused.</p>
+
+    <h4>Reference ID Generation</h4>
+    <p>Each activity receives a unique reference ID in the format <code>VMRF-{YEAR}-{SEQUENTIAL_NUMBER}</code> (e.g., VMRF-2026-0042) auto-generated upon first submission.</p>
+
+    <h4>Media Pack ZIP Export</h4>
+    <p>The Media Editor can generate a ZIP archive containing: all raw uploaded photos, optimized/cropped images, PDF documents, a metadata JSON file with activity details, and the AI-generated caption. The ZIP is assembled on-the-fly and streamed to the browser for download.</p>
+  </div>
+
+  <!-- SECTION 14: FUTURE ENHANCEMENTS -->
+  <div class="doc-section" id="s14">
+    <div class="section-header">
+      <div class="section-num">14</div>
+      <span class="icon">🚀</span>
+      <h2>Future Enhancements</h2>
+    </div>
+
+    <table>
+      <tr><th>Enhancement</th><th>Description</th><th>Priority</th></tr>
+      <tr>
+        <td><strong>Direct Social Media API Integration</strong></td>
+        <td>Auto-post to Instagram Business API, LinkedIn API, and Twitter API instead of manual URL tracking</td>
+        <td><span class="badge badge-red">High</span></td>
+      </tr>
+      <tr>
+        <td><strong>Mobile Application</strong></td>
+        <td>Native iOS and Android apps for College Admins to submit activities from the field with camera integration</td>
+        <td><span class="badge badge-red">High</span></td>
+      </tr>
+      <tr>
+        <td><strong>Advanced AI Integration</strong></td>
+        <td>Integration with GPT/Claude API for more sophisticated caption generation, description enhancement, and content suggestions</td>
+        <td><span class="badge badge-orange">Medium</span></td>
+      </tr>
+      <tr>
+        <td><strong>Image Auto-Enhancement</strong></td>
+        <td>Automatic brightness, contrast, and color correction on uploaded photos using image processing libraries</td>
+        <td><span class="badge badge-orange">Medium</span></td>
+      </tr>
+      <tr>
+        <td><strong>Video Support</strong></td>
+        <td>Upload, transcode, and embed event highlight videos within activity submissions</td>
+        <td><span class="badge badge-orange">Medium</span></td>
+      </tr>
+      <tr>
+        <td><strong>ERP Integration</strong></td>
+        <td>API-based integration with university ERP for automatic faculty data, department codes, and student participation records</td>
+        <td><span class="badge badge-orange">Medium</span></td>
+      </tr>
+      <tr>
+        <td><strong>Advanced Analytics &amp; BI</strong></td>
+        <td>Integration with business intelligence tools (Power BI / Tableau) for advanced institutional performance dashboards</td>
+        <td><span class="badge badge-gray">Low</span></td>
+      </tr>
+      <tr>
+        <td><strong>Multi-Language Support</strong></td>
+        <td>Tamil and English language toggle for the portal interface</td>
+        <td><span class="badge badge-gray">Low</span></td>
+      </tr>
+      <tr>
+        <td><strong>Activity Certificate Generation</strong></td>
+        <td>Auto-generate printable participation certificates for events from the system</td>
+        <td><span class="badge badge-gray">Low</span></td>
+      </tr>
+      <tr>
+        <td><strong>SSO / LDAP Integration</strong></td>
+        <td>Single Sign-On with university email credentials via LDAP or OAuth</td>
+        <td><span class="badge badge-gray">Low</span></td>
+      </tr>
+      <tr>
+        <td><strong>Email Scheduling</strong></td>
+        <td>Queue-based scheduled email delivery with retry logic and failure alerts</td>
+        <td><span class="badge badge-gray">Low</span></td>
+      </tr>
+      <tr>
+        <td><strong>WhatsApp Notifications</strong></td>
+        <td>WhatsApp Business API integration for stage-based notifications as an alternative to email</td>
+        <td><span class="badge badge-gray">Low</span></td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+
+<div class="doc-footer">
+  <strong>VMRF(DU) Institutional Activity Management Portal</strong><br>
+  Vinayaka Mission's Research Foundation (Deemed to be University)<br>
+  &copy; 2026 VMRF(DU). All Rights Reserved.<br>
+  <strong style="color:#93c5fd;">Under the Guidance of:</strong> Dr. A. Murugan &nbsp;|&nbsp;
+  <strong style="color:#93c5fd;">Designed &amp; Developed by:</strong> VMRFDU IT Team (Dhinakaran &amp; Sanjai)<br>
+  Document Version 1.0 | Confidential – For Internal Use and Authorized Distribution Only
+</div>
+
+</body>
+</html>
