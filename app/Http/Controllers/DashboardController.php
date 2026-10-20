@@ -39,40 +39,41 @@ class DashboardController extends Controller
             $baseQuery->whereIn('status', ['registrar_approval', 'ready_to_publish', 'scheduled', 'published', 'editor_discuss']);
         }
 
-        $totalSubmissions = (clone $baseQuery)->count();
+        $statusCounts = (clone $baseQuery)->selectRaw('status, count(*) as count')->groupBy('status')->pluck('count', 'status')->toArray();
+        $countFor = fn($statuses) => array_sum(array_intersect_key($statusCounts, array_flip((array)$statuses)));
+
+        $totalSubmissions = array_sum($statusCounts);
 
         // Customize metrics based on user roles and permissions
         if (!$canViewAllColleges) {
-            $pendingApprovals = (clone $baseQuery)->whereIn('status', ['verification_pending', 'approval_pending', 'registrar_approval', 'discuss', 'sent_back'])->count();
-            $mediaReady = (clone $baseQuery)->whereIn('status', ['media_review', 'editor_discuss', 'ready_to_publish', 'scheduled'])->count();
-            $publishedCount = (clone $baseQuery)->where('status', 'published')->count();
+            $pendingApprovals = $countFor(['verification_pending', 'approval_pending', 'registrar_approval', 'discuss', 'sent_back']);
+            $mediaReady = $countFor(['media_review', 'editor_discuss', 'ready_to_publish', 'scheduled']);
+            $publishedCount = $countFor('published');
         } elseif ($currentUser->role === 'registrar') {
-            // Registrar handles Stage 1 verification
-            $pendingApprovals = ActivitySubmission::whereIn('status', ['verification_pending', 'approval_pending'])->count();
-            $mediaReady = ActivitySubmission::whereIn('status', ['media_review', 'editor_discuss'])->count();
-            $publishedCount = ActivitySubmission::where('status', 'published')->count();
+            $pendingApprovals = $countFor(['verification_pending', 'approval_pending']);
+            $mediaReady = $countFor(['media_review', 'editor_discuss']);
+            $publishedCount = $countFor('published');
         } elseif ($currentUser->role === 'office_registrar') {
-            // Office of Registrar handles Stage 2 final media approval
-            $pendingApprovals = ActivitySubmission::where('status', 'registrar_approval')->count();
-            $mediaReady = ActivitySubmission::whereIn('status', ['ready_to_publish', 'scheduled'])->count();
-            $publishedCount = ActivitySubmission::where('status', 'published')->count();
+            $pendingApprovals = $countFor('registrar_approval');
+            $mediaReady = $countFor(['ready_to_publish', 'scheduled']);
+            $publishedCount = $countFor('published');
         } elseif ($currentUser->role === 'media_editor') {
-            $pendingApprovals = ActivitySubmission::whereIn('status', ['media_review', 'editor_discuss'])->count();
-            $mediaReady = ActivitySubmission::whereIn('status', ['ready_to_publish', 'scheduled'])->count();
-            $publishedCount = ActivitySubmission::where('status', 'published')->count();
+            $pendingApprovals = $countFor(['media_review', 'editor_discuss']);
+            $mediaReady = $countFor(['ready_to_publish', 'scheduled']);
+            $publishedCount = $countFor('published');
         } elseif (in_array($currentUser->role, ['vc', 'pro_vc'])) {
-            $pendingApprovals = ActivitySubmission::whereIn('status', ['verification_pending', 'approval_pending'])->count();
-            $mediaReady = ActivitySubmission::whereIn('status', ['media_review', 'editor_discuss', 'ready_to_publish', 'scheduled'])->count();
-            $publishedCount = ActivitySubmission::where('status', 'published')->count();
+            $pendingApprovals = $countFor(['verification_pending', 'approval_pending']);
+            $mediaReady = $countFor(['media_review', 'editor_discuss', 'ready_to_publish', 'scheduled']);
+            $publishedCount = $countFor('published');
         } else {
             // Super Admin or other viewers
-            $pendingApprovals = ActivitySubmission::whereIn('status', ['verification_pending', 'approval_pending', 'registrar_approval', 'discuss', 'sent_back'])->count();
-            $mediaReady = ActivitySubmission::whereIn('status', ['media_review', 'editor_discuss', 'ready_to_publish', 'scheduled'])->count();
-            $publishedCount = ActivitySubmission::where('status', 'published')->count();
+            $pendingApprovals = $countFor(['verification_pending', 'approval_pending', 'registrar_approval', 'discuss', 'sent_back']);
+            $mediaReady = $countFor(['media_review', 'editor_discuss', 'ready_to_publish', 'scheduled']);
+            $publishedCount = $countFor('published');
         }
 
         // Recent activity feed strictly scoped by assigned college and role - only Super Admin can view all colleges
-        $recentQuery = ActivitySubmission::with(['college', 'user'])->orderBy('updated_at', 'desc');
+        $recentQuery = ActivitySubmission::with(['college', 'user', 'media', 'publishedPost'])->orderBy('updated_at', 'desc');
         if (!$canViewAllColleges) {
             if ($currentUser->college_id) {
                 $recentQuery->where('college_id', $currentUser->college_id);
@@ -102,25 +103,33 @@ class DashboardController extends Controller
 
         // Status Breakdown Distribution
         $statusBreakdown = [
-            'Stage 1 Review' => (clone $baseQuery)->whereIn('status', ['verification_pending', 'approval_pending'])->count(),
-            'Media Desk' => (clone $baseQuery)->whereIn('status', ['media_review', 'editor_discuss'])->count(),
-            'PA to Registrar' => (clone $baseQuery)->where('status', 'registrar_approval')->count(),
-            'Ready/Scheduled' => (clone $baseQuery)->whereIn('status', ['ready_to_publish', 'scheduled'])->count(),
-            'Published Live' => (clone $baseQuery)->where('status', 'published')->count(),
-            'Returned/Discuss' => (clone $baseQuery)->whereIn('status', ['discuss', 'sent_back'])->count(),
+            'Stage 1 Review' => $countFor(['verification_pending', 'approval_pending']),
+            'Media Desk' => $countFor(['media_review', 'editor_discuss']),
+            'PA to Registrar' => $countFor('registrar_approval'),
+            'Ready/Scheduled' => $countFor(['ready_to_publish', 'scheduled']),
+            'Published Live' => $countFor('published'),
+            'Returned/Discuss' => $countFor(['discuss', 'sent_back']),
         ];
         $statusLabels = array_keys($statusBreakdown);
         $statusData = array_values($statusBreakdown);
 
         // Monthly Trend (Last 6 Months)
+        $sixMonthsAgo = Carbon::now()->subMonths(5)->startOfMonth();
+        $monthlyCounts = (clone $baseQuery)->where('created_at', '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, count(*) as count')
+            ->groupBy('year', 'month')
+            ->get()
+            ->keyBy(function($item) {
+                return $item->year . '-' . str_pad($item->month, 2, '0', STR_PAD_LEFT);
+            });
+
         $monthlyLabels = [];
         $monthlyData = [];
         for ($i = 5; $i >= 0; $i--) {
             $monthDate = Carbon::now()->subMonths($i);
+            $key = $monthDate->format('Y-m');
             $monthlyLabels[] = $monthDate->format('M Y');
-            $monthlyData[] = (clone $baseQuery)->whereYear('created_at', $monthDate->year)
-                                               ->whereMonth('created_at', $monthDate->month)
-                                               ->count();
+            $monthlyData[] = isset($monthlyCounts[$key]) ? $monthlyCounts[$key]->count : 0;
         }
 
         // Category Breakdown

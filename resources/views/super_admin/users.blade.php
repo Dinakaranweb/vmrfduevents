@@ -31,6 +31,7 @@
                         <th>Mapped College</th>
                         <th>Account Status</th>
                         <th>Security Controls</th>
+                        <th class="text-center">Email Notification</th>
                         <th class="text-end pe-4">Super Admin Actions</th>
                     </tr>
                 </thead>
@@ -43,7 +44,7 @@
                                     $rowAvatar = $user->avatar ?: (!empty($globalDefaultAvatar) ? $globalDefaultAvatar : null);
                                 @endphp
                                 @if($rowAvatar)
-                                    <img src="{{ asset($rowAvatar) }}" alt="Avatar" class="rounded-circle border shadow-sm flex-shrink-0" style="width: 38px; height: 38px; object-fit: cover;">
+                                    <img src="{{ upload_url($rowAvatar) }}" alt="Avatar" class="rounded-circle border shadow-sm flex-shrink-0" style="width: 38px; height: 38px; object-fit: cover;">
                                 @else
                                     <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0 shadow-sm" style="width: 38px; height: 38px;">
                                         {{ strtoupper(substr($user->name, 0, 1)) }}
@@ -87,6 +88,18 @@
                             @else
                                 <span class="badge bg-light text-muted">Normal Session</span>
                             @endif
+                        </td>
+                        <td class="text-center">
+                            <form action="{{ route('superadmin.users.toggleEmailNotifications', $user->id) }}" method="POST" class="m-0 d-inline-block" title="{{ $user->email_notifications_enabled ? 'Email Notifications ON — click to disable' : 'Email Notifications OFF — click to enable' }}">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-link p-0 border-0" style="text-decoration:none;">
+                                    @if($user->email_notifications_enabled)
+                                        <span class="badge bg-success-subtle text-success"><i class="bi bi-envelope-check-fill me-1"></i>ON</span>
+                                    @else
+                                        <span class="badge bg-secondary-subtle text-secondary"><i class="bi bi-envelope-slash-fill me-1"></i>OFF</span>
+                                    @endif
+                                </button>
+                            </form>
                         </td>
                         <td class="text-end pe-4">
                             <div class="d-flex justify-content-end gap-1">
@@ -284,7 +297,7 @@
                     </div>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">No users found.</td>
+                        <td colspan="7" class="text-center py-5 text-muted">No users found.</td>
                     </tr>
                     @endforelse
                 </tbody>

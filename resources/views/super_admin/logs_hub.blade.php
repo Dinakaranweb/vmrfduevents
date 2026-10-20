@@ -207,7 +207,7 @@
                             <tr>
                                 <td class="ps-4">
                                     @if($file->file_type === 'image')
-                                        <img src="{{ asset($file->file_path) }}" alt="Thumb" class="rounded border" style="width: 45px; height: 45px; object-fit: cover;">
+                                        <img src="{{ upload_url($file->file_path) }}" alt="Thumb" class="rounded border" style="width: 45px; height: 45px; object-fit: cover;">
                                     @elseif($file->file_type === 'video')
                                         <div class="bg-dark text-white rounded d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;"><i class="bi bi-play-circle-fill text-lg"></i></div>
                                     @else
@@ -234,7 +234,7 @@
                                 <td><span class="badge bg-info text-dark text-xxs">{{ strtoupper($file->category ?? 'Attachment') }}</span></td>
                                 <td class="text-muted text-xs font-monospace">{{ $file->created_at->format('d M, Y H:i:s') }}</td>
                                 <td class="text-end pe-4">
-                                    <a href="{{ asset($file->file_path) }}" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill">
+                                    <a href="{{ upload_url($file->file_path) }}" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill">
                                         <i class="bi bi-box-arrow-up-right me-1"></i>View File
                                     </a>
                                 </td>

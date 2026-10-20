@@ -39,23 +39,34 @@ class AnalyticsController extends Controller
         }
 
         // Status breakdown
+        $statusCountsRaw = (clone $subQuery)->selectRaw('status, count(*) as count')->groupBy('status')->pluck('count', 'status')->toArray();
+        $countFor = fn($statuses) => array_sum(array_intersect_key($statusCountsRaw, array_flip((array)$statuses)));
+
         $statusBreakdown = [
-            'Published' => (clone $subQuery)->where('status', 'published')->count(),
-            'Media Review' => (clone $subQuery)->whereIn('status', ['media_review', 'editor_discuss'])->count(),
-            'Pending Approval' => (clone $subQuery)->whereIn('status', ['verification_pending', 'approval_pending', 'registrar_approval'])->count(),
-            'Sent Back / Query' => (clone $subQuery)->where('status', 'sent_back')->count(),
-            'Rejected' => (clone $subQuery)->where('status', 'rejected')->count(),
+            'Published' => $countFor('published'),
+            'Media Review' => $countFor(['media_review', 'editor_discuss']),
+            'Pending Approval' => $countFor(['verification_pending', 'approval_pending', 'registrar_approval']),
+            'Sent Back / Query' => $countFor('sent_back'),
+            'Rejected' => $countFor('rejected'),
         ];
 
         // Monthly trends (Last 6 months)
+        $sixMonthsAgo = now()->subMonths(5)->startOfMonth();
+        $monthlyCountsRaw = (clone $subQuery)->where('activity_date', '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(activity_date) as year, MONTH(activity_date) as month, count(*) as count')
+            ->groupBy('year', 'month')
+            ->get()
+            ->keyBy(function($item) {
+                return $item->year . '-' . str_pad($item->month, 2, '0', STR_PAD_LEFT);
+            });
+
         $months = [];
         $monthlyCounts = [];
         for ($i = 5; $i >= 0; $i--) {
             $monthDate = now()->subMonths($i);
+            $key = $monthDate->format('Y-m');
             $months[] = $monthDate->format('M Y');
-            $monthlyCounts[] = (clone $subQuery)->whereYear('activity_date', $monthDate->year)
-                ->whereMonth('activity_date', $monthDate->month)
-                ->count();
+            $monthlyCounts[] = isset($monthlyCountsRaw[$key]) ? $monthlyCountsRaw[$key]->count : 0;
         }
 
         return view('analytics.index', compact(

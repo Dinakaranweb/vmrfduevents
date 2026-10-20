@@ -37,7 +37,7 @@
                         <div class="d-flex align-items-center gap-3 bg-light p-3 rounded-3 border mb-3">
                             <div class="d-flex align-items-center justify-content-center bg-dark rounded-3 shadow p-2" style="width: 70px; height: 70px;">
                                 @if($portalLogo)
-                                    <img src="{{ asset($portalLogo) }}" alt="Portal Logo" class="img-fluid" style="max-height: 55px; max-width: 55px; object-fit: contain;">
+                                    <img src="{{ upload_url($portalLogo) }}" alt="Portal Logo" class="img-fluid" style="max-height: 55px; max-width: 55px; object-fit: contain;">
                                 @else
                                     <i class="bi bi-bank2 text-white fs-2"></i>
                                 @endif
@@ -64,7 +64,7 @@
                         <div class="d-flex align-items-center gap-3 bg-light p-3 rounded-3 border mb-3">
                             <div class="d-flex align-items-center justify-content-center bg-white border rounded-circle shadow-sm" style="width: 70px; height: 70px; overflow: hidden;">
                                 @if($defaultAvatar)
-                                    <img src="{{ asset($defaultAvatar) }}" alt="Default Avatar" class="w-100 h-100" style="object-fit: cover;">
+                                    <img src="{{ upload_url($defaultAvatar) }}" alt="Default Avatar" class="w-100 h-100" style="object-fit: cover;">
                                 @else
                                     <i class="bi bi-person-fill text-primary fs-1"></i>
                                 @endif

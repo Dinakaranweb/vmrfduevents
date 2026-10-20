@@ -143,7 +143,7 @@
                 <tr>
                     <td>
                         @if($sub->primaryImage)
-                            <img src="{{ $sub->primaryImage->file_path }}" alt="{{ $sub->title }}" class="rounded-3 shadow-sm object-fit-cover border" style="width: 50px; height: 50px;">
+                            <img src="{{ upload_url($sub->primaryImage->file_path) }}" alt="{{ $sub->title }}" class="rounded-3 shadow-sm object-fit-cover border" style="width: 50px; height: 50px;">
                         @else
                             <div class="rounded-3 bg-light border d-flex align-items-center justify-content-center text-muted" style="width: 50px; height: 50px;">
                                 <i class="bi bi-camera-fill fs-5 opacity-50"></i>

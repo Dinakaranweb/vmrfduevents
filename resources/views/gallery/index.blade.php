@@ -50,8 +50,8 @@
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
             <div class="portal-card h-100 d-flex flex-column justify-content-between shadow-sm border">
                 <div>
-                    <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="showGalleryModal('{{ $photo->file_path }}', '{{ addslashes($item->title) }}', '{{ addslashes($item->social_media_caption) }}')">
-                        <img src="{{ $photo->file_path }}" alt="{{ $item->title }}" class="w-100">
+                    <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="showGalleryModal('{{ upload_url($photo->file_path) }}', '{{ addslashes($item->title) }}', '{{ addslashes($item->social_media_caption) }}')">
+                        <img src="{{ upload_url($photo->file_path) }}" alt="{{ $item->title }}" class="w-100">
                         <div class="gallery-overlay d-flex flex-column justify-content-end">
                             <span class="badge bg-primary w-auto align-self-start mb-1">{{ $item->college ? $item->college->code : '' }}</span>
                             <div class="fw-bold small lh-sm text-truncate">{{ $item->title }}</div>
@@ -69,7 +69,7 @@
                 
                 <div class="p-3 pt-0 d-flex justify-content-between align-items-center border-top pt-2 mt-2">
                     <a href="{{ route('submissions.show', $item->id) }}" class="small text-decoration-none fw-semibold">View Post <i class="bi bi-arrow-right"></i></a>
-                    <a href="{{ $photo->file_path }}" target="_blank" download class="btn btn-sm btn-light border text-xs" title="Download High-Res"><i class="bi bi-download"></i></a>
+                    <a href="{{ upload_url($photo->file_path) }}" target="_blank" download class="btn btn-sm btn-light border text-xs" title="Download High-Res"><i class="bi bi-download"></i></a>
                 </div>
             </div>
         </div>

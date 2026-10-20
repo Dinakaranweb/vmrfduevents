@@ -101,7 +101,6 @@ class ActivitySubmission extends Model
     public function getStatusBadgeAttribute(): string
     {
         return match($this->status) {
-            'draft' => '<span class="badge bg-secondary">Draft</span>',
             'verification_pending', 'approval_pending' => '<span class="badge bg-warning text-dark shadow-sm"><i class="bi bi-clock-history me-1"></i>Pending Verification</span>',
             'media_review' => '<span class="badge bg-info text-white shadow-sm"><i class="bi bi-camera-reels-fill me-1"></i>Media Editor Editing</span>',
             'registrar_approval' => '<span class="badge bg-primary text-white shadow-sm"><i class="bi bi-shield-check me-1"></i>Office of the Registrar Review</span>',

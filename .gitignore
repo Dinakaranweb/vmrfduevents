@@ -22,3 +22,13 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# User uploads live on the configured uploads disk, not in version control
+/storage/app/public/uploads
+
+# Local database and dumps -- contain real user records and password hashes
+/database/database.sqlite
+/vmrfdu_portal.sql
+
+# Legacy duplicate upload copy at the repo root (superseded by the uploads disk)
+/uploads

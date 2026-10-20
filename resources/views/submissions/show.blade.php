@@ -185,17 +185,23 @@
                     @if($m->file_type === 'image' || $isImageDoc)
                     <div class="col-12 col-sm-6 col-md-4">
                         <div class="gallery-item border rounded-4 shadow-sm overflow-hidden bg-light position-relative">
-                            <img src="{{ $m->file_path }}" alt="{{ $m->file_name }}" class="w-100 object-fit-cover" style="height: 220px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ $m->file_path }}', '{{ addslashes($m->file_name) }}')">
+                            <img src="{{ upload_url($m->file_path) }}" alt="{{ $m->file_name }}" class="w-100 object-fit-cover" style="height: 220px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ upload_url($m->file_path) }}', '{{ addslashes($m->file_name) }}')">
                             <div class="gallery-overlay p-3">
                                 <div class="fw-bold text-xs text-white text-truncate">{{ $m->file_name }}</div>
-                                <span class="badge bg-primary mt-1 text-xxs">{{ $m->file_type === 'image' ? ($m->is_primary ? 'Primary Post Photo' : 'Gallery Image') : 'Supporting Image' }}</span>
+                                @php
+                                    $badgeText = 'Gallery Image';
+                                    if ($m->media_category === 'stage_photo') $badgeText = 'Stage Photo';
+                                    elseif ($m->media_category === 'participants_photo') $badgeText = 'Participants Photo';
+                                    elseif ($m->is_primary) $badgeText = 'Primary Post Photo';
+                                @endphp
+                                <span class="badge bg-primary mt-1 text-xxs">{{ $badgeText }}</span>
                             </div>
                         </div>
                     </div>
                     @elseif($m->file_type === 'geo_image')
                     <div class="col-12 col-sm-6 col-md-4">
                         <div class="gallery-item border rounded-4 shadow-sm overflow-hidden position-relative" style="background-color: #f0fdf4; border-color: #22c55e !important;">
-                            <img src="{{ $m->file_path }}" alt="{{ $m->file_name }}" class="w-100 object-fit-cover" style="height: 220px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ $m->file_path }}', '{{ addslashes($m->file_name) }}')">
+                            <img src="{{ upload_url($m->file_path) }}" alt="{{ $m->file_name }}" class="w-100 object-fit-cover" style="height: 220px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ upload_url($m->file_path) }}', '{{ addslashes($m->file_name) }}')">
                             <div class="gallery-overlay p-3 d-flex flex-column justify-content-end">
                                 <div class="fw-bold text-xs text-white text-truncate">{{ $m->file_name }}</div>
                                 <span class="badge bg-success mt-1 text-xxs align-self-start"><i class="bi bi-geo-alt-fill me-1"></i>Geo-Tagged Photo</span>
@@ -228,7 +234,7 @@
                     @if($isImageDoc)
                     <div class="col-12 col-sm-6 col-md-4">
                         <div class="gallery-item border rounded-4 shadow-sm overflow-hidden bg-light position-relative">
-                            <img src="{{ $m->file_path }}" alt="{{ $m->file_name }}" class="w-100 object-fit-cover" style="height: 220px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ $m->file_path }}', '{{ addslashes($m->file_name) }}')">
+                            <img src="{{ upload_url($m->file_path) }}" alt="{{ $m->file_name }}" class="w-100 object-fit-cover" style="height: 220px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ upload_url($m->file_path) }}', '{{ addslashes($m->file_name) }}')">
                             <div class="gallery-overlay p-3">
                                 <div class="fw-bold text-xs text-white text-truncate">{{ $m->file_name }}</div>
                                 <span class="badge bg-primary mt-1 text-xxs">Supporting Image</span>
@@ -241,7 +247,7 @@
                             @php
                                 $isPdf = str_contains(strtolower($m->file_name), '.pdf') || str_contains(strtolower($m->mime_type), 'pdf') ? 'true' : 'false';
                             @endphp
-                            <div class="d-flex align-items-center justify-content-center w-100 bg-white" style="height: 220px; cursor: pointer;" onclick="showDocumentModal('{{ $m->file_path }}', '{{ addslashes($m->file_name) }}', {{ $isPdf }})" data-bs-toggle="modal" data-bs-target="#documentModal">
+                            <div class="d-flex align-items-center justify-content-center w-100 bg-white" style="height: 220px; cursor: pointer;" onclick="showDocumentModal('{{ upload_url($m->file_path) }}', '{{ addslashes($m->file_name) }}', {{ $isPdf }})" data-bs-toggle="modal" data-bs-target="#documentModal">
                                 @php
                                     $iconClass = 'bi-file-earmark text-secondary';
                                     if(str_contains(strtolower($m->file_name), '.pdf') || str_contains(strtolower($m->mime_type), 'pdf')) $iconClass = 'bi-file-earmark-pdf-fill text-danger';
@@ -254,7 +260,7 @@
                                 <div class="fw-bold text-xs text-white text-truncate" title="{{ $m->file_name }}">{{ $m->file_name }}</div>
                                 <div class="d-flex align-items-center justify-content-between mt-1">
                                     <span class="badge bg-secondary text-xxs">{{ $m->file_size ? number_format($m->file_size / 1024, 1) . ' KB' : 'Document' }}</span>
-                                    <a href="javascript:void(0)" onclick="showDocumentModal('{{ $m->file_path }}', '{{ addslashes($m->file_name) }}', {{ $isPdf }})" data-bs-toggle="modal" data-bs-target="#documentModal" class="btn btn-sm btn-light py-0 px-2 text-xxs fw-bold"><i class="bi bi-box-arrow-up-right me-1"></i>Preview</a>
+                                    <a href="javascript:void(0)" onclick="showDocumentModal('{{ upload_url($m->file_path) }}', '{{ addslashes($m->file_name) }}', {{ $isPdf }})" data-bs-toggle="modal" data-bs-target="#documentModal" class="btn btn-sm btn-light py-0 px-2 text-xxs fw-bold"><i class="bi bi-box-arrow-up-right me-1"></i>Preview</a>
                                 </div>
                             </div>
                         </div>
@@ -294,12 +300,12 @@
                         @foreach($group as $m)
                             <div class="col-12 col-sm-6 col-md-4">
                                 <div class="gallery-item border rounded-4 shadow-sm overflow-hidden bg-white position-relative" style="border-color: #818cf8 !important;">
-                                    <img src="{{ $m->file_path }}" alt="{{ $m->file_name }}" class="w-100 object-fit-cover" style="height: 240px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ $m->file_path }}', '{{ addslashes($m->file_name) }}')">
+                                    <img src="{{ upload_url($m->file_path) }}" alt="{{ $m->file_name }}" class="w-100 object-fit-cover" style="height: 240px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ upload_url($m->file_path) }}', '{{ addslashes($m->file_name) }}')">
                                     <div class="gallery-overlay p-3 d-flex flex-column justify-content-end">
                                         <div class="fw-bold text-xs text-white text-truncate">{{ $m->file_name }}</div>
                                         <div class="d-flex align-items-center justify-content-between mt-1">
                                             <span class="badge bg-success text-xxs"><i class="bi bi-check-circle me-1"></i>Social Ready</span>
-                                            <a href="{{ $m->file_path }}" download class="btn btn-sm btn-light py-0 px-2 text-xxs fw-bold"><i class="bi bi-download me-1"></i>Download</a>
+                                            <a href="{{ upload_url($m->file_path) }}" download class="btn btn-sm btn-light py-0 px-2 text-xxs fw-bold"><i class="bi bi-download me-1"></i>Download</a>
                                         </div>
                                     </div>
                                 </div>
@@ -408,7 +414,7 @@
                                 $discAvatar = ($disc->user && $disc->user->avatar) ? $disc->user->avatar : (!empty($globalDefaultAvatar) ? $globalDefaultAvatar : null);
                             @endphp
                             @if($discAvatar)
-                                <img src="{{ asset($discAvatar) }}" alt="Avatar" class="rounded-circle shadow-sm border border-secondary" style="width: 44px; height: 44px; object-fit: cover;">
+                                <img src="{{ upload_url($discAvatar) }}" alt="Avatar" class="rounded-circle shadow-sm border border-secondary" style="width: 44px; height: 44px; object-fit: cover;">
                             @else
                                 <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 44px; height: 44px; background: linear-gradient(135deg, #0f172a 0%, #3b82f6 100%) !important;">
                                     {{ substr($disc->author_name, 0, 1) }}

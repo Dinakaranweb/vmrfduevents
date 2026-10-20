@@ -46,7 +46,7 @@
                 <div class="position-relative d-inline-block mx-auto mb-3">
                     @php
                         $displayAvatar = $currentUser->avatar ?: (!empty($globalDefaultAvatar) ? $globalDefaultAvatar : null);
-                        $avatarUrl = $displayAvatar ? (str_starts_with($displayAvatar, 'http') ? $displayAvatar : asset($displayAvatar)) : null;
+                        $avatarUrl = $displayAvatar ? (str_starts_with($displayAvatar, 'http') ? $displayAvatar : upload_url($displayAvatar)) : null;
                     @endphp
                     @if($avatarUrl)
                         <img src="{{ $avatarUrl }}" class="rounded-circle shadow-sm object-fit-cover" style="width: 100px; height: 100px;" alt="Profile Avatar" onerror="this.style.display='none'; document.getElementById('profile-avatar-fallback').style.display='inline-flex';">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Support\UploadStorage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -41,19 +42,9 @@ class ProfileController extends Controller
         $user->designation = $validated['designation'];
 
         if ($request->hasFile('avatar_file')) {
-            $uploadDir = public_path('uploads/avatars');
-            $storageDir = storage_path('app/public/avatars');
-            if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
-            }
-            if (!file_exists($storageDir)) {
-                mkdir($storageDir, 0755, true);
-            }
             $file = $request->file('avatar_file');
             $filename = 'avatar_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move($uploadDir, $filename);
-            @copy($uploadDir . '/' . $filename, $storageDir . '/' . $filename);
-            $user->avatar = 'uploads/avatars/' . $filename;
+            $user->avatar = UploadStorage::put($file, UploadStorage::path('avatars'), $filename);
         }
 
         $user->save();

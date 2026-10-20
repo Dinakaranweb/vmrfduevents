@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Support\UploadStorage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -77,17 +79,20 @@ class SuperAdminController extends Controller
         $totalActivities = ActivitySubmission::withTrashed()->count();
 
         // Status Counts
-        $pendingApprovals = ActivitySubmission::whereIn('status', ['verification_pending', 'approval_pending', 'registrar_approval'])->count();
-        $approvedActivities = ActivitySubmission::whereIn('status', ['ready_to_publish', 'scheduled'])->count();
-        $discussActivities = ActivitySubmission::where('status', 'editor_discuss')->count();
-        $rejectedActivities = ActivitySubmission::where('status', 'rejected')->count();
-        $publishedCount = ActivitySubmission::where('status', 'published')->count();
+        $statusCountsRaw = ActivitySubmission::selectRaw('status, count(*) as count')->groupBy('status')->pluck('count', 'status')->toArray();
+        $countFor = fn($statuses) => array_sum(array_intersect_key($statusCountsRaw, array_flip((array)$statuses)));
+
+        $pendingApprovals = $countFor(['verification_pending', 'approval_pending', 'registrar_approval']);
+        $approvedActivities = $countFor(['ready_to_publish', 'scheduled']);
+        $discussActivities = $countFor('editor_discuss');
+        $rejectedActivities = $countFor('rejected');
+        $publishedCount = $countFor('published');
 
         // Social Media Posting Status
         $socialMediaPosts = PublishedPost::with('submission')->latest()->take(10)->get();
 
         // Recently Submitted Activities
-        $recentActivities = ActivitySubmission::with(['college', 'user'])->latest()->take(8)->get();
+        $recentActivities = ActivitySubmission::with(['college', 'user', 'media', 'publishedPost'])->latest()->take(8)->get();
 
         // College-wise Activity Report
         $collegeReports = College::withCount([
@@ -101,14 +106,21 @@ class SuperAdminController extends Controller
         ])->get();
 
         // Monthly & Yearly Analytics (Last 6 Months)
+        $sixMonthsAgo = now()->subMonths(5)->startOfMonth();
+        $monthlyCountsRaw = ActivitySubmission::withTrashed()->where('created_at', '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, count(*) as count')
+            ->groupBy('year', 'month')
+            ->get()
+            ->keyBy(function($item) {
+                return $item->year . '-' . str_pad($item->month, 2, '0', STR_PAD_LEFT);
+            });
+
         $monthlyData = [];
         for ($i = 5; $i >= 0; $i--) {
             $month = now()->subMonths($i);
             $monthKey = $month->format('M Y');
-            $monthlyData[$monthKey] = ActivitySubmission::withTrashed()
-                ->whereYear('created_at', $month->year)
-                ->whereMonth('created_at', $month->month)
-                ->count();
+            $dbKey = $month->format('Y-m');
+            $monthlyData[$monthKey] = isset($monthlyCountsRaw[$dbKey]) ? $monthlyCountsRaw[$dbKey]->count : 0;
         }
 
         // Prepare arrays for Chart.js
@@ -412,6 +424,19 @@ class SuperAdminController extends Controller
         return redirect()->route('superadmin.users')->with('success', "User account {$action} successfully.");
     }
 
+    public function toggleEmailNotifications($id)
+    {
+        $this->checkSuperAdminAccess(null, 'users.edit');
+        $user = User::findOrFail($id);
+        $user->email_notifications_enabled = !$user->email_notifications_enabled;
+        $user->save();
+
+        $status = $user->email_notifications_enabled ? 'Enabled' : 'Disabled';
+        $this->logAudit('user_management', 'User', $user->id, "{$status} email notifications for user: {$user->name}");
+
+        return redirect()->route('superadmin.users')->with('success', "Email notifications {$status} for {$user->name}.");
+    }
+
     public function changeAccountStatus(Request $request, $id)
     {
         $this->checkSuperAdminAccess(null, 'users.edit');
@@ -588,7 +613,7 @@ class SuperAdminController extends Controller
     public function activities(Request $request)
     {
         $this->checkSuperAdminAccess(null, 'activities.view');
-        $query = ActivitySubmission::withTrashed()->with(['college', 'user', 'media']);
+        $query = ActivitySubmission::withTrashed()->with(['college', 'user', 'media', 'publishedPost']);
 
         if ($request->college_id) {
             $query->where('college_id', $request->college_id);
@@ -1222,7 +1247,7 @@ class SuperAdminController extends Controller
     public function reports(Request $request)
     {
         $this->checkSuperAdminAccess(null, 'analytics.view');
-        $query = ActivitySubmission::withTrashed()->with(['college', 'user']);
+        $query = ActivitySubmission::withTrashed()->with(['college', 'user', 'media', 'publishedPost']);
 
         if ($request->college_id) {
             $query->where('college_id', $request->college_id);
@@ -1244,7 +1269,7 @@ class SuperAdminController extends Controller
     public function exportReports(Request $request)
     {
         $this->checkSuperAdminAccess(null, 'analytics.export');
-        $query = ActivitySubmission::withTrashed()->with(['college', 'user']);
+        $query = ActivitySubmission::withTrashed()->with(['college', 'user', 'media', 'publishedPost']);
 
         if ($request->college_id) {
             $query->where('college_id', $request->college_id);
@@ -1435,17 +1460,11 @@ class SuperAdminController extends Controller
             'default_avatar_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
-        // Create upload directory if it does not exist
-        $uploadDir = public_path('uploads/settings');
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
         if ($request->hasFile('portal_logo_file')) {
             $file = $request->file('portal_logo_file');
             $filename = 'portal_logo_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move($uploadDir, $filename);
-            SystemSetting::setValue('portal_logo', 'uploads/settings/' . $filename, 'branding', 'Main institutional portal logo');
+            $storedPath = UploadStorage::put($file, UploadStorage::path('settings'), $filename);
+            SystemSetting::setValue('portal_logo', $storedPath, 'branding', 'Main institutional portal logo');
         } elseif ($request->has('remove_portal_logo')) {
             SystemSetting::setValue('portal_logo', null, 'branding', 'Main institutional portal logo');
         }
@@ -1453,8 +1472,8 @@ class SuperAdminController extends Controller
         if ($request->hasFile('default_avatar_file')) {
             $file = $request->file('default_avatar_file');
             $filename = 'default_avatar_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move($uploadDir, $filename);
-            SystemSetting::setValue('default_avatar', 'uploads/settings/' . $filename, 'branding', 'Default user profile avatar');
+            $storedPath = UploadStorage::put($file, UploadStorage::path('settings'), $filename);
+            SystemSetting::setValue('default_avatar', $storedPath, 'branding', 'Default user profile avatar');
         } elseif ($request->has('remove_default_avatar')) {
             SystemSetting::setValue('default_avatar', null, 'branding', 'Default user profile avatar');
         }

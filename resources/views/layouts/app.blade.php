@@ -56,7 +56,7 @@
             <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-3 text-decoration-none text-white overflow-hidden">
                 <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow flex-shrink-0" style="width: 42px; height: 42px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; overflow: hidden;">
                     @if(!empty($globalPortalLogo))
-                        <img src="{{ asset($globalPortalLogo) }}" alt="Logo" class="w-100 h-100" style="object-fit: cover;">
+                        <img src="{{ upload_url($globalPortalLogo) }}" alt="Logo" class="w-100 h-100" style="object-fit: cover;">
                     @else
                         <i class="bi bi-bank2 fs-5"></i>
                     @endif
@@ -365,7 +365,7 @@
                         $sideAvatar = auth()->user()->avatar ?: (!empty($globalDefaultAvatar) ? $globalDefaultAvatar : null);
                     @endphp
                     @if($sideAvatar)
-                        <img src="{{ asset($sideAvatar) }}" alt="Avatar" class="rounded-circle border border-secondary flex-shrink-0 shadow-sm" style="width: 36px; height: 36px; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <img src="{{ upload_url($sideAvatar) }}" alt="Avatar" class="rounded-circle border border-secondary flex-shrink-0 shadow-sm" style="width: 36px; height: 36px; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <div class="bg-primary text-white rounded-circle align-items-center justify-content-center fw-bold text-xs flex-shrink-0 shadow-sm" style="width: 36px; height: 36px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important; display: none;">
                             {{ substr(auth()->user()->name, 0, 1) }}
                         </div>
@@ -440,7 +440,7 @@
                             $userAvatar = auth()->user()->avatar ?: $globalDefaultAvatar;
                         @endphp
                         @if($userAvatar)
-                            <img src="{{ asset($userAvatar) }}" alt="Avatar" class="rounded-circle border" style="width: 28px; height: 28px; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <img src="{{ upload_url($userAvatar) }}" alt="Avatar" class="rounded-circle border" style="width: 28px; height: 28px; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="bg-primary text-white rounded-circle align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.75rem; display: none;">
                                 {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                             </div>
@@ -658,8 +658,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Idle timeout configuration
-        const warningTime = 4 * 60 * 1000; // 4 minutes
-        const logoutTime = 5 * 60 * 1000; // 5 minutes
+        const sessionLifetimeMinutes = {{ config('session.lifetime') ?: 120 }};
+        const logoutTime = sessionLifetimeMinutes * 60 * 1000;
+        const warningTime = logoutTime > (60 * 1000) ? logoutTime - (60 * 1000) : Math.floor(logoutTime * 0.8); // warn 1 minute before or at 80% if short
         
         let warningTimer;
         let logoutTimer;
@@ -726,6 +727,73 @@
         // Initial setup
         resetIdleTimer();
     });
+</script>
+
+<script>
+    // Cross-tab session guard: keeps every open tab in sync with the server-side
+    // session so an expiry or logout in one tab cannot leave another tab showing
+    // a stale, still-authenticated dashboard.
+    (function() {
+        const SIGNAL_KEY = 'portal_session_ended';
+        const SESSION_CHECK_URL = '{{ route('session.check') }}';
+        const LOGIN_URL = '{{ route('login') }}';
+        let redirecting = false;
+
+        function goToLogin() {
+            if (redirecting) return;
+            redirecting = true;
+            try { localStorage.setItem(SIGNAL_KEY, String(Date.now())); } catch (e) {}
+            window.location.replace(LOGIN_URL);
+        }
+
+        // Another tab signalled logout / expiry via localStorage.
+        window.addEventListener('storage', function(e) {
+            if (e.key === SIGNAL_KEY) {
+                goToLogin();
+            }
+        });
+
+        function verifySession() {
+            if (redirecting) return;
+            fetch(SESSION_CHECK_URL, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' },
+                credentials: 'same-origin',
+                cache: 'no-store'
+            }).then(function(res) {
+                if (res.status === 401 || res.status === 419) {
+                    goToLogin();
+                    return;
+                }
+                return res.json();
+            }).then(function(data) {
+                if (data && data.authenticated === false) {
+                    goToLogin();
+                }
+            }).catch(function() {
+                // Network hiccup - do not force a logout on a transient failure.
+            });
+        }
+
+        // Revalidate whenever this tab regains focus/visibility.
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                verifySession();
+            }
+        });
+        window.addEventListener('focus', verifySession);
+
+        // Revalidate when the page is restored from the browser back/forward
+        // cache (bfcache), which can otherwise show a stale authenticated view.
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                verifySession();
+            }
+        });
+
+        // Periodic heartbeat so an idle-but-open tab notices expiry too.
+        setInterval(verifySession, 30000);
+    })();
 </script>
 @endauth
 

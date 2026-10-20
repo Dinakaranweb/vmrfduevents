@@ -134,9 +134,9 @@
     <div class="col-12 col-lg-5 login-banner">
         <div>
             <div class="d-flex align-items-center gap-3 mb-4">
-                <div class="bg-white bg-opacity-25 rounded-circle p-1 d-flex align-items-center justify-content-center overflow-hidden shadow-sm" style="width: 85px; height: 85px;">
+                <div class="bg-white  rounded-circle p-1 d-flex align-items-center justify-content-center overflow-hidden shadow-sm" style="width: 85px; height: 85px;">
                     @if(!empty($globalPortalLogo))
-                        <img src="{{ asset($globalPortalLogo) }}" alt="Logo" class="w-100 h-100" style="object-fit: contain;">
+                        <img src="{{ upload_url($globalPortalLogo) }}" alt="Logo" class="w-100 h-100" style="object-fit: contain;">
                     @else
                         <i class="bi bi-bank2 fs-1 text-white"></i>
                     @endif
@@ -268,6 +268,11 @@
 </div>
 
 <script>
+    // Reaching the login page means this browser is no longer authenticated
+    // (an already-authenticated visit redirects to the dashboard server-side).
+    // Signal any other open tabs so they redirect away from a stale dashboard.
+    try { localStorage.setItem('portal_session_ended', String(Date.now())); } catch (e) {}
+
     function autofill(email) {
         document.getElementById('loginEmail').value = email;
         document.getElementById('loginPassword').focus();

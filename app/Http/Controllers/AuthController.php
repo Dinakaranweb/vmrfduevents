@@ -17,7 +17,7 @@ class AuthController extends Controller
         }
 
         // Fetch demo official credentials list to display on login page for easy reviewer access
-        $officialAccounts = User::with('college')->orderBy('role')->get();
+        $officialAccounts = User::with('college')->where('role', '!=', 'super_admin')->orderBy('role')->get();
 
         return view('auth.login', compact('officialAccounts'));
     }

@@ -166,9 +166,10 @@
                             @endphp
                             @if($existingReport)
                                 <div class="mt-2 text-success small fw-bold">
-                                    <i class="bi bi-check-circle-fill me-1"></i> Existing report attached. Upload a new file to replace it.
+                                    <i class="bi bi-check-circle-fill me-1"></i> Existing report attached: <a href="{{ upload_url($existingReport->file_path) }}" target="_blank" class="text-success">{{ $existingReport->file_name }}</a>. Upload a new file to replace it.
                                 </div>
                             @endif
+                            <div id="reportDocumentPreviewContainer" class="d-flex flex-wrap gap-3 mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -229,7 +230,7 @@
                                                     @if($m->is_primary)
                                                         <span class="badge bg-primary position-absolute top-0 start-0 m-2 text-xxs shadow">Primary</span>
                                                     @endif
-                                                    <img src="{{ $m->file_path }}" alt="{{ $m->file_name }}" class="rounded-3 w-100 object-fit-cover border" style="height: 110px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ $m->file_path }}', '{{ addslashes($m->file_name) }}')">
+                                                    <img src="{{ upload_url($m->file_path) }}" alt="{{ $m->file_name }}" class="rounded-3 w-100 object-fit-cover border" style="height: 110px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ upload_url($m->file_path) }}', '{{ addslashes($m->file_name) }}')">
                                                     <small class="d-block text-truncate text-xs fw-semibold text-dark mt-2" title="{{ $m->file_name }}">{{ $m->file_name }}</small>
                                                 </div>
                                                 <div class="mt-2 pt-2 border-top">
@@ -249,15 +250,19 @@
                             </div>
 
                             <!-- 2. Upload Additional / Replacement Photos -->
-                            <div class="p-4 bg-light rounded-4 border border-2 border-dashed mb-4 text-center">
-                                <label class="form-label fw-bold fs-6 text-dark mb-2">Upload New / Replacement Event Photos {{ $existingImages->count() === 0 ? '(Mandatory)' : '' }} {!! $existingImages->count() === 0 ? '<span class="text-danger">*</span>' : '' !!}</label>
-                                <div class="alert alert-warning border-warning shadow-sm mx-auto p-2 mb-3 text-start d-flex justify-content-between align-items-center flex-wrap gap-2" style="max-width: 550px;">
-                                    <div><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i><strong>Mandatory:</strong> Please upload both <strong>Stage Photo</strong> and <strong>Participants Photo</strong>.</div>
-                                    <span class="badge bg-danger">Max 20 MB per file</span>
+                            <div class="row g-3 mb-4">
+                                <div class="col-12" id="mediaAttachmentsContainer">
+                                    <div class="p-4 bg-light rounded-4 border border-2 border-dashed">
+                                        <div class="text-center mb-3">
+                                            <i class="bi bi-images fs-1 text-primary mb-2 d-block"></i>
+                                            <label class="form-label fw-bold fs-6 text-dark d-block mb-1">Media Attachments: High-Resolution Photos {{ $existingImages->count() === 0 ? '(Mandatory)' : '' }} {!! $existingImages->count() === 0 ? '<span class="text-danger">*</span>' : '' !!}</label>
+                                            <span class="badge bg-danger">Max 20 MB per file</span>
+                                        </div>
+                                        <input type="file" id="mediaPhotosInput" class="form-control form-control-lg mx-auto" style="max-width: 550px;" multiple accept="image/*">
+                                        <div id="mediaPhotosHiddenInputs"></div>
+                                        <div id="mediaPhotosCards" class="d-flex flex-wrap justify-content-center gap-3 mt-4"></div>
+                                    </div>
                                 </div>
-                                <input type="file" name="new_images[]" id="newImagesInput" class="form-control form-control-lg mx-auto" style="max-width: 550px;" multiple accept="image/*" {{ $existingImages->count() === 0 ? 'required' : '' }}>
-                                <div class="form-text mt-2 text-primary fw-bold">Supported formats: JPG, PNG, WEBP.</div>
-                                <div id="newImagePreviewContainer" class="d-flex flex-wrap justify-content-center gap-3 mt-4"></div>
                             </div>
                         </div>
 
@@ -270,7 +275,7 @@
                                             <div class="col-6 col-sm-4 col-md-3" id="media_col_{{ $geo->id }}">
                                                 <div class="border rounded-4 p-2 bg-light text-center shadow-sm position-relative overflow-hidden h-100 d-flex flex-column justify-content-between transition-all" id="media_card_{{ $geo->id }}">
                                                     <div>
-                                                        <img src="{{ $geo->file_path }}" alt="{{ $geo->file_name }}" class="rounded-3 w-100 object-fit-cover border" style="height: 110px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ $geo->file_path }}', '{{ addslashes($geo->file_name) }}')">
+                                                        <img src="{{ upload_url($geo->file_path) }}" alt="{{ $geo->file_name }}" class="rounded-3 w-100 object-fit-cover border" style="height: 110px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('{{ upload_url($geo->file_path) }}', '{{ addslashes($geo->file_name) }}')">
                                                         <small class="d-block text-truncate text-xs fw-semibold text-dark mt-2" title="{{ $geo->file_name }}">{{ $geo->file_name }}</small>
                                                     </div>
                                                     <div class="mt-2 pt-2 border-top">
@@ -319,7 +324,7 @@
                                 <div class="d-flex flex-column gap-2 mb-2">
                                 @foreach($existingDocs as $doc)
                                     <div class="p-2 bg-white border rounded-3 d-flex align-items-center justify-content-between small">
-                                        <span class="text-truncate text-dark fw-semibold" style="max-width: 200px;"><i class="bi bi-file-earmark-text text-primary me-1"></i><a href="{{ $doc->file_path }}" target="_blank" class="text-decoration-none">{{ $doc->file_name }}</a></span>
+                                        <span class="text-truncate text-dark fw-semibold" style="max-width: 200px;"><i class="bi bi-file-earmark-text text-primary me-1"></i><a href="{{ upload_url($doc->file_path) }}" target="_blank" class="text-decoration-none">{{ $doc->file_name }}</a></span>
                                         <div class="d-flex align-items-center gap-1">
                                             <input type="checkbox" name="remove_media_ids[]" value="{{ $doc->id }}" class="btn-check" id="remove_doc_{{ $doc->id }}">
                                             <label class="btn btn-sm btn-outline-danger text-xxs py-0 px-2" for="remove_doc_{{ $doc->id }}"><i class="bi bi-trash"></i> Remove</label>
@@ -555,12 +560,10 @@
 
                     const tgtAud = document.getElementById('targetAudience');
                     const outInp = document.getElementById('outcome');
-                    const imgInp = document.getElementById('newImagesInput');
-                    const geoInp = document.getElementById('geoTaggedInput');
-                    
+
                     if(tgtAud) tgtAud.required = true;
                     if(outInp) outInp.required = true;
-                    if(imgInp) imgInp.required = {{ $existingImages->count() === 0 ? 'true' : 'false' }};
+                    window.mediaPhotosRequired = {{ $existingImages->count() === 0 ? 'true' : 'false' }};
                     if(reportTypeSelect) reportTypeSelect.required = true;
 
                     toggleReportFields();
@@ -584,41 +587,19 @@
 
                     const tgtAud = document.getElementById('targetAudience');
                     const outInp = document.getElementById('outcome');
-                    const imgInp = document.getElementById('newImagesInput');
-                    const geoInp = document.getElementById('geoTaggedInput');
-                    
+
                     if(tgtAud) tgtAud.required = false;
                     if(outInp) outInp.required = false;
-                    if(imgInp) imgInp.required = false;
-                    if(geoInp) geoInp.required = false;
+                    window.mediaPhotosRequired = false;
                     if(reportTypeSelect) reportTypeSelect.required = false;
 
                     toggleReportFields();
                 }
             }
-            
+
             activityType.addEventListener('change', updateDateConstraint);
             updateDateConstraint(); // Initial call
         }
-
-        const newImagesInput = document.getElementById('newImagesInput');
-        const newImagePreviewContainer = document.getElementById('newImagePreviewContainer');
-        
-        if (newImagesInput && newImagePreviewContainer) {
-            newImagesInput.addEventListener('change', function() {
-                newImagePreviewContainer.innerHTML = ''; // Clear previous previews
-                Array.from(this.files).forEach(file => {
-                    if (file.type.startsWith('image/')) {
-                        const url = URL.createObjectURL(file);
-                        const img = document.createElement('img');
-                        img.src = url;
-                        img.className = 'rounded-3 shadow-sm border object-fit-cover';
-                        img.style.width = '100px';
-                        img.style.height = '100px';
-                        newImagePreviewContainer.appendChild(img);
-                    }
-                });
-            });
         }
 
         const geoInput = document.getElementById('geoTaggedInput');
@@ -641,6 +622,82 @@
             });
         }
 
+        function renderSingleFilePreview(inputElement, containerElement) {
+            containerElement.innerHTML = '';
+            const file = inputElement.files && inputElement.files[0];
+            if (!file) return;
+
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            const isImage = file.type.startsWith('image/');
+
+            const card = document.createElement('div');
+            card.className = 'attachment-preview-card';
+            card.title = 'Click to preview in a new tab';
+
+            const fileUrl = URL.createObjectURL(file);
+            card.onclick = function() {
+                window.open(fileUrl, '_blank');
+            };
+
+            let visualEl;
+            if (isImage) {
+                visualEl = '<img src="' + fileUrl + '" class="attachment-preview-img" alt="Preview">';
+            } else {
+                let iconClass = 'bi-file-earmark';
+                if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) iconClass = 'bi-file-earmark-pdf text-danger';
+                else if (file.type.includes('word') || file.name.toLowerCase().endsWith('.doc') || file.name.toLowerCase().endsWith('.docx')) iconClass = 'bi-file-earmark-word text-primary';
+                visualEl = '<div class="attachment-preview-icon"><i class="bi ' + iconClass + '"></i></div>';
+            }
+
+            card.innerHTML = visualEl +
+                '<div class="attachment-preview-info">' +
+                    '<div class="attachment-preview-name" title="' + file.name.replace(/"/g, '&quot;') + '">' + file.name + '</div>' +
+                    '<div class="attachment-preview-size">' + sizeMB + ' MB &bull; Ready</div>' +
+                '</div>';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'attachment-preview-remove';
+            removeBtn.innerHTML = '<i class="bi bi-x"></i>';
+            removeBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                inputElement.value = '';
+                containerElement.innerHTML = '';
+            };
+            card.appendChild(removeBtn);
+
+            containerElement.appendChild(card);
+        }
+
+        const reportDocumentInput = document.getElementById('reportDocument');
+        const reportDocumentPreviewContainer = document.getElementById('reportDocumentPreviewContainer');
+        if (reportDocumentInput && reportDocumentPreviewContainer) {
+            reportDocumentInput.addEventListener('change', function() {
+                renderSingleFilePreview(reportDocumentInput, reportDocumentPreviewContainer);
+            });
+        }
+
+        // Real-time, non-blocking upload of Media Attachments via AJAX with per-photo progress.
+        const mediaUploaderApi = window.VMRFDU_MediaUploader.init({
+            inputId: 'mediaPhotosInput',
+            cardsContainerId: 'mediaPhotosCards',
+            hiddenContainerId: 'mediaPhotosHiddenInputs',
+            tokenFieldName: 'new_media_photo_tokens[]',
+            onPendingChange: function(pendingCount) {
+                const btn = document.getElementById('submitSubmissionBtn');
+                if (!btn) return;
+                if (pendingCount > 0) {
+                    if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Photos uploading, please wait...';
+                } else {
+                    btn.disabled = false;
+                    if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+                }
+            }
+        });
+
         const editForm = document.querySelector('form[action*="submissions"]');
         if (editForm) {
             editForm.addEventListener('submit', async function(e) {
@@ -648,24 +705,43 @@
                     e.preventDefault();
                     return;
                 }
+
+                if (mediaUploaderApi && mediaUploaderApi.hasPending()) {
+                    e.preventDefault();
+                    alert('Please wait for all High-Resolution Photos to finish uploading before submitting.');
+                    return;
+                }
+
+                if (window.mediaPhotosRequired && mediaUploaderApi && mediaUploaderApi.tokenCount() === 0) {
+                    e.preventDefault();
+                    alert('Please upload at least one High-Resolution Photo under Media Attachments before submitting.');
+                    return;
+                }
+
                 e.preventDefault();
-                const newImagesInput = document.getElementById('newImagesInput');
-                const success = await window.VMRFDU_ImageOptimizer.optimizeFileList(
-                    newImagesInput,
-                    'uploadProgressBanner',
-                    'uploadProgressText',
-                    'uploadProgressBar',
-                    'submitSubmissionBtn'
-                );
-                if (success) {
+                const geoTaggedInput = document.getElementById('geoTaggedInput');
+                let successGeo = true;
+                if (geoTaggedInput && geoTaggedInput.files.length > 0) {
+                    successGeo = await window.VMRFDU_ImageOptimizer.optimizeFileList(
+                        geoTaggedInput,
+                        'uploadProgressBanner',
+                        'uploadProgressText',
+                        'uploadProgressBar',
+                        'submitSubmissionBtn'
+                    );
+                }
+
+                if (successGeo) {
                     editForm.dataset.submitting = "true";
-                    editForm.submit();
+                    submitFormWithProgress(editForm);
                 }
             });
         }
     });
 </script>
+@include('partials.submission-progress')
 @include('partials.multi-file-uploader')
 @include('partials.client-image-optimizer')
+@include('partials.media-photo-uploader')
 @include('partials.ai-phrasing-modal')
 @endpush

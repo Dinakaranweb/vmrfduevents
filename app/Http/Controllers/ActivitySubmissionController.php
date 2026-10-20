@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Support\UploadStorage;
 use App\Models\ActivitySubmission;
 use App\Models\ActivityMedia;
 use App\Models\College;
@@ -14,6 +15,7 @@ use App\Services\NotificationService;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class ActivitySubmissionController extends Controller
 {
@@ -92,8 +94,13 @@ class ActivitySubmissionController extends Controller
 
         // Date-wise tracking order
         $submissions = $query->orderBy('activity_date', 'desc')->paginate(12);
-        $colleges = College::where('is_active', true)->get();
-        $categories = EventCategory::where('is_active', true)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
+        
+        $colleges = Cache::remember('active_colleges', 3600, function () {
+            return College::where('is_active', true)->orderBy('name')->get();
+        });
+        $categories = Cache::remember('active_categories', 3600, function () {
+            return EventCategory::where('is_active', true)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
+        });
 
         return view('submissions.index', compact('submissions', 'colleges', 'categories', 'currentUser'));
     }
@@ -101,14 +108,73 @@ class ActivitySubmissionController extends Controller
     public function create()
     {
         $currentUser = Auth::user();
-        $colleges = College::where('is_active', true)->get();
-        $categories = EventCategory::where('is_active', true)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
+        $colleges = Cache::remember('active_colleges', 3600, function () {
+            return College::where('is_active', true)->orderBy('name')->get();
+        });
+        $categories = Cache::remember('active_categories', 3600, function () {
+            return EventCategory::where('is_active', true)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
+        });
         return view('submissions.create', compact('colleges', 'categories', 'currentUser'));
+    }
+
+    /**
+     * AJAX endpoint: receives a single photo, moves it to a temp holding area, and
+     * returns a token referencing it so the form can attach it on final submission.
+     * This lets the browser show real per-file upload progress via XHR.
+     */
+    public function uploadMediaPhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,webp|max:20480',
+        ]);
+
+        $photo = $request->file('photo');
+        $token = (string) Str::uuid();
+        $filename = $token . '.' . $photo->getClientOriginalExtension();
+        $storedPath = UploadStorage::put($photo, UploadStorage::path('tmp'), $filename);
+
+        return response()->json([
+            'status' => 'success',
+            'token' => $token,
+            'file_name' => $photo->getClientOriginalName(),
+            'url' => UploadStorage::url($storedPath),
+        ]);
+    }
+
+    private function movePendingMediaPhotos(ActivitySubmission $submission, array $tokens)
+    {
+        foreach ($tokens as $token) {
+            if (!preg_match('/^[a-f0-9\-]{36}$/i', $token)) {
+                continue;
+            }
+            $matches = UploadStorage::findByPrefix(UploadStorage::path('tmp'), $token);
+            if (empty($matches)) {
+                continue;
+            }
+            $tmpPath = $matches[0];
+            $extension = pathinfo($tmpPath, PATHINFO_EXTENSION);
+            $filename = time() . '_media_' . Str::random(8) . '.' . $extension;
+            $finalPath = UploadStorage::move($tmpPath, UploadStorage::path('images') . '/' . $filename);
+
+            ActivityMedia::create([
+                'activity_submission_id' => $submission->id,
+                'file_type' => 'image',
+                'media_category' => 'event_photo',
+                'file_path' => $finalPath,
+                'file_name' => basename($tmpPath),
+                'mime_type' => UploadStorage::mimeType($finalPath),
+                'file_size' => UploadStorage::size($finalPath),
+                'dimensions' => null,
+                'is_primary' => false,
+            ]);
+        }
     }
 
     public function store(Request $request)
     {
         $currentUser = Auth::user();
+
+        $mediaTokens = array_values(array_filter((array) $request->input('media_photo_tokens', [])));
 
         $rules = [
             'title' => 'required|string|max:255',
@@ -123,31 +189,25 @@ class ActivitySubmissionController extends Controller
             'support_documents' => 'nullable|array',
             'support_documents.*' => 'file|mimes:pdf,jpg,jpeg,png,webp,doc,docx,xls,xlsx,csv|max:20480',
             'report_document' => 'nullable|file|mimes:pdf,doc,docx|max:20480',
+            'media_photo_tokens' => $request->activity_type === 'Past Event' ? 'required|array|min:1' : 'nullable|array',
         ];
 
         if ($request->activity_type === 'Past Event') {
             $rules['outcome'] = 'required|string';
             $rules['target_audience'] = 'required|string|max:255';
             $rules['description'] = 'nullable|string';
-            $rules['images'] = 'required|array|min:1';
-            $rules['images.*'] = 'required|image|mimes:jpeg,png,jpg,webp|max:20480';
             $rules['geo_tagged_photo'] = 'nullable|array';
             $rules['geo_tagged_photo.*'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:20480';
         } else {
             $rules['outcome'] = 'nullable|string';
             $rules['target_audience'] = 'nullable|string|max:255';
             $rules['description'] = 'nullable|string';
-            $rules['images'] = 'nullable|array';
-            $rules['images.*'] = 'image|mimes:jpeg,png,jpg,webp|max:20480';
             $rules['geo_tagged_photo'] = 'nullable|array';
             $rules['geo_tagged_photo.*'] = 'image|mimes:jpeg,png,jpg,webp|max:20480';
         }
 
         $request->validate($rules, [
-            'images.required' => 'Image upload is mandatory for every past activity submission. Please upload at least one event photo.',
-            'images.min' => 'Image upload is mandatory for every past activity submission. Please upload at least one event photo.',
-            'images.*.image' => 'Uploaded file must be a valid image format (JPG, PNG, WEBP).',
-            'images.*.max' => 'Each image file size must not exceed 20 MB.',
+            'media_photo_tokens.required' => 'At least one High-Resolution Photo is mandatory for every past activity submission.',
             'document.max' => 'The document/brochure file size must not exceed 20 MB.'
         ]);
 
@@ -169,6 +229,19 @@ class ActivitySubmissionController extends Controller
         } while (ActivitySubmission::withTrashed()->where('reference_id', $refId)->exists());
 
         $assignedCollegeId = ($currentUser && $currentUser->college_id) ? $currentUser->college_id : $request->college_id;
+
+        $duplicate = ActivitySubmission::where('title', trim($request->title))
+            ->where('activity_date', $request->activity_date)
+            ->where('college_id', $assignedCollegeId)
+            ->where('user_id', $currentUser ? $currentUser->id : 1)
+            ->first();
+
+        if ($duplicate && $request->input('submission_action') !== 'draft') {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['status' => 'error', 'errors' => ['title' => ['An activity with this identical title and date has already been submitted. Please check your Drafts or Submission History.']]]);
+            }
+            return redirect()->back()->withInput()->withErrors(['title' => 'An activity with this identical title and date has already been submitted. Please check your Drafts or Submission History.']);
+        }
 
         $desc = $request->description;
         if ($request->activity_type === 'Future Event') {
@@ -214,29 +287,13 @@ class ActivitySubmissionController extends Controller
             $submission->save();
         }
 
-        // Handle File Uploads
-        if ($request->hasFile('images')) {
-            $isFirst = true;
-            foreach ($request->file('images') as $imageFile) {
-                $originalName = $imageFile->getClientOriginalName();
-                $mimeType = $imageFile->getClientMimeType();
-                $fileSize = $imageFile->getSize() ?: 0;
-                $filename = time() . '_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $imageFile->getClientOriginalExtension();
-                $imageFile->move(public_path('uploads/activities/images'), $filename);
+        // Attach previously AJAX-uploaded High-Resolution Photos
+        $this->movePendingMediaPhotos($submission, $mediaTokens);
 
-                ActivityMedia::create([
-                    'activity_submission_id' => $submission->id,
-                    'file_type' => 'image',
-                    'media_category' => 'original',
-                    'file_path' => '/uploads/activities/images/' . $filename,
-                    'file_name' => $originalName,
-                    'mime_type' => $mimeType,
-                    'file_size' => $fileSize,
-                    'dimensions' => null,
-                    'is_primary' => $isFirst,
-                ]);
-                $isFirst = false;
-            }
+        // Mark the first attached media photo as primary for downstream display
+        $firstMedia = $submission->media()->where('file_type', 'image')->orderBy('id')->first();
+        if ($firstMedia) {
+            $firstMedia->update(['is_primary' => true]);
         }
 
         if ($request->hasFile('geo_tagged_photo')) {
@@ -245,13 +302,13 @@ class ActivitySubmissionController extends Controller
                 $mimeType = $imageFile->getClientMimeType();
                 $fileSize = $imageFile->getSize() ?: 0;
                 $filename = time() . '_geo_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $imageFile->getClientOriginalExtension();
-                $imageFile->move(public_path('uploads/activities/images'), $filename);
+                $storedPath = UploadStorage::put($imageFile, UploadStorage::path('images'), $filename);
 
                 ActivityMedia::create([
                     'activity_submission_id' => $submission->id,
                     'file_type' => 'geo_image',
                     'media_category' => 'original',
-                    'file_path' => '/uploads/activities/images/' . $filename,
+                    'file_path' => $storedPath,
                     'file_name' => 'Geo-Tagged: ' . $originalName,
                     'mime_type' => $mimeType,
                     'file_size' => $fileSize,
@@ -289,13 +346,13 @@ class ActivitySubmissionController extends Controller
                 $mimeType = $docFile->getClientMimeType();
                 $fileSize = $docFile->getSize() ?: 0;
                 $filename = time() . '_support_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $docFile->getClientOriginalExtension();
-                $docFile->move(public_path('uploads/activities/docs'), $filename);
+                $storedPath = UploadStorage::put($docFile, UploadStorage::path('docs'), $filename);
 
                 ActivityMedia::create([
                     'activity_submission_id' => $submission->id,
                     'file_type' => 'supporting_document',
                     'media_category' => 'original',
-                    'file_path' => '/uploads/activities/docs/' . $filename,
+                    'file_path' => $storedPath,
                     'file_name' => $originalName,
                     'mime_type' => $mimeType,
                     'file_size' => $fileSize,
@@ -310,13 +367,13 @@ class ActivitySubmissionController extends Controller
             $mimeType = $repDocFile->getClientMimeType();
             $fileSize = $repDocFile->getSize() ?: 0;
             $filename = time() . '_report_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $repDocFile->getClientOriginalExtension();
-            $repDocFile->move(public_path('uploads/activities/docs'), $filename);
+            $storedPath = UploadStorage::put($repDocFile, UploadStorage::path('docs'), $filename);
 
             ActivityMedia::create([
                 'activity_submission_id' => $submission->id,
                 'file_type' => 'report_document',
                 'media_category' => 'original',
-                'file_path' => '/uploads/activities/docs/' . $filename,
+                'file_path' => $storedPath,
                 'file_name' => $originalName,
                 'mime_type' => $mimeType,
                 'file_size' => $fileSize,
@@ -336,8 +393,18 @@ class ActivitySubmissionController extends Controller
         // Dispatch Email & In-App Notifications
         NotificationService::notifyStageChange($submission, 'submitted', 'New activity submitted by College Admin.');
 
+        $successMessage = "Activity successfully recorded under reference ID {$refId}! Email notifications dispatched.";
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'redirect' => route('submissions.show', $submission->id),
+                'message' => $successMessage,
+            ]);
+        }
+
         return redirect()->route('submissions.show', $submission->id)
-            ->with('success', "Activity successfully recorded under reference ID {$refId}! Email notifications dispatched.");
+            ->with('success', $successMessage);
     }
 
     public function show($id)
@@ -364,8 +431,12 @@ class ActivitySubmissionController extends Controller
                 ->with('error', 'Only submissions marked for Discussion / Correction can be edited.');
         }
 
-        $colleges = College::where('is_active', true)->orderBy('name')->get();
-        $categories = EventCategory::where('is_active', true)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
+        $colleges = Cache::remember('active_colleges', 3600, function () {
+            return College::where('is_active', true)->orderBy('name')->get();
+        });
+        $categories = Cache::remember('active_categories', 3600, function () {
+            return EventCategory::where('is_active', true)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
+        });
 
         return view('submissions.edit', compact('submission', 'colleges', 'categories', 'currentUser'));
     }
@@ -386,6 +457,8 @@ class ActivitySubmissionController extends Controller
                 ->with('error', 'Only submissions marked for Discussion / Correction can be edited.');
         }
 
+        $mediaTokens = array_values(array_filter((array) $request->input('new_media_photo_tokens', [])));
+
         $existingImageCount = $submission->media()->where('file_type', 'image')->count();
         $imagesToRemove = 0;
         if ($request->has('remove_media_ids') && is_array($request->remove_media_ids)) {
@@ -394,7 +467,7 @@ class ActivitySubmissionController extends Controller
                 ->where('file_type', 'image')
                 ->count();
         }
-        $remainingImageCount = $existingImageCount - $imagesToRemove;
+        $remainingImageCount = $existingImageCount - $imagesToRemove + count($mediaTokens);
 
         $rules = [
             'college_id' => 'required|exists:colleges,id',
@@ -409,6 +482,7 @@ class ActivitySubmissionController extends Controller
             'support_documents' => 'nullable|array',
             'support_documents.*' => 'file|mimes:pdf,jpg,jpeg,png,webp,doc,docx,xls,xlsx,csv|max:20480',
             'report_document' => 'nullable|file|mimes:pdf,doc,docx|max:20480',
+            'new_media_photo_tokens' => $remainingImageCount > 0 ? 'nullable|array' : 'required|array|min:1',
         ];
 
         $existingGeoImageCount = $submission->media()->where('file_type', 'geo_image')->count();
@@ -425,23 +499,18 @@ class ActivitySubmissionController extends Controller
             $rules['outcome'] = 'required|string';
             $rules['target_audience'] = 'required|string|max:255';
             $rules['description'] = 'nullable|string';
-            $rules['new_images'] = ($remainingImageCount > 0) ? 'nullable|array' : 'required|array|min:1';
-            $rules['new_images.*'] = ($remainingImageCount > 0 ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg,webp|max:20480';
             $rules['new_geo_tagged_photo'] = 'nullable|array';
             $rules['new_geo_tagged_photo.*'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:20480';
         } else {
             $rules['outcome'] = 'nullable|string';
             $rules['target_audience'] = 'nullable|string|max:255';
             $rules['description'] = 'nullable|string';
-            $rules['new_images'] = 'nullable|array';
-            $rules['new_images.*'] = 'image|mimes:jpeg,png,jpg,webp|max:20480';
             $rules['new_geo_tagged_photo'] = 'nullable|array';
             $rules['new_geo_tagged_photo.*'] = 'image|mimes:jpeg,png,jpg,webp|max:20480';
         }
 
         $request->validate($rules, [
-            'new_images.required' => 'Image upload is mandatory for every past activity submission. Please upload at least one event photo.',
-            'new_images.*.max' => 'Each new image file size must not exceed 20 MB.',
+            'new_media_photo_tokens.required' => 'At least one High-Resolution Photo is mandatory for every past activity submission.',
             'document.max' => 'The document/brochure file size must not exceed 20 MB.'
         ]);
 
@@ -477,9 +546,8 @@ class ActivitySubmissionController extends Controller
         $submission->location = $request->location;
         $submission->tags = null;
 
-        if ($request->has('social_media_caption')) {
-            $submission->social_media_caption = $request->filled('social_media_caption') ? trim($request->social_media_caption) : self::generateDefaultCaptionForSubmission($submission);
-        } elseif (empty($submission->social_media_caption)) {
+        $submission->social_media_caption = $request->filled('social_media_caption') ? trim($request->social_media_caption) : null;
+        if (empty($submission->social_media_caption)) {
             $submission->social_media_caption = self::generateDefaultCaptionForSubmission($submission);
         }
 
@@ -492,9 +560,7 @@ class ActivitySubmissionController extends Controller
         if ($request->has('remove_media_ids') && is_array($request->remove_media_ids)) {
             $mediaToRemove = $submission->media()->whereIn('id', $request->remove_media_ids)->get();
             foreach ($mediaToRemove as $mediaItem) {
-                if ($mediaItem->file_path && file_exists(public_path($mediaItem->file_path))) {
-                    @unlink(public_path($mediaItem->file_path));
-                }
+                UploadStorage::delete($mediaItem->file_path);
                 $mediaItem->delete();
             }
         }
@@ -556,13 +622,13 @@ class ActivitySubmissionController extends Controller
                 $mimeType = $geoImageFile->getClientMimeType();
                 $fileSize = $geoImageFile->getSize() ?: 0;
                 $filename = time() . '_geo_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $geoImageFile->getClientOriginalExtension();
-                $geoImageFile->move(public_path('uploads/activities/images'), $filename);
+                $storedPath = UploadStorage::put($geoImageFile, UploadStorage::path('images'), $filename);
 
                 ActivityMedia::create([
                     'activity_submission_id' => $submission->id,
                     'file_type' => 'geo_image',
                     'media_category' => 'original',
-                    'file_path' => '/uploads/activities/images/' . $filename,
+                    'file_path' => $storedPath,
                     'file_name' => 'Geo-Tagged: ' . $originalName,
                     'mime_type' => $mimeType,
                     'file_size' => $fileSize,
@@ -579,13 +645,13 @@ class ActivitySubmissionController extends Controller
                 $mimeType = $docFile->getClientMimeType();
                 $fileSize = $docFile->getSize() ?: 0;
                 $filename = time() . '_support_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $docFile->getClientOriginalExtension();
-                $docFile->move(public_path('uploads/activities/docs'), $filename);
+                $storedPath = UploadStorage::put($docFile, UploadStorage::path('docs'), $filename);
 
                 ActivityMedia::create([
                     'activity_submission_id' => $submission->id,
                     'file_type' => 'supporting_document',
                     'media_category' => 'original',
-                    'file_path' => '/uploads/activities/docs/' . $filename,
+                    'file_path' => $storedPath,
                     'file_name' => $originalName,
                     'mime_type' => $mimeType,
                     'file_size' => $fileSize,
@@ -597,9 +663,7 @@ class ActivitySubmissionController extends Controller
         if ($request->hasFile('report_document')) {
             $oldReports = $submission->media()->where('file_type', 'report_document')->get();
             foreach ($oldReports as $oldRep) {
-                if ($oldRep->file_path && file_exists(public_path($oldRep->file_path))) {
-                    @unlink(public_path($oldRep->file_path));
-                }
+                UploadStorage::delete($oldRep->file_path);
                 $oldRep->delete();
             }
 
@@ -608,13 +672,13 @@ class ActivitySubmissionController extends Controller
             $mimeType = $repDocFile->getClientMimeType();
             $fileSize = $repDocFile->getSize() ?: 0;
             $filename = time() . '_report_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $repDocFile->getClientOriginalExtension();
-            $repDocFile->move(public_path('uploads/activities/docs'), $filename);
+            $storedPath = UploadStorage::put($repDocFile, UploadStorage::path('docs'), $filename);
 
             ActivityMedia::create([
                 'activity_submission_id' => $submission->id,
                 'file_type' => 'report_document',
                 'media_category' => 'original',
-                'file_path' => '/uploads/activities/docs/' . $filename,
+                'file_path' => $storedPath,
                 'file_name' => $originalName,
                 'mime_type' => $mimeType,
                 'file_size' => $fileSize,
@@ -622,28 +686,13 @@ class ActivitySubmissionController extends Controller
             ]);
         }
 
-        // Handle additional uploaded images if any
-        if ($request->hasFile('new_images')) {
-            foreach ($request->file('new_images') as $index => $file) {
-                $originalName = $file->getClientOriginalName();
-                $mimeType = $file->getClientMimeType();
-                $fileSize = $file->getSize() ?: 0;
-                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/activities/images'), $filename);
+        // Attach previously AJAX-uploaded High-Resolution Photos
+        $this->movePendingMediaPhotos($submission, $mediaTokens);
 
-                ActivityMedia::create([
-                    'activity_submission_id' => $submission->id,
-                    'file_path' => '/uploads/activities/images/' . $filename,
-                    'file_name' => $originalName,
-                    'file_type' => 'image',
-                    'media_category' => 'original',
-                    'mime_type' => $mimeType,
-                    'file_size' => $fileSize,
-                    'is_primary' => (!$hasPrimary && $index === 0),
-                ]);
-                if (!$hasPrimary && $index === 0) {
-                    $hasPrimary = true;
-                }
+        if (!$hasPrimary) {
+            $firstImg = $submission->media()->where('file_type', 'image')->first();
+            if ($firstImg) {
+                $firstImg->update(['is_primary' => true]);
             }
         }
 
@@ -665,8 +714,18 @@ class ActivitySubmissionController extends Controller
 
         NotificationService::notifyStageChange($submission, 'resubmitted', 'Activity updated and resubmitted for verification.');
 
+        $successMessage = 'Activity successfully updated and resubmitted for official verification.';
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'redirect' => route('submissions.show', $submission->id),
+                'message' => $successMessage,
+            ]);
+        }
+
         return redirect()->route('submissions.show', $submission->id)
-            ->with('success', 'Activity successfully updated and resubmitted for official verification.');
+            ->with('success', $successMessage);
     }
 
     public function storeDiscussion(Request $request, $id)

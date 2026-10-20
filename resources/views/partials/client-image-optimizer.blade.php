@@ -22,26 +22,11 @@ window.VMRFDU_ImageOptimizer = {
         }
 
         if (!requiresOptimization) {
-            const banner = document.getElementById(progressBannerId);
-            const statusText = document.getElementById(statusTextId);
-            const progressBar = document.getElementById(progressBarId);
-            const submitBtn = document.getElementById(submitBtnId);
-            if (banner) {
-                banner.classList.remove('d-none');
-                banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Uploading Media & Processing Record...';
-            }
-            if (progressBar) progressBar.style.width = '95%';
-            if (statusText) statusText.innerHTML = '🚀 High-Speed Upload: Transmitting media payload and saving official record...';
             return true;
         }
 
         const banner = document.getElementById(progressBannerId);
         const statusText = document.getElementById(statusTextId);
-        const progressBar = document.getElementById(progressBarId);
         const submitBtn = document.getElementById(submitBtnId);
 
         if (banner) {
@@ -50,7 +35,7 @@ window.VMRFDU_ImageOptimizer = {
         }
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Optimizing Media for High-Speed Upload...';
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Optimizing photos...';
         }
 
         const dataTransfer = new DataTransfer();
@@ -58,9 +43,7 @@ window.VMRFDU_ImageOptimizer = {
 
         for (let i = 0; i < totalFiles; i++) {
             const file = files[i];
-            const percent = Math.round(((i + 1) / totalFiles) * 75);
-            if (progressBar) progressBar.style.width = percent + '%';
-            if (statusText) statusText.innerHTML = `⚡ High-Speed Photo Engine: Optimizing photo ${i + 1} of ${totalFiles} (${file.name})...`;
+            if (statusText) statusText.innerHTML = `<i class="bi bi-gear-fill me-1 text-primary"></i> Optimizing photo ${i + 1} of ${totalFiles}...`;
 
             if (file.type.startsWith('image/') && file.size > 400 * 1024) {
                 try {
@@ -77,10 +60,6 @@ window.VMRFDU_ImageOptimizer = {
 
         // Replace original input files with high-speed optimized payload
         inputElement.files = dataTransfer.files;
-
-        if (progressBar) progressBar.style.width = '95%';
-        if (statusText) statusText.innerHTML = '🚀 Transmitting optimized media payload across network (High-Speed Upload)...';
-        if (submitBtn) submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Submitting Activity Record...';
 
         return true;
     },

@@ -129,7 +129,7 @@
                         </div>
                         <div class="d-flex flex-wrap gap-1">
                             @foreach($editedMediaList as $m)
-                                <a href="{{ $m->file_path }}" target="_blank" class="badge bg-white text-dark border p-1 d-flex align-items-center gap-1 shadow-sm text-decoration-none" title="Click to view/download">
+                                <a href="{{ upload_url($m->file_path) }}" target="_blank" class="badge bg-white text-dark border p-1 d-flex align-items-center gap-1 shadow-sm text-decoration-none" title="Click to view/download">
                                     <i class="bi bi-image text-primary"></i> {{ Str::limit($m->file_name, 20) }}
                                 </a>
                             @endforeach
@@ -144,7 +144,7 @@
                         </div>
                         <div class="d-flex flex-wrap gap-1">
                             @foreach($originalMediaList as $m)
-                                <a href="{{ $m->file_path }}" target="_blank" class="badge bg-white text-dark border p-1 d-flex align-items-center gap-1 shadow-sm text-decoration-none" title="Click to view/download">
+                                <a href="{{ upload_url($m->file_path) }}" target="_blank" class="badge bg-white text-dark border p-1 d-flex align-items-center gap-1 shadow-sm text-decoration-none" title="Click to view/download">
                                     @if($m->file_type === 'image')
                                         <i class="bi bi-image text-info"></i> {{ Str::limit($m->file_name, 20) }}
                                     @elseif($m->file_type === 'document')

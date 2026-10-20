@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('faculty_coordinator_email')->nullable();
             $table->string('faculty_coordinator_phone')->nullable();
             $table->text('social_media_caption')->nullable();
-            $table->string('status')->default('draft'); // draft, verification_pending, approval_pending, media_review, scheduled, published, sent_back, rejected
+            $table->string('status')->default('verification_pending'); // verification_pending, approval_pending, media_review, scheduled, published, sent_back, rejected
             $table->string('current_stage')->default('College Verifier');
             $table->text('admin_remarks')->nullable();
             $table->timestamps();

@@ -183,7 +183,11 @@ class NotificationService
                 'action_url' => $actionUrl,
             ]);
 
-            // 2. Queue Email Update for Consolidation by Ref ID
+            // 2. Queue Email Update for Consolidation by Ref ID (skip if this user has email notifications disabled)
+            if (!($recipient->email_notifications_enabled ?? true)) {
+                continue;
+            }
+
             self::$pendingEmailQueue[$recipient->email][$submission->reference_id][] = [
                 'recipient' => $recipient,
                 'submission' => $submission,

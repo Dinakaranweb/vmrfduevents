@@ -8,6 +8,7 @@
     background: #f8fafc;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     flex-shrink: 0;
+    cursor: pointer;
 }
 .attachment-preview-img {
     width: 100%;
@@ -108,7 +109,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                 const card = document.createElement('div');
                 card.className = 'attachment-preview-card';
-                
+                card.title = 'Click to preview in a new tab';
+
+                const fileUrl = URL.createObjectURL(file);
+                card.onclick = function() {
+                    window.open(fileUrl, '_blank');
+                };
+
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
                 removeBtn.className = 'attachment-preview-remove';
@@ -118,19 +125,19 @@ document.addEventListener("DOMContentLoaded", function() {
                     e.stopPropagation();
                     removeFile(index);
                 };
-                
+
                 let visualEl = '';
                 if (isImage) {
-                    visualEl = `<img src="${URL.createObjectURL(file)}" class="attachment-preview-img" alt="Preview">`;
+                    visualEl = `<img src="${fileUrl}" class="attachment-preview-img" alt="Preview">`;
                 } else {
                     let iconClass = 'bi-file-earmark';
                     if (file.type === 'application/pdf') iconClass = 'bi-file-earmark-pdf text-danger';
                     else if (file.type.includes('word') || file.name.endsWith('.doc') || file.name.endsWith('.docx')) iconClass = 'bi-file-earmark-word text-primary';
                     else if (file.type.includes('excel') || file.name.endsWith('.xls') || file.name.endsWith('.xlsx')) iconClass = 'bi-file-earmark-excel text-success';
-                    
+
                     visualEl = `<div class="attachment-preview-icon"><i class="bi ${iconClass}"></i></div>`;
                 }
-                
+
                 card.innerHTML = `
                     ${visualEl}
                     <div class="attachment-preview-info">
@@ -139,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     </div>
                 `;
                 card.appendChild(removeBtn);
-                
+
                 previewContainer.appendChild(card);
             });
         }

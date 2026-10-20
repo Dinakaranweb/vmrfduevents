@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Support\UploadStorage;
 use App\Models\ActivitySubmission;
 use App\Models\ActivityMedia;
 use App\Models\ActivityDiscussion;
@@ -217,13 +218,13 @@ class MediaEditorController extends Controller
                 $mimeType = $imageFile->getClientMimeType();
                 $fileSize = $imageFile->getSize() ?: 0;
                 $filename = time() . '_' . uniqid() . '_edited_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $imageFile->getClientOriginalExtension();
-                $imageFile->move(public_path('uploads/activities/images'), $filename);
+                $storedPath = UploadStorage::put($imageFile, UploadStorage::path('images'), $filename);
 
                 ActivityMedia::create([
                     'activity_submission_id' => $submission->id,
                     'file_type' => 'image',
                     'media_category' => 'edited_social',
-                    'file_path' => '/uploads/activities/images/' . $filename,
+                    'file_path' => $storedPath,
                     'file_name' => 'Edited: ' . $originalName,
                     'mime_type' => $mimeType,
                     'file_size' => $fileSize,
@@ -442,12 +443,10 @@ class MediaEditorController extends Controller
             // Add media files if they exist on server disk
             if ($submission->media && $submission->media->count() > 0) {
                 foreach ($submission->media as $media) {
-                    if ($media->file_path && !str_starts_with($media->file_path, 'http')) {
-                        $absoluteFile = public_path(ltrim($media->file_path, '/'));
-                        if (file_exists($absoluteFile) && is_file($absoluteFile)) {
-                            $cleanFileName = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $media->file_name);
-                            $zip->addFile($absoluteFile, 'media_files/' . $cleanFileName);
-                        }
+                    $contents = UploadStorage::get($media->file_path);
+                    if ($contents !== null) {
+                        $cleanFileName = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $media->file_name);
+                        $zip->addFromString('media_files/' . $cleanFileName, $contents);
                     }
                 }
             }

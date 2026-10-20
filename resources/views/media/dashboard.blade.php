@@ -209,8 +209,8 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center justify-content-between text-xs text-muted border-top pt-3 mt-2">
-                    <span><i class="bi bi-lock-fill text-warning me-1" aria-hidden="true"></i> Under Verification</span>
-                    <a href="{{ route('submissions.index') }}?status=verification_pending" class="fw-bold text-warning text-decoration-none stretched-link">Check Status <i class="bi bi-chevron-right text-xxs" aria-hidden="true"></i></a>
+                    <span><i class="bi bi-lock-fill text-warning me-1" aria-hidden="true"></i> Pending Registrar Review</span>
+                    <a href="{{ route('media.editing') }}" class="fw-bold text-warning text-decoration-none stretched-link">View Locked Queue <i class="bi bi-chevron-right text-xxs" aria-hidden="true"></i></a>
                 </div>
             </div>
         </div>
@@ -405,7 +405,7 @@
                                             <div class="carousel-inner h-100">
                                                 @foreach($images as $index => $img)
                                                 <div class="carousel-item h-100 {{ $index === 0 ? 'active' : '' }}">
-                                                    <img src="{{ $img->file_path }}" alt="Image {{ $index + 1 }} for {{ $item->title }}" class="w-100 h-100 object-fit-cover">
+                                                    <img src="{{ upload_url($img->file_path) }}" alt="Image {{ $index + 1 }} for {{ $item->title }}" class="w-100 h-100 object-fit-cover">
                                                 </div>
                                                 @endforeach
                                             </div>
@@ -423,7 +423,7 @@
                                         </div>
                                     @elseif($images->count() === 1)
                                         <div class="position-relative rounded-4 overflow-hidden border shadow-sm" style="height: 220px; background: #0f172a;">
-                                            <img src="{{ $images->first()->file_path }}" alt="Activity Image" class="w-100 h-100 object-fit-cover">
+                                            <img src="{{ upload_url($images->first()->file_path) }}" alt="Activity Image" class="w-100 h-100 object-fit-cover">
                                             <span class="badge bg-dark position-absolute bottom-0 end-0 m-2 text-xxs fw-bold font-monospace">
                                                 <i class="bi bi-image me-1" aria-hidden="true"></i>1 Photo
                                             </span>
@@ -432,13 +432,13 @@
                                         <div class="bg-danger bg-opacity-10 border border-danger rounded-4 h-100 p-4 d-flex flex-column justify-content-center text-center" style="min-height: 220px;">
                                             <i class="bi bi-file-earmark-pdf-fill text-danger fs-1 mb-2" aria-hidden="true"></i>
                                             <div class="fw-bold text-dark text-xs text-truncate mb-2">{{ $primaryMedia->file_name }}</div>
-                                            <a href="{{ $primaryMedia->file_path }}" download class="btn btn-danger btn-sm text-xxs fw-bold rounded-pill shadow-sm"><i class="bi bi-download me-1" aria-hidden="true"></i>Download PDF</a>
+                                            <a href="{{ upload_url($primaryMedia->file_path) }}" download class="btn btn-danger btn-sm text-xxs fw-bold rounded-pill shadow-sm"><i class="bi bi-download me-1" aria-hidden="true"></i>Download PDF</a>
                                         </div>
                                     @elseif($primaryMedia && $primaryMedia->file_type === 'video')
                                         <div class="bg-primary bg-opacity-10 border border-primary rounded-4 h-100 p-4 d-flex flex-column justify-content-center text-center" style="min-height: 220px;">
                                             <i class="bi bi-play-circle-fill text-primary fs-1 mb-2" aria-hidden="true"></i>
                                             <div class="fw-bold text-dark text-xs text-truncate mb-2">{{ $primaryMedia->file_name }}</div>
-                                            <a href="{{ $primaryMedia->file_path }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm text-xxs fw-bold rounded-pill shadow-sm"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>Watch Video</a>
+                                            <a href="{{ upload_url($primaryMedia->file_path) }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm text-xxs fw-bold rounded-pill shadow-sm"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>Watch Video</a>
                                         </div>
                                     @else
                                         <div class="bg-light rounded-4 h-100 d-flex align-items-center justify-content-center text-muted border" style="height: 220px;">
@@ -497,13 +497,13 @@
                                                         
                                                         if($isImage) {
                                                             $modalTarget = '#imageModal';
-                                                            $modalClick = "showImageModal('".asset($m->file_path)."', '".addslashes($m->file_name)."')";
+                                                            $modalClick = "showImageModal('".upload_url($m->file_path)."', '".addslashes($m->file_name)."')";
                                                         } elseif(in_array($m->file_type, ['document', 'supporting_document', 'report_document'])) {
                                                             $modalTarget = '#documentModal';
-                                                            $modalClick = "showDocumentModal('".asset($m->file_path)."', '".addslashes($m->file_name)."', " . ($isPdf ? 'true' : 'false') . ")";
+                                                            $modalClick = "showDocumentModal('".upload_url($m->file_path)."', '".addslashes($m->file_name)."', " . ($isPdf ? 'true' : 'false') . ")";
                                                         }
                                                     @endphp
-                                                    <a href="{{ $modalTarget ? 'javascript:void(0)' : asset($m->file_path) }}" {{ $modalTarget ? '' : 'download' }} {!! $modalTarget ? 'data-bs-toggle="modal" data-bs-target="'.$modalTarget.'" onclick="'.$modalClick.'"' : '' !!} class="badge file-pill text-dark py-2 px-3 rounded-pill d-inline-flex align-items-center gap-2 text-decoration-none shadow-sm" aria-label="Preview asset {{ $m->file_name }}" style="cursor: pointer;">
+                                                    <a href="{{ $modalTarget ? 'javascript:void(0)' : upload_url($m->file_path) }}" {{ $modalTarget ? '' : 'download' }} {!! $modalTarget ? 'data-bs-toggle="modal" data-bs-target="'.$modalTarget.'" onclick="'.$modalClick.'"' : '' !!} class="badge file-pill text-dark py-2 px-3 rounded-pill d-inline-flex align-items-center gap-2 text-decoration-none shadow-sm" aria-label="Preview asset {{ $m->file_name }}" style="cursor: pointer;">
                                                         <i class="bi {{ $pillIcon }}" aria-hidden="true"></i>
                                                         <span class="text-truncate" style="max-width: 150px;">{{ $m->file_name }}</span>
                                                         <i class="bi {{ $modalTarget ? 'bi-box-arrow-up-right' : 'bi-download' }} text-primary ms-1" aria-hidden="true"></i>
@@ -649,7 +649,7 @@
                                     @if($primaryMedia)
                                         @if($primaryMedia->file_type === 'image')
                                         <div class="position-relative rounded-4 overflow-hidden border shadow-sm" style="height: 220px; background: #0f172a;">
-                                            <img src="{{ $primaryMedia->file_path }}" alt="Primary Image for {{ $item->title }}" class="w-100 h-100 object-fit-cover" id="imgPreview_{{ $item->id }}">
+                                            <img src="{{ upload_url($primaryMedia->file_path) }}" alt="Primary Image for {{ $item->title }}" class="w-100 h-100 object-fit-cover" id="imgPreview_{{ $item->id }}">
                                             <span class="badge bg-dark position-absolute bottom-0 end-0 m-2 text-xxs fw-bold font-monospace">
                                                 <i class="bi bi-image me-1" aria-hidden="true"></i>{{ $primaryMedia->dimensions ?: 'Full Res' }}
                                             </span>
@@ -658,13 +658,13 @@
                                         <div class="bg-danger bg-opacity-10 border border-danger rounded-4 h-100 p-4 d-flex flex-column justify-content-center text-center" style="min-height: 220px;">
                                             <i class="bi bi-file-earmark-pdf-fill text-danger fs-1 mb-2" aria-hidden="true"></i>
                                             <div class="fw-bold text-dark text-xs text-truncate mb-2">{{ $primaryMedia->file_name }}</div>
-                                            <a href="{{ $primaryMedia->file_path }}" download class="btn btn-danger btn-sm text-xxs fw-bold rounded-pill shadow-sm"><i class="bi bi-download me-1" aria-hidden="true"></i>Download PDF</a>
+                                            <a href="{{ upload_url($primaryMedia->file_path) }}" download class="btn btn-danger btn-sm text-xxs fw-bold rounded-pill shadow-sm"><i class="bi bi-download me-1" aria-hidden="true"></i>Download PDF</a>
                                         </div>
                                         @else
                                         <div class="bg-primary bg-opacity-10 border border-primary rounded-4 h-100 p-4 d-flex flex-column justify-content-center text-center" style="min-height: 220px;">
                                             <i class="bi bi-play-circle-fill text-primary fs-1 mb-2" aria-hidden="true"></i>
                                             <div class="fw-bold text-dark text-xs text-truncate mb-2">{{ $primaryMedia->file_name }}</div>
-                                            <a href="{{ $primaryMedia->file_path }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm text-xxs fw-bold rounded-pill shadow-sm"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>Watch Video</a>
+                                            <a href="{{ upload_url($primaryMedia->file_path) }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm text-xxs fw-bold rounded-pill shadow-sm"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>Watch Video</a>
                                         </div>
                                         @endif
                                     @else
@@ -715,13 +715,13 @@
                                                         
                                                         if($isImage) {
                                                             $modalTarget = '#imageModal';
-                                                            $modalClick = "showImageModal('".asset($m->file_path)."', '".addslashes($m->file_name)."')";
+                                                            $modalClick = "showImageModal('".upload_url($m->file_path)."', '".addslashes($m->file_name)."')";
                                                         } elseif(in_array($m->file_type, ['document', 'supporting_document', 'report_document'])) {
                                                             $modalTarget = '#documentModal';
-                                                            $modalClick = "showDocumentModal('".asset($m->file_path)."', '".addslashes($m->file_name)."', " . ($isPdf ? 'true' : 'false') . ")";
+                                                            $modalClick = "showDocumentModal('".upload_url($m->file_path)."', '".addslashes($m->file_name)."', " . ($isPdf ? 'true' : 'false') . ")";
                                                         }
                                                     @endphp
-                                                    <a href="{{ $modalTarget ? 'javascript:void(0)' : asset($m->file_path) }}" {{ $modalTarget ? '' : 'download' }} {!! $modalTarget ? 'data-bs-toggle="modal" data-bs-target="'.$modalTarget.'" onclick="'.$modalClick.'"' : '' !!} class="badge file-pill text-dark py-2 px-3 rounded-pill d-inline-flex align-items-center gap-2 text-decoration-none shadow-sm" aria-label="Preview asset {{ $m->file_name }}" style="cursor: pointer;">
+                                                    <a href="{{ $modalTarget ? 'javascript:void(0)' : upload_url($m->file_path) }}" {{ $modalTarget ? '' : 'download' }} {!! $modalTarget ? 'data-bs-toggle="modal" data-bs-target="'.$modalTarget.'" onclick="'.$modalClick.'"' : '' !!} class="badge file-pill text-dark py-2 px-3 rounded-pill d-inline-flex align-items-center gap-2 text-decoration-none shadow-sm" aria-label="Preview asset {{ $m->file_name }}" style="cursor: pointer;">
                                                         <i class="bi {{ $pillIcon }}" aria-hidden="true"></i>
                                                         <span class="text-truncate" style="max-width: 150px;">{{ $m->file_name }}</span>
                                                         <i class="bi {{ $modalTarget ? 'bi-box-arrow-up-right' : 'bi-download' }} text-primary ms-1" aria-hidden="true"></i>

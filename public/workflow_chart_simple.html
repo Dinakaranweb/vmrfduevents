@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VMRF(DU) Workflow Chart - Simplified</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --text-main: #333;
+            --text-muted: #666;
+            --bg: #fdfdfd;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .controls {
+            text-align: center;
+            padding: 15px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .btn-print {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            background: #fff;
+            padding: 40px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 22px;
+            margin: 0 0 5px 0;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Simplified Timeline */
+        .timeline {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 20px;
+            width: 3px;
+            background: var(--border);
+        }
+
+        .step {
+            position: relative;
+            margin-bottom: 35px;
+            padding: 15px 20px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 20px;
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .actor {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .step-desc {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+        
+        .status {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            margin-top: 8px;
+        }
+
+        .flow-return {
+            font-size: 12px;
+            color: var(--warning);
+            font-weight: 600;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media print {
+            body { background: #fff; }
+            .controls { display: none !important; }
+            .container {
+                margin: 0;
+                box-shadow: none;
+                padding: 10mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls no-print">
+        <button class="btn-print" onclick="window.print()">Download / Print as PDF</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>VMRF(DU) Activity Workflow</h1>
+            <p>Simplified End-to-End Approval Process</p>
+        </header>
+
+        <div class="timeline">
+            
+            <!-- Stage 0 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-title">1. Activity Submission</div>
+                    <div class="actor">College Admin</div>
+                </div>
+                <div class="step-desc">
+                    User logs the event details, applies AI templates, and attaches mandatory photos.
+                    <br>
+                    <span class="status">Status: pending</span>
+                </div>
+            </div>
+
+            <!-- Stage 1 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-title">2. Institutional Verification</div>
+                    <div class="actor">Registrar</div>
+                </div>
+                <div class="step-desc">
+                    Registrar reviews the submission for academic compliance.
+                    <br>
+                    <span class="status">If Approved: Proceeds to Media Studio</span>
+                    <div class="flow-return">↺ If Discuss: Returned to College Admin for corrections</div>
+                </div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-title">3. Media Studio Enhancement</div>
+                    <div class="actor">Media Editor</div>
+                </div>
+                <div class="step-desc">
+                    Editor crops photos, generates AI social captions, and submits to the executive office.
+                    <br>
+                    <span class="status" style="background:#fef08a; color:#854d0e;">🔒 RECORD LOCKED</span>
+                </div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-title">4. Executive Review</div>
+                    <div class="actor">Office of Registrar</div>
+                </div>
+                <div class="step-desc">
+                    Final authorization of the media package before broadcast.
+                    <br>
+                    <span class="status">If Approved: Ready for Publication</span>
+                    <div class="flow-return">↺ If Discuss: Unlocked & returned to Media Editor</div>
+                </div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-title">5. Broadcast & Archive</div>
+                    <div class="actor">Editor / Admin</div>
+                </div>
+                <div class="step-desc">
+                    Activity is published to the University portal and official social media channels.
+                    <br>
+                    <span class="status" style="background:#dcfce7; color:#166534;">✓ Status: published</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

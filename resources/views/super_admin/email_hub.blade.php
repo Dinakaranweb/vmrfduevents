@@ -99,7 +99,7 @@
                             <div class="mb-4 text-center bg-light border rounded-3 p-4">
                                 <div class="text-xs text-muted text-uppercase fw-bold mb-2">Current Header Logo Preview</div>
                                 @if(!empty($settings['portal_logo']))
-                                    <img src="{{ asset($settings['portal_logo']) }}" alt="Portal Logo" class="img-fluid rounded mb-2 shadow-sm" style="max-height: 80px; background: #fff; padding: 6px; border: 1px solid #ddd;">
+                                    <img src="{{ upload_url($settings['portal_logo']) }}" alt="Portal Logo" class="img-fluid rounded mb-2 shadow-sm" style="max-height: 80px; background: #fff; padding: 6px; border: 1px solid #ddd;">
                                     <div class="text-xxs text-muted font-monospace">{{ $settings['portal_logo'] }}</div>
                                 @else
                                     <div class="py-3 text-muted font-sans text-sm">No custom logo uploaded. Default text header will be rendered.</div>

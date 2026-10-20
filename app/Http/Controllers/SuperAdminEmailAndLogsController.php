@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Support\UploadStorage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -274,9 +275,7 @@ class SuperAdminEmailAndLogsController extends Controller
 
             $file = $request->file('portal_logo_file');
             $filename = 'portal_logo_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/portal'), $filename);
-            
-            $relativePath = 'uploads/portal/' . $filename;
+            $relativePath = UploadStorage::put($file, UploadStorage::path('portal'), $filename);
             SystemSetting::setValue('portal_logo', $relativePath, 'branding', 'Organization Header Logo');
         }
 
@@ -607,12 +606,8 @@ class SuperAdminEmailAndLogsController extends Controller
         // Logo HTML generation with clean spacing and no trailing linebreaks
         $logoHtml = '';
         if (!empty($logoSetting)) {
-            $logoUrl = url($logoSetting);
-            if (file_exists(public_path($logoSetting))) {
-                $logoHtml = "<div style=\"margin-bottom: 10px;\"><img src=\"{$logoUrl}\" alt=\"{$portalName} Logo\" style=\"max-height: 65px; max-width: 230px; object-fit: contain; display: inline-block;\"></div>";
-            } else {
-                $logoHtml = "<div style=\"margin-bottom: 10px;\"><img src=\"{$logoUrl}\" alt=\"{$portalName} Logo\" style=\"max-height: 65px; max-width: 230px; object-fit: contain; display: inline-block;\"></div>";
-            }
+            $logoUrl = UploadStorage::url($logoSetting);
+            $logoHtml = "<div style=\"margin-bottom: 10px;\"><img src=\"{$logoUrl}\" alt=\"{$portalName} Logo\" style=\"max-height: 65px; max-width: 230px; object-fit: contain; display: inline-block;\"></div>";
         }
 
         $bannerColor = $updateCount === 1 ? ($updates[0]['stageColor'] ?? $primaryColor) : '#4338ca';

@@ -1,11 +1,10 @@
-﻿<?php
+<?php
 
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\College;
-use App\Models\Department;
 use App\Models\User;
 use App\Models\ActivitySubmission;
 use App\Models\ActivityMedia;
@@ -87,30 +86,9 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call(ConstituentCollegesSeeder::class);
+        $this->call(RoleSeeder::class);
 
-        // 2. Create Departments
-        $depts = [
-            'VMKVEC' => ['Computer Science & Engineering', 'Biotechnology', 'Mechanical Engineering', 'Artificial Intelligence & Data Science'],
-            'AVIT' => ['Bio-Medical Engineering', 'Electronics & Communication', 'Civil Engineering', 'Computer Science & Business Systems'],
-            'VMKVMC' => ['General Medicine', 'Cardiology', 'Pediatrics', 'Community Medicine'],
-            'AVMC' => ['Orthopedics', 'Pathology', 'Anesthesiology', 'Radiology'],
-            'VMSDC' => ['Oral Surgery', 'Orthodontics', 'Periodontology'],
-            'VMCON' => ['Medical Surgical Nursing', 'Community Health Nursing'],
-            'VMCP' => ['Pharmaceutics', 'Pharmacology', 'Pharmaceutical Chemistry']
-        ];
-
-        $departments = [];
-        foreach ($depts as $colCode => $deptList) {
-            foreach ($deptList as $dName) {
-                $departments[$colCode][] = Department::create([
-                    'college_id' => $colleges[$colCode]->id,
-                    'code' => strtoupper(substr(preg_replace('/[^a-zA-Z]/', '', $dName), 0, 4)),
-                    'name' => $dName,
-                ]);
-            }
-        }
-
-        // 3. Create Users across all roles
+        // 2. Create Users across all roles
         $defaultPassword = Hash::make('password');
 
         // Super Admin
@@ -190,7 +168,6 @@ class DatabaseSeeder extends Seeder
             'password' => $defaultPassword,
             'role' => 'college_admin',
             'college_id' => $colleges['VMKVEC']->id,
-            'department_id' => $departments['VMKVEC'][0]->id,
             'designation' => 'Public Relations Coordinator',
             'phone' => '+91 9840011301',
         ]);
@@ -201,7 +178,6 @@ class DatabaseSeeder extends Seeder
             'password' => $defaultPassword,
             'role' => 'college_admin',
             'college_id' => $colleges['AVIT']->id,
-            'department_id' => $departments['AVIT'][0]->id,
             'designation' => 'Media Liaison Officer',
             'phone' => '+91 9840011302',
         ]);
@@ -212,7 +188,6 @@ class DatabaseSeeder extends Seeder
             'password' => $defaultPassword,
             'role' => 'college_admin',
             'college_id' => $colleges['VMKVMC']->id,
-            'department_id' => $departments['VMKVMC'][0]->id,
             'designation' => 'Hospital Media Officer',
             'phone' => '+91 9840011303',
         ]);

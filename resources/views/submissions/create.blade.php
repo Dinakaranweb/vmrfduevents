@@ -136,6 +136,7 @@
                     <label class="form-label fw-bold small text-uppercase tracking-wider mb-2">Upload Event Report <span class="text-danger">*</span></label>
                     <input type="file" id="reportDocument" class="form-control py-2" accept=".pdf,.doc,.docx">
                     <div class="form-text mt-2"><i class="bi bi-file-earmark-pdf me-1"></i> Upload the report as PDF or Word Document. <span class="text-danger">Max 20 MB.</span></div>
+                    <div id="reportDocumentPreviewContainer" class="d-flex flex-wrap gap-3 mt-3"></div>
                 </div>
             </div>
         </div>
@@ -175,24 +176,24 @@
                 </div>
             </div>
             
-            <div class="row g-4">
-                <div class="col-12 col-md-6" id="imagesContainer">
-                    <div class="p-4 bg-light rounded-4 border border-2 border-dashed text-center h-100 d-flex flex-column justify-content-center">
-                        <i class="bi bi-cloud-arrow-up-fill fs-1 text-primary mb-2 d-block"></i>
-                        <label class="form-label fw-bold fs-6 text-dark d-block mb-2">Media Attachments: High-Resolution Photos <span class="text-danger">*</span></label>
-                        <div class="alert alert-warning border-warning shadow-sm mx-auto p-2 mb-3 text-start d-flex justify-content-between align-items-center flex-wrap gap-2" style="max-width: 550px;">
-                            <div><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i><strong>Mandatory:</strong> Please upload both <strong>Stage Photo</strong> and <strong>Participants Photo</strong>.</div>
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-md-6" id="mediaAttachmentsContainer">
+                    <div class="p-4 bg-light rounded-4 border border-2 border-dashed h-100 d-flex flex-column justify-content-center">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-images fs-1 text-primary mb-2 d-block"></i>
+                            <label class="form-label fw-bold fs-6 text-dark d-block mb-1">Media Attachments: High-Resolution Photos <span id="mediaPhotosRequiredMark" class="text-danger">*</span></label>
                             <span class="badge bg-danger">Max 20 MB per file</span>
                         </div>
-                        <input type="file" name="images[]" id="imagesInput" class="form-control form-control-lg mx-auto" style="max-width: 550px;" multiple accept="image/*" required>
-                        <div id="imagePreviewContainer" class="d-flex flex-wrap justify-content-center gap-3 mt-4"></div>
+                        <input type="file" id="mediaPhotosInput" class="form-control form-control-lg mx-auto" style="max-width: 550px;" multiple accept="image/*">
+                        <div id="mediaPhotosHiddenInputs"></div>
+                        <div id="mediaPhotosCards" class="d-flex flex-wrap justify-content-center gap-3 mt-4"></div>
                     </div>
                 </div>
 
                 <div class="col-12 col-md-6" id="geoTaggedContainer">
                     <div class="p-4 bg-light rounded-4 border border-2 border-dashed text-center h-100 d-flex flex-column justify-content-center">
                         <i class="bi bi-geo-alt-fill fs-1 text-success mb-2 d-block"></i>
-                        <label class="form-label fw-bold fs-6 text-dark d-block mb-2">Geo-Tagged Photo</label>
+                        <label class="form-label fw-bold fs-6 text-dark d-block mb-2">Geo-Tagged Photo <span class="text-muted fs-6 fw-normal">(Optional)</span></label>
                         <div class="text-center mb-3">
                             <span class="badge bg-danger">Max 20 MB per file</span>
                         </div>
@@ -200,7 +201,9 @@
                         <div id="geoPreviewContainer" class="d-flex flex-wrap justify-content-center gap-3 mt-4"></div>
                     </div>
                 </div>
+            </div>
 
+            <div class="row g-4">
                 <div class="col-12 col-md-4">
                     <label class="form-label fw-bold small text-uppercase tracking-wider">Photo Link <span class="text-muted text-normal">(Optional)</span></label>
                     <input type="text" name="photo_links" class="form-control py-2" placeholder="e.g., Google Drive Album / High-Res Folder Link" value="{{ old('photo_links') }}">
@@ -241,8 +244,8 @@
             </div>
             <div class="d-flex gap-3">
                 <a href="{{ route('submissions.index') }}" class="btn btn-outline-secondary px-4 py-2">Cancel</a>
-                <button type="submit" id="submitSubmissionBtn" class="btn btn-portal-primary px-5 py-2 fw-bold shadow-sm">
-                    <i class="bi bi-send-fill me-2"></i> Submit Institutional Record
+                <button type="submit" class="btn btn-portal-primary px-5 py-3 fw-bold shadow-lg" id="submitSubmissionBtn">
+                    <i class="bi bi-send-fill me-2"></i> Submit Activity to Registrar
                 </button>
             </div>
         </div>
@@ -359,83 +362,127 @@
                         activityDate.value = today;
                     }
 
-                    // Show Past Event fields
                     const resContainer = document.getElementById('resourcePersonContainer');
                     const partContainer = document.getElementById('participantsContainer');
                     const outContainer = document.getElementById('outcomeContainer');
                     const repContainer = document.getElementById('reportTypeContainer');
-                    const imgContainer = document.getElementById('imagesContainer');
+                    const mediaContainer = document.getElementById('mediaAttachmentsContainer');
                     const geoContainer = document.getElementById('geoTaggedContainer');
-                    
+
                     if(resContainer) resContainer.style.display = 'block';
                     if(partContainer) partContainer.style.display = 'block';
                     if(outContainer) outContainer.style.display = 'block';
                     if(repContainer) repContainer.style.display = 'block';
-                    if(imgContainer) imgContainer.style.display = 'block';
+                    if(mediaContainer) mediaContainer.style.display = 'block';
                     if(geoContainer) geoContainer.style.display = 'block';
 
                     const tgtAud = document.getElementById('targetAudience');
                     const outInp = document.getElementById('outcome');
-                    const imgInp = document.getElementById('imagesInput');
-                    const geoInp = document.getElementById('geoTaggedInput');
-                    
+
                     if(tgtAud) tgtAud.required = true;
                     if(outInp) outInp.required = true;
-                    if(imgInp) imgInp.required = true;
                     if(reportTypeSelect) reportTypeSelect.required = true;
+                    window.mediaPhotosRequired = true;
+                    const requiredMark = document.getElementById('mediaPhotosRequiredMark');
+                    if (requiredMark) requiredMark.classList.remove('d-none');
 
                     toggleReportFields();
                 } else {
                     activityDate.removeAttribute('max');
 
-                    // Hide Past Event fields
                     const resContainer = document.getElementById('resourcePersonContainer');
                     const partContainer = document.getElementById('participantsContainer');
                     const outContainer = document.getElementById('outcomeContainer');
                     const repContainer = document.getElementById('reportTypeContainer');
-                    const imgContainer = document.getElementById('imagesContainer');
+                    const mediaContainer = document.getElementById('mediaAttachmentsContainer');
                     const geoContainer = document.getElementById('geoTaggedContainer');
-                    
+
                     if(resContainer) resContainer.style.display = 'none';
                     if(partContainer) partContainer.style.display = 'none';
                     if(outContainer) outContainer.style.display = 'none';
                     if(repContainer) repContainer.style.display = 'none';
-                    if(imgContainer) imgContainer.style.display = 'none';
+                    if(mediaContainer) mediaContainer.style.display = 'none';
                     if(geoContainer) geoContainer.style.display = 'none';
 
                     const tgtAud = document.getElementById('targetAudience');
                     const outInp = document.getElementById('outcome');
-                    const imgInp = document.getElementById('imagesInput');
-                    const geoInp = document.getElementById('geoTaggedInput');
-                    
+
                     if(tgtAud) tgtAud.required = false;
                     if(outInp) outInp.required = false;
-                    if(imgInp) imgInp.required = false;
-                    if(geoInp) geoInp.required = false;
                     if(reportTypeSelect) reportTypeSelect.required = false;
+                    window.mediaPhotosRequired = false;
+                    const requiredMark = document.getElementById('mediaPhotosRequiredMark');
+                    if (requiredMark) requiredMark.classList.add('d-none');
 
                     toggleReportFields();
                 }
             }
-            
+
             activityType.addEventListener('change', updateDateConstraint);
             updateDateConstraint(); // Initial call
         }
 
-        const imagesInput = document.getElementById('imagesInput');
-        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-        
-        if (imagesInput && imagePreviewContainer) {
-            imagesInput.addEventListener('change', function() {
-                renderPreviews(imagesInput, imagePreviewContainer);
-            });
-        }
-        
         const geoInput = document.getElementById('geoTaggedInput');
         const geoPreviewContainer = document.getElementById('geoPreviewContainer');
         if (geoInput && geoPreviewContainer) {
             geoInput.addEventListener('change', function() {
                 renderPreviews(geoInput, geoPreviewContainer);
+            });
+        }
+
+        function renderSingleFilePreview(inputElement, containerElement) {
+            containerElement.innerHTML = '';
+            const file = inputElement.files && inputElement.files[0];
+            if (!file) return;
+
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            const isImage = file.type.startsWith('image/');
+
+            const card = document.createElement('div');
+            card.className = 'attachment-preview-card';
+            card.title = 'Click to preview in a new tab';
+
+            const fileUrl = URL.createObjectURL(file);
+            card.onclick = function() {
+                window.open(fileUrl, '_blank');
+            };
+
+            let visualEl;
+            if (isImage) {
+                visualEl = '<img src="' + fileUrl + '" class="attachment-preview-img" alt="Preview">';
+            } else {
+                let iconClass = 'bi-file-earmark';
+                if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) iconClass = 'bi-file-earmark-pdf text-danger';
+                else if (file.type.includes('word') || file.name.toLowerCase().endsWith('.doc') || file.name.toLowerCase().endsWith('.docx')) iconClass = 'bi-file-earmark-word text-primary';
+                visualEl = '<div class="attachment-preview-icon"><i class="bi ' + iconClass + '"></i></div>';
+            }
+
+            card.innerHTML = visualEl +
+                '<div class="attachment-preview-info">' +
+                    '<div class="attachment-preview-name" title="' + file.name.replace(/"/g, '&quot;') + '">' + file.name + '</div>' +
+                    '<div class="attachment-preview-size">' + sizeMB + ' MB &bull; Ready</div>' +
+                '</div>';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'attachment-preview-remove';
+            removeBtn.innerHTML = '<i class="bi bi-x"></i>';
+            removeBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                inputElement.value = '';
+                containerElement.innerHTML = '';
+            };
+            card.appendChild(removeBtn);
+
+            containerElement.appendChild(card);
+        }
+
+        const reportDocumentInput = document.getElementById('reportDocument');
+        const reportDocumentPreviewContainer = document.getElementById('reportDocumentPreviewContainer');
+        if (reportDocumentInput && reportDocumentPreviewContainer) {
+            reportDocumentInput.addEventListener('change', function() {
+                renderSingleFilePreview(reportDocumentInput, reportDocumentPreviewContainer);
             });
         }
         
@@ -482,6 +529,26 @@
             });
         }
 
+        // Real-time, non-blocking upload of Media Attachments via AJAX with per-photo progress.
+        const mediaUploaderApi = window.VMRFDU_MediaUploader.init({
+            inputId: 'mediaPhotosInput',
+            cardsContainerId: 'mediaPhotosCards',
+            hiddenContainerId: 'mediaPhotosHiddenInputs',
+            tokenFieldName: 'media_photo_tokens[]',
+            onPendingChange: function(pendingCount) {
+                const btn = document.getElementById('submitSubmissionBtn');
+                if (!btn) return;
+                if (pendingCount > 0) {
+                    if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Photos uploading, please wait...';
+                } else {
+                    btn.disabled = false;
+                    if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+                }
+            }
+        });
+
         const createForm = document.querySelector('form[action*="submissions"]');
         if (createForm) {
             createForm.addEventListener('submit', async function(e) {
@@ -489,23 +556,42 @@
                     e.preventDefault();
                     return;
                 }
+
+                if (mediaUploaderApi && mediaUploaderApi.hasPending()) {
+                    e.preventDefault();
+                    alert('Please wait for all High-Resolution Photos to finish uploading before submitting.');
+                    return;
+                }
+
+                if (window.mediaPhotosRequired && mediaUploaderApi && mediaUploaderApi.tokenCount() === 0) {
+                    e.preventDefault();
+                    alert('Please upload at least one High-Resolution Photo under Media Attachments before submitting.');
+                    return;
+                }
+
                 e.preventDefault();
-                const imagesInput = document.getElementById('imagesInput');
-                const success = await window.VMRFDU_ImageOptimizer.optimizeFileList(
-                    imagesInput,
-                    'uploadProgressBanner',
-                    'uploadProgressText',
-                    'uploadProgressBar',
-                    'submitSubmissionBtn'
-                );
-                if (success) {
+                const geoTaggedInput = document.getElementById('geoTaggedInput');
+                let successGeo = true;
+                if (geoTaggedInput && geoTaggedInput.files.length > 0) {
+                    successGeo = await window.VMRFDU_ImageOptimizer.optimizeFileList(
+                        geoTaggedInput,
+                        'uploadProgressBanner',
+                        'uploadProgressText',
+                        'uploadProgressBar',
+                        'submitSubmissionBtn'
+                    );
+                }
+
+                if (successGeo) {
                     createForm.dataset.submitting = "true";
-                    createForm.submit();
+                    submitFormWithProgress(createForm);
                 }
             });
         }
     });
 </script>
+@include('partials.submission-progress')
 @include('partials.multi-file-uploader')
 @include('partials.client-image-optimizer')
+@include('partials.media-photo-uploader')
 @endpush

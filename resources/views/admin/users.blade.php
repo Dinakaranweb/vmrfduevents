@@ -32,7 +32,7 @@
                                 $rowAvatar = $user->avatar ?: (!empty($globalDefaultAvatar) ? $globalDefaultAvatar : null);
                             @endphp
                             @if($rowAvatar)
-                                <img src="{{ asset($rowAvatar) }}" alt="Avatar" class="rounded-circle border shadow-sm flex-shrink-0" style="width: 38px; height: 38px; object-fit: cover;">
+                                <img src="{{ upload_url($rowAvatar) }}" alt="Avatar" class="rounded-circle border shadow-sm flex-shrink-0" style="width: 38px; height: 38px; object-fit: cover;">
                             @else
                                 <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 fw-bold d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
                                     {{ substr($user->name, 0, 1) }}

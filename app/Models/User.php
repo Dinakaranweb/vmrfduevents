@@ -31,6 +31,7 @@ class User extends Authenticatable
         'is_locked',
         'account_status',
         'force_password_reset',
+        'email_notifications_enabled',
         'last_login_at',
         'last_login_ip',
         'custom_permissions',
@@ -59,6 +60,7 @@ class User extends Authenticatable
             'is_active' => 'boolean',
             'is_locked' => 'boolean',
             'force_password_reset' => 'boolean',
+            'email_notifications_enabled' => 'boolean',
             'last_login_at' => 'datetime',
             'custom_permissions' => 'array',
         ];
