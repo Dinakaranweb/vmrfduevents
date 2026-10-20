@@ -16,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Loaded here as well as through composer autoload.files so the upload
+        // helpers survive a deploy where composer dump-autoload has not been run.
+        require_once app_path('Support/helpers.php');
     }
 
     /**
